@@ -1,0 +1,94 @@
+/* ============================================================
+   Tijorat+ — frappe-ui-react theme overrides
+   Remaps frappe-ui-react's --color-* tokens onto the Tijorat+
+   green palette (light + dark). Import AFTER
+   "@rtcamp/frappe-ui-react/theme" so these win.
+   ============================================================ */
+
+@layer base {
+  :root {
+    /* Brand */
+    --color-surface-menu-bar: #eef9f4;
+    --color-surface-selected: #1d9f6e;
+    --color-surface-green-1: #eef9f4;
+    --color-surface-green-2: #d9f2e5;
+    --color-surface-green-3: #1d9f6e;
+    --color-outline-green-1: #b8e4d0;
+    --color-outline-green-2: #86cdb0;
+    --color-ink-green-2: #1d9f6e;
+    --color-ink-green-3: #13774f;
+
+    /* Neutrals */
+    --color-surface-gray-1: #f7faf8;
+    --color-surface-gray-2: #f0f6f3;
+    --color-surface-gray-3: #e4ede8;
+    --color-surface-gray-4: #d3e0d9;
+    --color-outline-gray-1: #dfe9e3;
+    --color-outline-gray-2: #cedbd4;
+    --color-outline-gray-3: #b7c7bf;
+    --color-outline-gray-4: #8da398;
+    --color-outline-gray-modals: #dfe9e3;
+    --color-ink-gray-4: #7f948b;
+    --color-ink-gray-5: #647a70;
+    --color-ink-gray-6: #4b5f56;
+    --color-ink-gray-7: #2e3d36;
+    --color-ink-gray-8: #1f2a25;
+    --color-ink-gray-9: #111915;
+
+    /* Keep links/buttons aligned with brand */
+    --color-surface-blue-2: #d9f2e5;
+    --color-surface-blue-3: #1d9f6e;
+    --color-ink-blue-2: #1d9f6e;
+    --color-ink-blue-3: #13774f;
+    --color-ink-blue-link: #1d9f6e;
+
+    /* POS component tokens */
+    --pos-brand-disabled: #b3d4c9;
+    --pos-brand-shadow: 0 4px 12px rgba(29, 159, 110, 0.35);
+    --pos-brand-shadow-lg: 0 4px 16px rgba(29, 159, 110, 0.45);
+    --pos-error: #e05c4b;
+    --pos-error-bg: #fef2f2;
+    --pos-error-bg-active: #fee2e2;
+    --pos-amber: #d4900d;
+  }
+
+  .dark {
+    /* Brand */
+    --color-surface-menu-bar: #0f1f18;
+    --color-surface-selected: #188457;
+    --color-surface-green-1: #0f261c;
+    --color-surface-green-2: #133626;
+    --color-surface-green-3: #188457;
+    --color-outline-green-1: #1f5f43;
+    --color-outline-green-2: #2f7d59;
+    --color-ink-green-2: #7ad3aa;
+    --color-ink-green-3: #9be3c2;
+
+    /* Neutrals */
+    --color-surface-gray-1: #1a2320;
+    --color-surface-gray-2: #212d29;
+    --color-surface-gray-3: #2a3934;
+    --color-surface-gray-4: #365048;
+    --color-surface-cards: #1a2320;
+    --color-surface-modal: #212d29;
+    --color-outline-gray-1: #2a3934;
+    --color-outline-gray-2: #365048;
+    --color-outline-gray-3: #4a6a5f;
+    --color-outline-gray-4: #88a89a;
+    --color-outline-gray-modals: #365048;
+    --color-ink-gray-4: #9ab3a9;
+    --color-ink-gray-5: #b3c6be;
+    --color-ink-gray-6: #c3d2cc;
+    --color-ink-gray-7: #d1ddd8;
+    --color-ink-gray-8: #e4ece8;
+    --color-ink-gray-9: #f1f6f3;
+    --color-ink-white: #ffffff;
+
+    /* Keep links/buttons aligned with brand */
+    --color-surface-blue-2: #133626;
+    --color-surface-blue-3: #188457;
+    --color-ink-blue-2: #7ad3aa;
+    --color-ink-blue-3: #9be3c2;
+    --color-ink-blue-link: #7ad3aa;
+  }
+}

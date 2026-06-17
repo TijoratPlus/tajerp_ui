@@ -1,0 +1,18 @@
+/* ============================================================
+   Tijorat+ design system — full theme entry.
+
+   Import once in your app, AFTER "tailwindcss":
+
+     @import "tailwindcss";
+     @source "../../node_modules/tajerp_ui/dist";
+     @import "tajerp_ui/styles/index.css";
+
+   Load fonts first (before tailwindcss) via HTML <link> tags or
+   @import "tajerp_ui/styles/fonts.css";
+
+   If you only need the raw design tokens (no shadcn token remaps),
+   import "tajerp_ui/styles/tokens.css" instead.
+   ============================================================ */
+
+@import "./tokens.css";
+@import "./base.css";

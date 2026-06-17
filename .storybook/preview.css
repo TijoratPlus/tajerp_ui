@@ -1,0 +1,14 @@
+@import "tailwindcss";
+
+/* Scan the library source so Storybook compiles the utility classes
+   used inside the components. */
+@source "../src/**/*.tsx";
+
+/* Design tokens + shadcn base tokens (no frappe-ui-react remap needed here). */
+@import "../styles/tokens.css";
+@import "../styles/base.css";
+
+/* Storybook canvas */
+body {
+  font-family: var(--tj-font-sans);
+}

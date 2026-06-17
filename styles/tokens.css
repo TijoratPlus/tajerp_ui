@@ -1,0 +1,242 @@
+/* ============================================================
+   Tijorat+ Design Tokens  (tajerp_ui)
+   Single source of truth for the TajERP / Tijorat+ brand.
+
+   Consumed two ways:
+     1. As plain CSS variables — import this file anywhere.
+     2. As Tailwind v4 theme tokens — the @theme block below
+        registers semantic utilities (bg-brand, text-ink-1, …)
+        that automatically adapt to light/dark.
+
+   Dark mode: set [data-theme="dark"] on a wrapping element.
+
+   Fonts (Inter, Faster One): import "tajerp_ui/styles/fonts.css" before
+   tailwindcss, or add the Google Fonts <link> tags in your HTML shell.
+   ============================================================ */
+
+:root {
+  /* ---- Raw brand palette ---------------------------------- */
+  --tj-green: rgb(29, 159, 110); /* primary brand green — logo, CTA */
+  --tj-green-ink: rgb(21, 107, 74); /* darker text-on-light green */
+  --tj-green-deep: rgb(13, 68, 48); /* deep forest — dark hero BG */
+  --tj-green-forest: rgb(12, 30, 22); /* near-black green — surface */
+  --tj-green-soft: rgb(168, 222, 202); /* mint — secondary text on dark */
+  --tj-green-mist: rgb(230, 245, 239); /* very soft green — pill BG */
+  --tj-green-haze: rgb(221, 232, 227); /* barely-there green — hairlines */
+  --tj-green-wash: rgb(247, 249, 248); /* near-white green wash — page BG */
+  --tj-green-tint: rgb(209, 244, 226); /* accent pill — lighter mint */
+
+  /* ---- Neutrals ---- */
+  --tj-ink: rgb(0, 0, 0);
+  --tj-ink-1: rgb(12, 30, 22); /* body ink on light */
+  --tj-ink-2: rgb(45, 68, 56); /* secondary ink */
+  --tj-ink-3: rgb(122, 156, 140); /* meta / captions */
+  --tj-ink-4: rgb(159, 184, 173); /* disabled / low contrast */
+  --tj-white: rgb(255, 255, 255);
+
+  /* ---- Semantic status ---- */
+  --tj-success: rgb(22, 163, 74);
+  --tj-warning: rgb(245, 158, 11);
+  --tj-error: rgb(220, 38, 38);
+  --tj-info: rgb(37, 99, 235);
+
+  /* ---- Accent (alerts / "before") ---- */
+  --tj-coral: rgb(224, 92, 75);
+  --tj-coral-soft: rgb(240, 153, 122);
+  --tj-coral-mist: rgb(255, 240, 238);
+  --tj-coral-tint: rgb(255, 189, 167);
+  --tj-sand: rgb(245, 240, 228);
+
+  /* ---- Radii ---- */
+  --tj-radius-xs: 4px;
+  --tj-radius-sm: 8px;
+  --tj-radius-md: 12px;
+  --tj-radius-lg: 16px;
+  --tj-radius-xl: 24px;
+  --tj-radius-2xl: 32px;
+  --tj-radius-pill: 999px;
+  --tj-radius-logo: 15px;
+
+  /* ---- Spacing scale (4px base) ---- */
+  --tj-sp-1: 4px;
+  --tj-sp-2: 8px;
+  --tj-sp-3: 12px;
+  --tj-sp-4: 16px;
+  --tj-sp-5: 20px;
+  --tj-sp-6: 24px;
+  --tj-sp-8: 32px;
+  --tj-sp-10: 40px;
+  --tj-sp-12: 48px;
+  --tj-sp-16: 64px;
+  --tj-sp-20: 80px;
+  --tj-sp-24: 96px;
+
+  /* ---- Type families ---- */
+  --tj-font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+  --tj-font-display: "Faster One", "Inter", sans-serif; /* logo / hero only */
+
+  /* ---- Type scale ---- */
+  --tj-fs-xs: 11px;
+  --tj-fs-sm: 13px;
+  --tj-fs-base: 16px;
+  --tj-fs-md: 18px;
+  --tj-fs-lg: 22px;
+  --tj-fs-xl: 26px;
+  --tj-fs-2xl: 30px;
+  --tj-fs-3xl: 38px;
+  --tj-fs-4xl: 48px;
+  --tj-fs-5xl: 58px;
+  --tj-fs-6xl: 72px;
+
+  /* ---- Line height ---- */
+  --tj-lh-tight: 1;
+  --tj-lh-snug: 1.15;
+  --tj-lh-body: 1.45;
+  --tj-lh-loose: 1.6;
+
+  /* ---- Weights ---- */
+  --tj-fw-regular: 400;
+  --tj-fw-medium: 500;
+  --tj-fw-semi: 600;
+  --tj-fw-bold: 700;
+  --tj-fw-black: 800;
+
+  /* ---- Shadows ---- */
+  --tj-shadow-sm: 0 1px 2px rgba(12, 30, 22, 0.04);
+  --tj-shadow-md: 0 4px 12px rgba(12, 30, 22, 0.06),
+    0 1px 2px rgba(12, 30, 22, 0.04);
+  --tj-shadow-lg: 0 12px 32px rgba(12, 30, 22, 0.1),
+    0 2px 6px rgba(12, 30, 22, 0.05);
+  --tj-shadow-brand: 0 8px 24px rgba(29, 159, 110, 0.22);
+
+  /* ---- Motion ---- */
+  --tj-ease-out: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --tj-ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --tj-ease-brand: cubic-bezier(0.2, 0.7, 0, 1);
+  --tj-dur-fast: 120ms;
+  --tj-dur-base: 200ms;
+  --tj-dur-slow: 360ms;
+
+  /* ============================================================
+     Semantic runtime tokens — what components actually read.
+     These flip under [data-theme="dark"] so every component
+     gets dark mode for free.
+     ============================================================ */
+  --ui-bg: var(--tj-green-wash);
+  --ui-surface: var(--tj-white);
+  --ui-surface-2: rgb(247, 249, 248);
+  --ui-surface-inset: rgb(238, 249, 244);
+  --ui-rail-bg: var(--tj-green-forest);
+
+  --ui-ink-1: var(--tj-ink-1);
+  --ui-ink-2: var(--tj-ink-2);
+  --ui-ink-3: var(--tj-ink-3);
+  --ui-ink-4: var(--tj-ink-4);
+  --ui-on-brand: var(--tj-white);
+
+  --ui-brand: var(--tj-green);
+  --ui-brand-ink: var(--tj-green-ink);
+  --ui-brand-deep: var(--tj-green-deep);
+  --ui-brand-disabled: rgb(179, 212, 201);
+
+  --ui-hairline: var(--tj-green-haze);
+  --ui-border-brand: rgba(29, 159, 110, 0.3);
+  --ui-mist: var(--tj-green-mist);
+  --ui-mist-ink: var(--tj-green-ink);
+
+  --ui-success: var(--tj-success);
+  --ui-warning: var(--tj-warning);
+  --ui-error: var(--tj-coral);
+  --ui-error-bg: var(--tj-coral-mist);
+  --ui-info: var(--tj-info);
+
+  --ui-card-shadow: var(--tj-shadow-sm);
+}
+
+[data-theme="dark"],
+.dark {
+  --ui-bg: #0a1712;
+  --ui-surface: #132621;
+  --ui-surface-2: #0f1d17;
+  --ui-surface-inset: #133626;
+  --ui-rail-bg: #050e0a;
+
+  --ui-ink-1: #f1f6f4;
+  --ui-ink-2: #b8cfc6;
+  --ui-ink-3: #7a9c8c;
+  --ui-ink-4: #5d786c;
+  --ui-on-brand: #ffffff;
+
+  --ui-brand: var(--tj-green);
+  --ui-brand-ink: var(--tj-green-soft);
+  --ui-brand-deep: #050e0a;
+  --ui-brand-disabled: #2f5847;
+
+  --ui-hairline: rgba(168, 222, 202, 0.12);
+  --ui-border-brand: rgba(168, 222, 202, 0.25);
+  --ui-mist: rgba(29, 159, 110, 0.18);
+  --ui-mist-ink: var(--tj-green-soft);
+
+  --ui-error: var(--tj-coral);
+  --ui-error-bg: rgba(224, 92, 75, 0.16);
+
+  --ui-card-shadow: 0 1px 0 rgba(0, 0, 0, 0.2);
+}
+
+/* ============================================================
+   Tailwind v4 theme registration.
+   `inline` keeps the var reference live so dark mode works.
+   ============================================================ */
+@theme inline {
+  --font-sans: var(--tj-font-sans);
+  --font-display: var(--tj-font-display);
+
+  /* Brand + semantic colors */
+  --color-brand: var(--ui-brand);
+  --color-brand-ink: var(--ui-brand-ink);
+  --color-brand-deep: var(--ui-brand-deep);
+  --color-brand-disabled: var(--ui-brand-disabled);
+
+  --color-ui-bg: var(--ui-bg);
+  --color-ui-surface: var(--ui-surface);
+  --color-ui-surface-2: var(--ui-surface-2);
+  --color-ui-surface-inset: var(--ui-surface-inset);
+  --color-ui-rail: var(--ui-rail-bg);
+
+  --color-ink-1: var(--ui-ink-1);
+  --color-ink-2: var(--ui-ink-2);
+  --color-ink-3: var(--ui-ink-3);
+  --color-ink-4: var(--ui-ink-4);
+  --color-on-brand: var(--ui-on-brand);
+
+  --color-hairline: var(--ui-hairline);
+  --color-border-brand: var(--ui-border-brand);
+  --color-mist: var(--ui-mist);
+  --color-mist-ink: var(--ui-mist-ink);
+
+  --color-tj-success: var(--ui-success);
+  --color-tj-warning: var(--ui-warning);
+  --color-tj-error: var(--ui-error);
+  --color-tj-error-bg: var(--ui-error-bg);
+  --color-tj-info: var(--ui-info);
+
+  /* Radii */
+  --radius-xs: var(--tj-radius-xs);
+  --radius-sm: var(--tj-radius-sm);
+  --radius-md: var(--tj-radius-md);
+  --radius-lg: var(--tj-radius-lg);
+  --radius-xl: var(--tj-radius-xl);
+  --radius-2xl: var(--tj-radius-2xl);
+  --radius-pill: var(--tj-radius-pill);
+
+  /* Shadows */
+  --shadow-tj-sm: var(--tj-shadow-sm);
+  --shadow-tj-md: var(--tj-shadow-md);
+  --shadow-tj-lg: var(--tj-shadow-lg);
+  --shadow-tj-brand: var(--tj-shadow-brand);
+
+  /* Motion */
+  --ease-tj-out: var(--tj-ease-out);
+  --ease-tj-brand: var(--tj-ease-brand);
+}
