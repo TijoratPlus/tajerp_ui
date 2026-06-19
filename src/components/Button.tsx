@@ -5,7 +5,7 @@ import * as React from "react";
 import { cn } from "../lib/cn";
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap font-bold transition-[transform,background,box-shadow,color] duration-150 ease-tj-out outline-none focus-visible:ring-2 focus-visible:ring-brand/50 disabled:pointer-events-none disabled:opacity-60 active:scale-[0.97] select-none",
+  "inline-flex justify-center items-center gap-2 disabled:opacity-60 outline-none focus-visible:ring-2 focus-visible:ring-brand/50 font-bold whitespace-nowrap active:scale-[0.97] transition-[transform,background,box-shadow,color] duration-150 ease-tj-out disabled:pointer-events-none select-none",
   {
     variants: {
       variant: {
@@ -19,9 +19,9 @@ const buttonVariants = cva(
         danger: "bg-tj-error text-white hover:opacity-90 shadow-tj-sm",
       },
       size: {
-        sm: "h-9 px-3.5 text-[13px] rounded-pill",
-        md: "h-11 px-5 text-[15px] rounded-pill",
-        lg: "h-12 px-6 text-base rounded-pill",
+        sm: "h-9 px-3.5 text-[13px] rounded-lg",
+        md: "h-11 px-5 text-[15px] rounded-lg",
+        lg: "h-12 px-6 text-base rounded-xl",
         icon: "h-10 w-10 rounded-xl p-0",
       },
     },
@@ -63,11 +63,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       className={cn(buttonVariants({ variant, size }), className)}
       {...props}
     >
-      {loading ? (
-        <Loader2 className="size-4 animate-spin" />
-      ) : (
-        iconLeft
-      )}
+      {loading ? <Loader2 className="size-4 animate-spin" /> : iconLeft}
       {children}
       {iconRight}
     </button>
