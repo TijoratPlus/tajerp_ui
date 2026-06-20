@@ -31,6 +31,10 @@
       "types": "./dist/icons.d.ts",
       "import": "./dist/icons.js"
     },
+    "./charts": {
+      "types": "./dist/charts.d.ts",
+      "import": "./dist/charts.js"
+    },
     "./styles/index.css": "./styles/index.css",
     "./styles/fonts.css": "./styles/fonts.css",
     "./styles/tokens.css": "./styles/tokens.css",

@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { AxisChart } from "../src";
+import { AxisChart } from "../src/charts";
 
 const meta: Meta<typeof AxisChart> = {
   title: "Data/AxisChart",

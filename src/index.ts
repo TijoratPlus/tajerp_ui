@@ -141,11 +141,4 @@ export type { TabsProps, TabItem } from "./components/Tabs";
 export { Toaster, toast } from "./components/Toast";
 export type { ToastItem, ToastOptions, ToastTone } from "./components/Toast";
 
-export { AxisChart } from "./components/AxisChart";
-export type {
-  AxisChartProps,
-  AxisChartConfig,
-  AxisSeries,
-} from "./components/AxisChart";
-
 export type { SelectOption } from "./components/Select";
