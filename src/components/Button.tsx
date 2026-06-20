@@ -27,7 +27,7 @@ const buttonVariants = cva(
     },
     defaultVariants: {
       variant: "solid",
-      size: "md",
+      size: "sm",
     },
   },
 );
