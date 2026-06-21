@@ -1,9 +1,17 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { AxisChart } from "../src/charts";
+import { AxisChart } from "../../src/charts";
 
 const meta: Meta<typeof AxisChart> = {
-  title: "Data/AxisChart",
+  title: "Components/Data Display/AxisChart",
   component: AxisChart,
+  parameters: {
+    docs: {
+      description: {
+        component:
+          "Bar/line chart wrapper around Recharts. Import from `tajerp_ui/charts`. Configure series, axes, and colours via the `config` prop.",
+      },
+    },
+  },
 };
 export default meta;
 
@@ -17,7 +25,7 @@ const data = [
   { period: "Май", "2026": 58, "2025": 49 },
 ];
 
-export const Bars: Story = {
+export const Playground: Story = {
   render: () => (
     <div style={{ width: 640 }}>
       <AxisChart

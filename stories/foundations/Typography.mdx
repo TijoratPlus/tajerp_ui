@@ -1,0 +1,38 @@
+import { Meta } from "@storybook/blocks";
+
+<Meta title="Foundations/Typography" />
+
+# Typography
+
+**Sans:** Inter (`--tj-font-sans`) — body, UI, tables.
+**Display:** Faster One (`--tj-font-display`) — logo and hero headings only.
+
+Import fonts via `tajerp_ui/styles/fonts.css` or the Google Fonts links in your HTML shell.
+
+## Type scale
+
+<div style={{ display: "grid", gap: 16, color: "var(--ui-ink-1)", marginTop: 24 }}>
+  <div style={{ fontSize: "var(--tj-fs-4xl)", fontWeight: 700, letterSpacing: "-0.02em", lineHeight: "var(--tj-lh-tight)" }}>
+    Tijorat+ POS — 4xl / 48px
+  </div>
+  <div style={{ fontSize: "var(--tj-fs-2xl)", fontWeight: 700, lineHeight: "var(--tj-lh-snug)" }}>
+    Заголовок раздела — 2xl / 30px
+  </div>
+  <div style={{ fontSize: "var(--tj-fs-lg)", fontWeight: 600 }}>
+    Подзаголовок — lg / 22px
+  </div>
+  <div style={{ fontSize: "var(--tj-fs-base)", color: "var(--ui-ink-2)", lineHeight: "var(--tj-lh-body)" }}>
+    Основной текст — base / 16px. Inter, regular weight, comfortable line height for forms and tables.
+  </div>
+  <div style={{ fontSize: "var(--tj-fs-sm)", color: "var(--ui-ink-3)" }}>
+    Подпись / мета — sm / 13px
+  </div>
+  <div style={{ fontSize: "var(--tj-fs-xs)", color: "var(--ui-ink-4)", textTransform: "uppercase", letterSpacing: "0.06em", fontWeight: 600 }}>
+    Label caps — xs / 11px
+  </div>
+</div>
+
+## Weights
+
+Available as CSS variables: `--tj-fw-regular` (400), `--tj-fw-medium` (500),
+`--tj-fw-semi` (600), `--tj-fw-bold` (700), `--tj-fw-black` (800).

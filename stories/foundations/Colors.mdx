@@ -1,0 +1,48 @@
+import { Meta } from "@storybook/blocks";
+import { Swatch } from "./_blocks";
+
+<Meta title="Foundations/Colors" />
+
+# Colors
+
+Brand palette, neutrals, and semantic status colours. All values are defined in
+`styles/tokens.css` and exposed as CSS variables.
+
+## Brand greens
+
+<div style={{ display: "grid", gap: 16, gridTemplateColumns: "repeat(auto-fill, minmax(140px, 1fr))", maxWidth: 720, marginTop: 24 }}>
+  <Swatch name="Brand" varName="--tj-green" />
+  <Swatch name="Brand ink" varName="--tj-green-ink" />
+  <Swatch name="Deep" varName="--tj-green-deep" />
+  <Swatch name="Forest" varName="--tj-green-forest" />
+  <Swatch name="Soft" varName="--tj-green-soft" />
+  <Swatch name="Mist" varName="--tj-green-mist" />
+  <Swatch name="Tint" varName="--tj-green-tint" />
+  <Swatch name="Wash" varName="--tj-green-wash" />
+</div>
+
+## Neutrals (ink)
+
+<div style={{ display: "grid", gap: 16, gridTemplateColumns: "repeat(auto-fill, minmax(140px, 1fr))", maxWidth: 720, marginTop: 24 }}>
+  <Swatch name="Ink 1" varName="--tj-ink-1" />
+  <Swatch name="Ink 2" varName="--tj-ink-2" />
+  <Swatch name="Ink 3" varName="--tj-ink-3" />
+  <Swatch name="Ink 4" varName="--tj-ink-4" />
+  <Swatch name="White" varName="--tj-white" />
+</div>
+
+## Status & accent
+
+<div style={{ display: "grid", gap: 16, gridTemplateColumns: "repeat(auto-fill, minmax(140px, 1fr))", maxWidth: 720, marginTop: 24 }}>
+  <Swatch name="Success" varName="--tj-success" />
+  <Swatch name="Warning" varName="--tj-warning" />
+  <Swatch name="Error / coral" varName="--tj-coral" />
+  <Swatch name="Info" varName="--tj-info" />
+  <Swatch name="Coral mist" varName="--tj-coral-mist" />
+  <Swatch name="Sand" varName="--tj-sand" />
+</div>
+
+## Semantic runtime tokens
+
+Components read `--ui-*` tokens (see **Get Started → Theming**). They map to the
+raw palette above and adapt in dark mode — toggle the Theme toolbar to compare.

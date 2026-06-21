@@ -5,6 +5,8 @@ import "./preview.css";
 /** Wrap every story so the brand background + dark-mode class apply. */
 const withTheme: Decorator = (Story, context) => {
   const theme = context.globals.theme ?? "light";
+  // Full-page example screens opt out of the default canvas padding.
+  const fullscreen = context.parameters?.layout === "fullscreen";
   return (
     <div
       className={theme === "dark" ? "dark" : ""}
@@ -12,7 +14,7 @@ const withTheme: Decorator = (Story, context) => {
         background: "var(--ui-bg)",
         color: "var(--ui-ink-1)",
         minHeight: "100vh",
-        padding: "2rem",
+        padding: fullscreen ? 0 : "2rem",
       }}
     >
       <Story />
@@ -21,10 +23,30 @@ const withTheme: Decorator = (Story, context) => {
 };
 
 const preview: Preview = {
+  tags: ["autodocs"],
   parameters: {
     controls: { matchers: { color: /(background|color)$/i, date: /Date$/i } },
     options: {
-      storySort: { order: ["Foundations", "Primitives", "Overlays", "Feedback"] },
+      storySort: {
+        order: [
+          "Get Started",
+          ["Welcome", "Installation", "Theming"],
+          "Examples",
+          ["Dashboard", "POS Terminal", "Landing", "Login", "Settings"],
+          "Foundations",
+          ["Colors", "Typography", "Spacing & Radii", "Shadows", "Icons", "Brand"],
+          "Components",
+          [
+            "Actions",
+            "Inputs",
+            "Layout",
+            "Data Display",
+            "Navigation",
+            "Feedback",
+            "Overlays",
+          ],
+        ],
+      },
     },
   },
   globalTypes: {

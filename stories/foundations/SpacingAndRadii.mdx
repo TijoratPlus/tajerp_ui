@@ -1,0 +1,71 @@
+import { Meta } from "@storybook/blocks";
+import { TokenRow } from "./_blocks";
+
+<Meta title="Foundations/Spacing & Radii" />
+
+# Spacing & Radii
+
+4px base spacing scale and corner radii used across components.
+
+## Spacing scale
+
+<div style={{ marginTop: 24 }}>
+  {[
+    ["--tj-sp-1", "4px"],
+    ["--tj-sp-2", "8px"],
+    ["--tj-sp-3", "12px"],
+    ["--tj-sp-4", "16px"],
+    ["--tj-sp-6", "24px"],
+    ["--tj-sp-8", "32px"],
+    ["--tj-sp-12", "48px"],
+    ["--tj-sp-16", "64px"],
+  ].map(([name, value]) => (
+    <TokenRow
+      key={name}
+      name={name}
+      value={value}
+      sample={
+        <div
+          style={{
+            width: `var(${name})`,
+            height: 24,
+            background: "var(--ui-brand)",
+            borderRadius: 4,
+            opacity: 0.7,
+          }}
+        />
+      }
+    />
+  ))}
+</div>
+
+## Border radii
+
+<div style={{ marginTop: 32 }}>
+  {[
+    ["--tj-radius-xs", "4px"],
+    ["--tj-radius-sm", "8px"],
+    ["--tj-radius-md", "12px"],
+    ["--tj-radius-lg", "16px"],
+    ["--tj-radius-xl", "24px"],
+    ["--tj-radius-pill", "999px"],
+  ].map(([name, value]) => (
+    <TokenRow
+      key={name}
+      name={name}
+      value={value}
+      sample={
+        <div
+          style={{
+            width: 48,
+            height: 32,
+            background: "var(--ui-surface)",
+            border: "1px solid var(--ui-hairline)",
+            borderRadius: `var(${name})`,
+            boxShadow: "var(--tj-shadow-sm)",
+          }}
+        />
+      }
+    />
+  ))}
+</div>

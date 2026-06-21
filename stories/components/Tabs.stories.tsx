@@ -1,11 +1,18 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { BarChart3, LayoutDashboard, Target } from "lucide-react";
 import * as React from "react";
-import { Card, CardContent, Tabs } from "../src";
+import { Card, CardContent, Tabs } from "../../src";
 
 const meta: Meta<typeof Tabs> = {
-  title: "Primitives/Tabs",
+  title: "Components/Navigation/Tabs",
   component: Tabs,
+  parameters: {
+    docs: {
+      description: {
+        component: "Tabbed content switcher. Pass a `tabs` array with label, optional icon, and content panel.",
+      },
+    },
+  },
 };
 export default meta;
 
@@ -17,7 +24,7 @@ const Panel = ({ children }: { children: React.ReactNode }) => (
   </Card>
 );
 
-export const Uncontrolled: Story = {
+export const Playground: Story = {
   render: () => (
     <Tabs
       tabs={[

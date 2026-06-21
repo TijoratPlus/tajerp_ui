@@ -7,7 +7,7 @@ import {
   Button,
   DataTable,
   type DataTableColumn,
-} from "../src";
+} from "../../src";
 
 interface Invoice {
   doc: string;
@@ -93,14 +93,22 @@ const columns: DataTableColumn<Invoice>[] = [
 ];
 
 const meta: Meta<typeof DataTable<Invoice>> = {
-  title: "Data/DataTable",
+  title: "Components/Data Display/DataTable",
   component: DataTable<Invoice>,
+  parameters: {
+    docs: {
+      description: {
+        component:
+          "Opinionated data grid with search, sort, row selection, toolbar slot, and pagination.",
+      },
+    },
+  },
 };
 export default meta;
 
 type Story = StoryObj<typeof DataTable<Invoice>>;
 
-export const Full: Story = {
+export const Playground: Story = {
   render: () => {
     const [page, setPage] = React.useState(1);
     return (
@@ -114,11 +122,7 @@ export const Full: Story = {
         getSearchText={(r) => `${r.doc} ${r.party} ${r.method}`}
         selectable
         defaultSort={{ key: "party", dir: "asc" }}
-        toolbar={
-          <Button size="sm">
-            + Накладная
-          </Button>
-        }
+        toolbar={<Button size="sm">+ Накладная</Button>}
         selectionActions={
           <>
             <button className="rounded-md bg-white/10 px-3 py-1.5 text-[12.5px] font-bold hover:bg-white/20">

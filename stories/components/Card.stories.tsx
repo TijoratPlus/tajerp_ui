@@ -7,17 +7,31 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "../src";
+} from "../../src";
 
 const meta: Meta<typeof Card> = {
-  title: "Primitives/Card",
+  title: "Components/Layout/Card",
   component: Card,
+  parameters: {
+    docs: {
+      description: {
+        component:
+          "Structured content container with header, body, and footer slots. Multiple surface variants.",
+      },
+    },
+  },
+  argTypes: {
+    variant: {
+      control: "select",
+      options: ["default", "elevated", "strong", "muted", "warning", "interactive"],
+    },
+  },
 };
 export default meta;
 
 type Story = StoryObj<typeof Card>;
 
-export const Default: Story = {
+export const Playground: Story = {
   render: () => (
     <Card variant="elevated" style={{ maxWidth: 360 }}>
       <CardHeader>

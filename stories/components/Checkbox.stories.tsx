@@ -1,14 +1,29 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import * as React from "react";
-import { Checkbox } from "../src";
+import { Checkbox } from "../../src";
 
 const meta: Meta<typeof Checkbox> = {
-  title: "Primitives/Checkbox",
+  title: "Components/Inputs/Checkbox",
   component: Checkbox,
+  parameters: {
+    docs: {
+      description: {
+        component:
+          "Accessible checkbox supporting checked, unchecked, indeterminate and disabled states. Controlled via `checked`/`onCheckedChange` or uncontrolled via `defaultChecked`.",
+      },
+    },
+  },
+  argTypes: {
+    checked: { control: "boolean" },
+    indeterminate: { control: "boolean" },
+    disabled: { control: "boolean" },
+  },
 };
 export default meta;
 
 type Story = StoryObj<typeof Checkbox>;
+
+export const Playground: Story = { args: { defaultChecked: true } };
 
 export const States: Story = {
   render: () => (

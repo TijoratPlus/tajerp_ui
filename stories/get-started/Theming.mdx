@@ -1,0 +1,62 @@
+import { Meta } from "@storybook/blocks";
+
+<Meta title="Get Started/Theming" />
+
+# Theming
+
+tajerp_ui uses **semantic runtime tokens** (`--ui-*`) that flip automatically
+under dark mode. Components never hard-code light colours — they read `--ui-bg`,
+`--ui-ink-1`, `--ui-brand`, etc.
+
+## Light / dark mode
+
+Set the theme on any wrapping element:
+
+```html
+<!-- Light (default) -->
+<body>
+
+<!-- Dark -->
+<body data-theme="dark">
+<!-- or -->
+<body class="dark">
+```
+
+Both `[data-theme="dark"]` and `.dark` are supported. Use the **Theme** toolbar
+in this Storybook to preview either mode on every story.
+
+## Token model
+
+Raw brand palette lives under `--tj-*` (greens, ink, status). Components consume
+the semantic layer:
+
+| Token | Purpose |
+|-------|---------|
+| `--ui-bg` | Page background |
+| `--ui-surface` | Card / panel background |
+| `--ui-ink-1` … `--ui-ink-4` | Text hierarchy |
+| `--ui-brand` | Primary brand green |
+| `--ui-hairline` | Borders & dividers |
+| `--ui-success/warning/error/info` | Status colours |
+
+## Overriding brand tokens
+
+Override raw tokens **before** importing the library styles:
+
+```css
+:root {
+  --tj-green: rgb(29, 159, 110); /* your brand green */
+  --tj-green-ink: rgb(21, 107, 74);
+}
+@import "tajerp_ui/styles/index.css";
+```
+
+Semantic `--ui-*` tokens derive from `--tj-*`, so a single override propagates
+everywhere. For app-specific surfaces, override `--ui-bg` or `--ui-surface`
+directly in dark/light selectors.
+
+## Tailwind utilities
+
+The `@theme inline` block in `tokens.css` exposes utilities like `bg-brand`,
+`text-ink-2`, `rounded-lg`, `shadow-tj-md`. They track the same CSS variables
+and respect dark mode without extra config.

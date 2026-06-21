@@ -1,0 +1,47 @@
+import { Meta } from "@storybook/blocks";
+import {
+  BarChart3,
+  Boxes,
+  LayoutDashboard,
+  Plus,
+  Search,
+  Settings,
+  ShoppingCart,
+  Users,
+} from "../../src/icons";
+
+<Meta title="Foundations/Icons" />
+
+# Icons
+
+Icons come from [Lucide](https://lucide.dev) and are re-exported from
+`tajerp_ui/icons` so consumers depend on a single source:
+
+```tsx
+import { Search, Plus } from "tajerp_ui/icons";
+```
+
+Do **not** install `lucide-react` separately in apps that already use tajerp_ui.
+
+## Common set
+
+<div style={{ display: "flex", gap: 24, flexWrap: "wrap", marginTop: 24, color: "var(--ui-ink-2)" }}>
+  {[
+    { Icon: Search, label: "Search" },
+    { Icon: Plus, label: "Plus" },
+    { Icon: LayoutDashboard, label: "Dashboard" },
+    { Icon: ShoppingCart, label: "Cart" },
+    { Icon: Boxes, label: "Warehouse" },
+    { Icon: Users, label: "Users" },
+    { Icon: BarChart3, label: "Reports" },
+    { Icon: Settings, label: "Settings" },
+  ].map(({ Icon, label }) => (
+    <div key={label} style={{ display: "grid", gap: 8, justifyItems: "center", width: 72 }}>
+      <Icon className="size-6" />
+      <span style={{ fontSize: 11, color: "var(--ui-ink-3)" }}>{label}</span>
+    </div>
+  ))}
+</div>
+
+Default stroke width is 2. Size with Tailwind (`size-4`, `size-5`) or explicit
+width/height. Match icon size to adjacent text — buttons use `size-4` at `sm`.

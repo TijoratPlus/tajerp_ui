@@ -29,6 +29,7 @@ export { Badge, badgeVariants, Pill } from "./components/Badge";
 export type { BadgeProps, PillProps } from "./components/Badge";
 
 export { Skeleton } from "./components/Skeleton";
+export type { SkeletonProps } from "./components/Skeleton";
 
 export { Spinner } from "./components/Spinner";
 export type { SpinnerProps } from "./components/Spinner";
@@ -142,3 +143,34 @@ export { Toaster, toast } from "./components/Toast";
 export type { ToastItem, ToastOptions, ToastTone } from "./components/Toast";
 
 export type { SelectOption } from "./components/Select";
+
+export { Surface, surfaceVariants } from "./components/Surface";
+export type { SurfaceProps } from "./components/Surface";
+
+export { Link, linkVariants } from "./components/Link";
+export type { LinkProps } from "./components/Link";
+
+export { Breadcrumb } from "./components/Breadcrumb";
+export type { BreadcrumbItem, BreadcrumbProps } from "./components/Breadcrumb";
+
+export { SearchField } from "./components/SearchField";
+export type { SearchFieldProps } from "./components/SearchField";
+
+export { NumberField } from "./components/NumberField";
+export type { NumberFieldProps } from "./components/NumberField";
+
+export { Autocomplete } from "./components/Autocomplete";
+export type { AutocompleteProps } from "./components/Autocomplete";
+
+export { Slider } from "./components/Slider";
+export type { SliderProps } from "./components/Slider";
+
+export {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "./components/Accordion";
+
+export { Sidebar } from "./components/Sidebar";
+export type { SidebarItem, SidebarProps } from "./components/Sidebar";

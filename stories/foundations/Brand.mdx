@@ -1,0 +1,81 @@
+import { Meta } from "@storybook/blocks";
+import { TajERPLogo } from "../../src";
+
+<Meta title="Foundations/Brand" />
+
+# Brand
+
+The Tijorat+ logo is exported as `<TajERPLogo />` with two variants:
+
+- **`full`** (default) — the green "Tijorat+" wordmark with the "T+" mark. Use in
+  app shells, login screens, marketing, and footers.
+- **`icon`** — just the rounded-square "T+" mark. Use in collapsed sidebars,
+  favicons, avatars, and tight headers.
+
+```tsx
+<TajERPLogo />                 // full lockup
+<TajERPLogo variant="icon" /> // square mark only
+```
+
+Brand colours are baked in (green `#1D9F6E` + white), so the logo reads on both
+light and dark surfaces — no `currentColor` theming needed.
+
+## Sizing
+
+The logo is **1em tall** and scales with font-size. Set it via `className`
+(`text-[40px]`) or a parent `font-size`; the `full` variant keeps its 396:75
+aspect ratio automatically.
+
+## Full lockup
+
+<div style={{ display: "flex", gap: 40, alignItems: "center", flexWrap: "wrap", marginTop: 24 }}>
+  <div style={{ display: "grid", gap: 8, justifyItems: "start" }}>
+    <span style={{ fontSize: 24, lineHeight: 0 }}>
+      <TajERPLogo variant="full" />
+    </span>
+    <span style={{ fontSize: 11, color: "var(--ui-ink-3)" }}>24px — nav / footer</span>
+  </div>
+  <div style={{ display: "grid", gap: 8, justifyItems: "start" }}>
+    <span style={{ fontSize: 40, lineHeight: 0 }}>
+      <TajERPLogo variant="full" />
+    </span>
+    <span style={{ fontSize: 11, color: "var(--ui-ink-3)" }}>40px — hero</span>
+  </div>
+</div>
+
+## Icon mark
+
+<div style={{ display: "flex", gap: 32, alignItems: "center", flexWrap: "wrap", marginTop: 24 }}>
+  {[32, 48, 80].map((size) => (
+    <div key={size} style={{ display: "grid", gap: 8, justifyItems: "center" }}>
+      <span style={{ fontSize: size, lineHeight: 0 }}>
+        <TajERPLogo variant="icon" />
+      </span>
+      <span style={{ fontSize: 11, color: "var(--ui-ink-3)" }}>{size}px</span>
+    </div>
+  ))}
+</div>
+
+## On dark surfaces
+
+<div
+  style={{
+    marginTop: 24,
+    padding: 32,
+    borderRadius: 16,
+    background: "var(--ui-rail-bg)",
+    display: "inline-flex",
+    gap: 40,
+    alignItems: "center",
+  }}
+>
+  <span style={{ fontSize: 28, lineHeight: 0 }}>
+    <TajERPLogo variant="full" />
+  </span>
+  <span style={{ fontSize: 48, lineHeight: 0 }}>
+    <TajERPLogo variant="icon" />
+  </span>
+</div>
+
+Primary brand green is `--tj-green` / `--ui-brand`. See **Foundations → Colors**
+for the full palette.

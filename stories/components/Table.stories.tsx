@@ -8,22 +8,23 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "../src";
+} from "../../src";
 
-const meta: Meta = {
-  title: "Data/Table (primitives)",
+const meta: Meta<typeof Table> = {
+  title: "Components/Data Display/Table",
+  component: Table,
   parameters: {
     docs: {
       description: {
         component:
-          "Low-level table primitives for bespoke tables. For toolbar + sorting + selection + pagination, use `DataTable`.",
+          "Low-level table primitives for bespoke layouts. For toolbar + sorting + pagination, use `DataTable`.",
       },
     },
   },
 };
 export default meta;
 
-type Story = StoryObj;
+type Story = StoryObj<typeof Table>;
 
 const rows = [
   { code: "НК-2041", party: "Ахмад Бакиев", status: "Оплачено", amount: "42 800 c." },
@@ -34,7 +35,7 @@ const rows = [
 const tone = (s: string) =>
   s === "Оплачено" ? "success" : s === "Ожидает" ? "warning" : "error";
 
-export const Basic: Story = {
+export const Playground: Story = {
   render: () => (
     <TableContainer className="max-w-2xl">
       <Table>

@@ -1,0 +1,57 @@
+import { Meta } from "@storybook/blocks";
+
+<Meta title="Get Started/Installation" />
+
+# Installation
+
+Install the package from npm (or link locally during development):
+
+```bash
+npm install tajerp_ui
+```
+
+**Peer dependencies:** React 18 or 19 (`react` + `react-dom`). Radix, lucide, and
+other runtime deps are bundled — consumers should **not** install Radix separately.
+
+## Tailwind v4 wiring
+
+Import the design tokens and fonts once in your app entry, then tell Tailwind to
+scan the library for utility classes:
+
+```css
+/* app.css */
+@import "tajerp_ui/styles/fonts.css";
+@import "tailwindcss";
+@import "tajerp_ui/styles/index.css";
+
+@source "../node_modules/tajerp_ui/src/**/*.{ts,tsx}";
+```
+
+`styles/index.css` pulls in `tokens.css` and `base.css` — the `@theme inline`
+block registers semantic utilities (`bg-brand`, `text-ink-1`, `shadow-tj-md`, …).
+
+## Using components
+
+```tsx
+import { Button, Input, Label } from "tajerp_ui";
+import "tajerp_ui/styles/index.css"; // if not wired via Tailwind @import
+
+export function CheckoutForm() {
+  return (
+    <div>
+      <Label htmlFor="amount">Сумма</Label>
+      <Input id="amount" placeholder="0" />
+      <Button>Оплатить</Button>
+    </div>
+  );
+}
+```
+
+## Icons & charts
+
+```tsx
+import { Search, Plus } from "tajerp_ui/icons";
+import { AxisChart } from "tajerp_ui/charts";
+```
+
+See **Get Started → Theming** for light/dark mode setup.

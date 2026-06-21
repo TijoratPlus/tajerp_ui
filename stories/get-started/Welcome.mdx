@@ -1,0 +1,49 @@
+import { Meta } from "@storybook/blocks";
+import { Button, TajERPLogo } from "../../src";
+
+<Meta title="Get Started/Welcome" />
+
+<div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 32 }}>
+  <span style={{ fontSize: 48, lineHeight: 0 }}>
+    <TajERPLogo variant="icon" />
+  </span>
+  <div>
+    <h1 style={{ margin: 0, fontSize: 32, fontWeight: 800, letterSpacing: "-0.02em" }}>
+      tajerp_ui
+    </h1>
+    <p style={{ margin: "4px 0 0", color: "var(--ui-ink-3)", fontSize: 15 }}>
+      Tijorat+ design system for TajERP front-ends
+    </p>
+  </div>
+</div>
+
+**tajerp_ui** is the shared React component library and design-token package for
+[Tijorat+](https://www.tijorat.plus) products — POS, inventory, analytics, and
+back-office tools built on TajERP.
+
+It ships styled primitives (buttons, inputs, tables, overlays), semantic tokens
+(`--ui-*` CSS variables), and Tailwind v4 theme registration so every app looks
+and behaves consistently.
+
+## Live example
+
+<div style={{ display: "flex", gap: 12, alignItems: "center", flexWrap: "wrap", marginTop: 16 }}>
+  <Button>Оплатить</Button>
+  <Button variant="outline">Отмена</Button>
+  <Button variant="ghost">Подробнее</Button>
+</div>
+
+## What's inside
+
+- **Components** — accessible, brand-styled building blocks built on Radix where needed
+- **Tokens** — brand greens, ink scale, status colours, spacing, radii, shadows
+- **Icons** — lucide re-exported from `tajerp_ui/icons`
+- **Charts** — `AxisChart` wrapper around Recharts (`tajerp_ui/charts`)
+
+## Links
+
+- [GitHub repository](https://github.com/TijoratPlus/tajerp_ui)
+- [tijorat.plus](https://www.tijorat.plus)
+
+Use the sidebar to browse **Foundations** (colours, type, spacing) and
+**Components** grouped by category.

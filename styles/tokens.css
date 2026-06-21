@@ -239,4 +239,26 @@
   /* Motion */
   --ease-tj-out: var(--tj-ease-out);
   --ease-tj-brand: var(--tj-ease-brand);
+
+  /* Accordion (Radix) — drives the animate-accordion-* utilities */
+  --animate-accordion-down: accordion-down 200ms var(--tj-ease-out);
+  --animate-accordion-up: accordion-up 200ms var(--tj-ease-out);
+}
+
+@keyframes accordion-down {
+  from {
+    height: 0;
+  }
+  to {
+    height: var(--radix-accordion-content-height);
+  }
+}
+
+@keyframes accordion-up {
+  from {
+    height: var(--radix-accordion-content-height);
+  }
+  to {
+    height: 0;
+  }
 }

@@ -1,0 +1,19 @@
+import { Meta } from "@storybook/blocks";
+import { ShadowSample } from "./_blocks";
+
+<Meta title="Foundations/Shadows" />
+
+# Shadows
+
+Elevation shadows for cards, popovers, and brand emphasis. Toggle light/dark in
+the toolbar — shadows use ink-tinted rgba values that read well on both surfaces.
+
+<div style={{ display: "flex", gap: 32, flexWrap: "wrap", marginTop: 32 }}>
+  <ShadowSample name="Small" varName="--tj-shadow-sm" />
+  <ShadowSample name="Medium" varName="--tj-shadow-md" />
+  <ShadowSample name="Large" varName="--tj-shadow-lg" />
+  <ShadowSample name="Brand" varName="--tj-shadow-brand" />
+</div>
+
+Use Tailwind utilities `shadow-tj-sm`, `shadow-tj-md`, `shadow-tj-lg`, and
+`shadow-tj-brand` — registered in the `@theme inline` block.
