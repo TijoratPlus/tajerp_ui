@@ -1,0 +1,83 @@
+/* ============================================================
+   Build entry for the self-contained Tijorat+ stylesheet.
+
+   Compiled to dist/tajerp-ui.css by `npm run build:css`. Unlike
+   styles/index.css (consumed by Vite/Tailwind apps such as tajerp_pos),
+   this artifact is for consumers WITHOUT a Tailwind build — notably the
+   Frappe desk (tajerp_base), whose React pages are bundled by Frappe's
+   esbuild.
+
+   Two deliberate choices keep it safe to load inside the Frappe desk:
+     1. Tailwind's global preflight is NOT imported — it would reset the
+        host desk's own element styles. A scoped reset under
+        `.tj-react-root` (below) reproduces the parts tajerp_ui components
+        rely on, but only inside React page roots.
+     2. Generated utilities are scoped to `.tj-react-root` in the build
+        step (see scripts/scope-css.mjs) so they cannot collide with the
+        desk's Bootstrap-era classes (.table, .border, .flex, …).
+   ============================================================ */
+@import "./fonts.css";
+
+@layer theme, base, components, utilities;
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/utilities.css" layer(utilities);
+
+/* Scan the built library bundle for the utility class names it uses. */
+@source "../dist/index.js";
+@source "../dist/charts.js";
+
+/* Brand tokens + Tailwind @theme registration (--color-brand, radii, …). */
+@import "./tokens.css";
+/* frappe-ui-react colour remaps — harmless plain vars on the classic desk. */
+@import "./frappe-theme.css";
+
+/* ------------------------------------------------------------
+   Minimal scoped reset — only what tajerp_ui components require,
+   confined to React page roots.
+
+   Deliberately NOT a full Tailwind preflight: it does NOT zero
+   universal margins/padding or reset heading sizes, because these
+   roots wrap existing Frappe pages whose own typography (h1–h6, p,
+   lists) must keep working. We give components the two things they
+   genuinely depend on — `border: 0 solid` (so `border-*` width
+   utilities render) and form-element inheritance — and nothing more.
+   ------------------------------------------------------------ */
+@layer base {
+  .tj-react-root,
+  .tj-react-root *,
+  .tj-react-root *::before,
+  .tj-react-root *::after {
+    box-sizing: border-box;
+    border-width: 0;
+    border-style: solid;
+  }
+  .tj-react-root button,
+  .tj-react-root input,
+  .tj-react-root optgroup,
+  .tj-react-root select,
+  .tj-react-root textarea {
+    font: inherit;
+    letter-spacing: inherit;
+    color: inherit;
+    margin: 0;
+    background-color: transparent;
+  }
+  .tj-react-root button,
+  .tj-react-root [type="button"],
+  .tj-react-root [type="reset"],
+  .tj-react-root [type="submit"] {
+    -webkit-appearance: button;
+    appearance: button;
+    cursor: pointer;
+  }
+  .tj-react-root :disabled {
+    cursor: default;
+  }
+  .tj-react-root svg {
+    display: block;
+    vertical-align: middle;
+  }
+  .tj-react-root table {
+    border-collapse: collapse;
+  }
+}
