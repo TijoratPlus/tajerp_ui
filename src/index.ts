@@ -9,6 +9,7 @@ export type { ButtonProps } from "./components/Button";
 
 export {
   Card,
+  cardVariants,
   CardContent,
   CardDescription,
   CardFooter,
@@ -143,9 +144,6 @@ export { Toaster, toast } from "./components/Toast";
 export type { ToastItem, ToastOptions, ToastTone } from "./components/Toast";
 
 export type { SelectOption } from "./components/Select";
-
-export { Surface, surfaceVariants } from "./components/Surface";
-export type { SurfaceProps } from "./components/Surface";
 
 export { Link, linkVariants } from "./components/Link";
 export type { LinkProps } from "./components/Link";

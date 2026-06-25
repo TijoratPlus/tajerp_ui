@@ -3,30 +3,83 @@ import * as React from "react";
 
 import { cn } from "../lib/cn";
 
-const cardVariants = cva("rounded-lg border border-hairline bg-ui-surface text-ink-1", {
+const cardVariants = cva("text-ink-1", {
   variants: {
+    // Semantic presets — a quick way to get a complete look.
     variant: {
-      default: "shadow-none",
-      elevated: "shadow-tj-sm",
-      strong: "shadow-tj-md",
+      default: "border-hairline bg-ui-surface shadow-none",
+      elevated: "border-hairline bg-ui-surface shadow-tj-sm",
+      strong: "border-hairline bg-ui-surface shadow-tj-md",
       muted: "border-hairline bg-ui-surface-2 shadow-none",
       warning: "border-tj-warning/40 bg-ui-surface shadow-tj-md",
       interactive:
-        "shadow-none transition-all duration-200 ease-tj-out hover:-translate-y-0.5 hover:border-brand/40 hover:shadow-tj-md",
+        "border-hairline bg-ui-surface shadow-none transition-all duration-200 ease-tj-out hover:-translate-y-0.5 hover:border-brand/40 hover:shadow-tj-md",
+    },
+    // Composable axes — override individual properties of the preset.
+    tone: {
+      surface: "bg-ui-surface",
+      "surface-2": "bg-ui-surface-2",
+      inset: "bg-ui-surface-inset",
+      mist: "bg-mist text-mist-ink",
+    },
+    elevation: {
+      none: "shadow-none",
+      sm: "shadow-tj-sm",
+      md: "shadow-tj-md",
+      lg: "shadow-tj-lg",
+    },
+    radius: {
+      none: "rounded-none",
+      sm: "rounded-sm",
+      md: "rounded-md",
+      lg: "rounded-lg",
+      xl: "rounded-xl",
+    },
+    padding: {
+      none: "p-0",
+      sm: "p-3",
+      md: "p-4",
+      lg: "p-6",
+    },
+    border: {
+      true: "border",
+      false: "",
     },
   },
+  // Axes are declared after `variant`, so an explicitly-set axis wins over the
+  // preset via tailwind-merge. Defaults reconstruct the original Card look.
   defaultVariants: {
     variant: "default",
+    radius: "lg",
+    padding: "none",
+    border: true,
   },
 });
 
-export type CardProps = React.HTMLAttributes<HTMLDivElement> &
-  VariantProps<typeof cardVariants>;
+export type CardProps = React.HTMLAttributes<HTMLElement> &
+  VariantProps<typeof cardVariants> & {
+    /** Element to render. Defaults to `div`. */
+    as?: React.ElementType;
+  };
 
-const Card = React.forwardRef<HTMLDivElement, CardProps>(
-  ({ className, variant, ...props }, ref) => (
-    <div ref={ref} className={cn(cardVariants({ variant }), className)} {...props} />
-  ),
+const Card = React.forwardRef<HTMLElement, CardProps>(
+  (
+    { className, variant, tone, elevation, radius, padding, border, as, ...props },
+    ref,
+  ) => {
+    const Comp = (as ?? "div") as React.ElementType;
+    return (
+      <Comp
+        ref={ref}
+        data-slot="card"
+        className={cn(
+          cardVariants({ variant, tone, elevation, radius, padding, border }),
+          className,
+        )}
+        {...props}
+      />
+    );
+  },
 );
 Card.displayName = "Card";
 
@@ -101,4 +154,12 @@ const CardFooter = React.forwardRef<HTMLDivElement, CardFooterProps>(
 );
 CardFooter.displayName = "CardFooter";
 
-export { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle };
+export {
+  Card,
+  cardVariants,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+};

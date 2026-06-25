@@ -60,7 +60,9 @@ export const Autocomplete = React.forwardRef<
     const listId = id ?? reactId;
 
     const isValueControlled = value !== undefined;
-    const [internalValue, setInternalValue] = React.useState(defaultValue ?? "");
+    const [internalValue, setInternalValue] = React.useState(
+      defaultValue ?? "",
+    );
     const selectedValue = isValueControlled ? value : internalValue;
 
     const labelFor = React.useCallback(
@@ -139,9 +141,7 @@ export const Autocomplete = React.forwardRef<
               aria-controls={`${listId}-listbox`}
               aria-autocomplete="list"
               aria-activedescendant={
-                open && filtered[active]
-                  ? `${listId}-opt-${active}`
-                  : undefined
+                open && filtered[active] ? `${listId}-opt-${active}` : undefined
               }
               value={text}
               placeholder={placeholder}
@@ -156,7 +156,7 @@ export const Autocomplete = React.forwardRef<
               onFocus={() => !disabled && setOpen(true)}
               onKeyDown={handleKeyDown}
             />
-            <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-ink-3">
+            <span className="top-1/2 right-3 absolute text-ink-3 -translate-y-1/2 pointer-events-none">
               {loading ? (
                 <Loader2 className="size-4 animate-spin" />
               ) : (
@@ -171,9 +171,13 @@ export const Autocomplete = React.forwardRef<
           sideOffset={6}
           onOpenAutoFocus={(e) => e.preventDefault()}
           onCloseAutoFocus={(e) => e.preventDefault()}
-          className="w-[var(--radix-popover-trigger-width)] max-h-64 overflow-y-auto p-1"
+          className="p-1 w-[var(--radix-popover-trigger-width)] max-h-64 overflow-y-auto"
         >
-          <ul role="listbox" id={`${listId}-listbox`} className="flex flex-col gap-0.5">
+          <ul
+            role="listbox"
+            id={`${listId}-listbox`}
+            className="flex flex-col gap-0.5"
+          >
             {filtered.length === 0 ? (
               <li className="px-3 py-2 text-[13px] text-ink-3">
                 {loading ? "Loading…" : emptyMessage}
@@ -193,14 +197,14 @@ export const Autocomplete = React.forwardRef<
                     onPointerEnter={() => setActive(i)}
                     onClick={() => commit(option)}
                     className={cn(
-                      "flex cursor-pointer items-center justify-between gap-2 rounded-md px-3 py-2 text-[13.5px] font-medium text-ink-1",
+                      "flex justify-between items-center gap-2 px-3 py-2 rounded-lg font-medium text-[13.5px] text-ink-1 cursor-pointer",
                       isActive && "bg-mist text-mist-ink",
                       option.disabled && "pointer-events-none opacity-50",
                     )}
                   >
                     <span className="truncate">{option.label}</span>
                     {isSelected ? (
-                      <Check className="size-4 shrink-0 text-brand" />
+                      <Check className="size-4 text-brand shrink-0" />
                     ) : null}
                   </li>
                 );

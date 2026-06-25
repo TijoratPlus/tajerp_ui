@@ -21,7 +21,10 @@ export type NumberFieldProps = Omit<
 };
 
 const clamp = (n: number, min?: number, max?: number) =>
-  Math.min(max ?? Number.POSITIVE_INFINITY, Math.max(min ?? Number.NEGATIVE_INFINITY, n));
+  Math.min(
+    max ?? Number.POSITIVE_INFINITY,
+    Math.max(min ?? Number.NEGATIVE_INFINITY, n),
+  );
 
 /** Numeric input with −/+ steppers, min/max clamping and optional adornments. */
 export const NumberField = React.forwardRef<HTMLInputElement, NumberFieldProps>(
@@ -83,7 +86,7 @@ export const NumberField = React.forwardRef<HTMLInputElement, NumberFieldProps>(
       <div
         data-slot="number-field"
         className={cn(
-          "relative flex h-11 w-full items-center overflow-hidden rounded-md border border-hairline bg-ui-surface-2 text-ink-1 transition-colors duration-150",
+          "relative flex items-center bg-ui-surface-2 border border-hairline rounded-lg w-full h-10 overflow-hidden text-ink-1 transition-colors duration-150",
           "focus-within:border-brand focus-within:ring-2 focus-within:ring-brand/30",
           disabled && "cursor-not-allowed opacity-60",
           className,
@@ -100,9 +103,9 @@ export const NumberField = React.forwardRef<HTMLInputElement, NumberFieldProps>(
           <Minus className="size-4" />
         </button>
 
-        <div className="flex min-w-0 flex-1 items-center justify-center gap-1 px-2">
+        <div className="flex flex-1 justify-center items-center gap-1 px-2 min-w-0">
           {prefix ? (
-            <span className="shrink-0 text-[14px] text-ink-3">{prefix}</span>
+            <span className="text-[14px] text-ink-3 shrink-0">{prefix}</span>
           ) : null}
           <input
             ref={ref}
@@ -130,14 +133,14 @@ export const NumberField = React.forwardRef<HTMLInputElement, NumberFieldProps>(
               onBlur?.(e);
             }}
             className={cn(
-              "w-full min-w-0 bg-transparent text-center text-[14px] font-medium text-ink-1 outline-none",
+              "bg-transparent outline-none w-full min-w-0 font-medium text-[14px] text-ink-1 text-center",
               "placeholder:font-normal placeholder:text-ink-3",
               "[appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none",
             )}
             {...props}
           />
           {suffix ? (
-            <span className="shrink-0 text-[14px] text-ink-3">{suffix}</span>
+            <span className="text-[14px] text-ink-3 shrink-0">{suffix}</span>
           ) : null}
         </div>
 

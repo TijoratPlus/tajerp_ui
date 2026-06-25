@@ -1,0 +1,21 @@
+# Build artifacts & deps — reinstalled/rebuilt inside the image
+node_modules
+dist
+storybook-static
+coverage
+.turbo
+
+# VCS & local tooling
+.git
+.gitignore
+.github
+.vscode
+.idea
+
+# Docker files themselves
+Dockerfile
+.dockerignore
+
+# Misc
+*.log
+.DS_Store

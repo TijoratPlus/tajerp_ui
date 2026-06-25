@@ -22,12 +22,22 @@ export type SelectProps = Omit<
 
 /** Styled native <select>. Pass `options` or <option> children. */
 export const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
-  ({ className, children, options, placeholder, variant = "default", ...props }, ref) => (
-    <div className="relative inline-flex w-full items-center">
+  (
+    {
+      className,
+      children,
+      options,
+      placeholder,
+      variant = "default",
+      ...props
+    },
+    ref,
+  ) => (
+    <div className="inline-flex relative items-center w-full">
       <select
         ref={ref}
         className={cn(
-          "h-11 w-full appearance-none rounded-md border pl-3.5 pr-9 text-[14px] font-medium text-ink-1 outline-none transition-colors duration-150",
+          "pr-9 pl-3.5 border rounded-lg outline-none w-full h-10 font-medium text-[14px] text-ink-1 transition-colors duration-150 appearance-none",
           variant === "subtle"
             ? "border-transparent bg-ui-surface-2"
             : "border-hairline bg-ui-surface-2",
@@ -54,7 +64,7 @@ export const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
             })
           : children}
       </select>
-      <ChevronDown className="pointer-events-none absolute right-3 size-4 text-ink-3" />
+      <ChevronDown className="right-3 absolute size-4 text-ink-3 pointer-events-none" />
     </div>
   ),
 );

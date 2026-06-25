@@ -16,7 +16,7 @@ const meta: Meta<typeof Card> = {
     docs: {
       description: {
         component:
-          "Structured content container with header, body, and footer slots. Multiple surface variants.",
+          "Structured content container with header, body, and footer slots. Pick a semantic `variant` preset, or compose the look directly with the tone / elevation / radius / padding / border axes (any axis overrides the preset). Use `as` to render a different element.",
       },
     },
   },
@@ -25,6 +25,11 @@ const meta: Meta<typeof Card> = {
       control: "select",
       options: ["default", "elevated", "strong", "muted", "warning", "interactive"],
     },
+    tone: { control: "select", options: ["surface", "surface-2", "inset", "mist"] },
+    elevation: { control: "select", options: ["none", "sm", "md", "lg"] },
+    radius: { control: "select", options: ["none", "sm", "md", "lg", "xl"] },
+    padding: { control: "select", options: ["none", "sm", "md", "lg"] },
+    border: { control: "boolean" },
   },
 };
 export default meta;
@@ -32,8 +37,11 @@ export default meta;
 type Story = StoryObj<typeof Card>;
 
 export const Playground: Story = {
-  render: () => (
-    <Card variant="elevated" style={{ maxWidth: 360 }}>
+  args: {
+    variant: "elevated",
+  },
+  render: (args) => (
+    <Card {...args} style={{ maxWidth: 360 }}>
       <CardHeader>
         <CardTitle>Смена №1042</CardTitle>
         <CardDescription>Открыта в 09:00 · Касса 2</CardDescription>
@@ -67,6 +75,31 @@ export const Variants: Story = {
           </Card>
         ),
       )}
+    </div>
+  ),
+};
+
+/** Card doubles as the low-level box primitive — compose tone directly. */
+export const Tones: Story = {
+  render: () => (
+    <div style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>
+      {(["surface", "surface-2", "inset", "mist"] as const).map((t) => (
+        <Card key={t} tone={t} padding="lg" border>
+          tone=&quot;{t}&quot;
+        </Card>
+      ))}
+    </div>
+  ),
+};
+
+export const Elevations: Story = {
+  render: () => (
+    <div style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>
+      {(["none", "sm", "md", "lg"] as const).map((e) => (
+        <Card key={e} elevation={e} padding="lg" border>
+          elevation=&quot;{e}&quot;
+        </Card>
+      ))}
     </div>
   ),
 };
