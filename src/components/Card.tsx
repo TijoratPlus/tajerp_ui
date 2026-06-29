@@ -36,7 +36,12 @@ const cardVariants = cva("text-ink-1", {
       xl: "rounded-xl",
     },
     padding: {
-      none: "p-0",
+      // Emit NO class (not `p-0`): a div is already zero-padding by default
+      // (and the `.tj-react-root *` preflight zeroes it inside the Frappe desk).
+      // Crucially, shipping `p-0` lets the desk's Bootstrap `.p-0 { padding:0
+      // !important }` win over a consumer's inline/custom padding on the card
+      // root — silently removing it. Empty keeps the root paddable.
+      none: "",
       sm: "p-3",
       md: "p-4",
       lg: "p-6",
