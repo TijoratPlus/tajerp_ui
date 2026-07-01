@@ -23,9 +23,19 @@ const meta: Meta<typeof Card> = {
   argTypes: {
     variant: {
       control: "select",
-      options: ["default", "elevated", "strong", "muted", "warning", "interactive"],
+      options: [
+        "default",
+        "elevated",
+        "strong",
+        "muted",
+        "warning",
+        "interactive",
+      ],
     },
-    tone: { control: "select", options: ["surface", "surface-2", "inset", "mist"] },
+    tone: {
+      control: "select",
+      options: ["surface", "surface-2", "inset", "mist"],
+    },
     elevation: { control: "select", options: ["none", "sm", "md", "lg"] },
     radius: { control: "select", options: ["none", "sm", "md", "lg", "xl"] },
     padding: { control: "select", options: ["none", "sm", "md", "lg"] },
@@ -60,21 +70,34 @@ export const Playground: Story = {
 
 export const Variants: Story = {
   render: () => (
-    <div style={{ display: "grid", gap: 16, gridTemplateColumns: "repeat(3, 1fr)" }}>
-      {(["default", "elevated", "strong", "muted", "warning", "interactive"] as const).map(
-        (v) => (
-          <Card key={v} variant={v}>
-            <CardHeader>
-              <CardTitle style={{ fontSize: 16 }}>{v}</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <span style={{ color: "var(--ui-ink-3)", fontSize: 13 }}>
-                variant=&quot;{v}&quot;
-              </span>
-            </CardContent>
-          </Card>
-        ),
-      )}
+    <div
+      style={{
+        display: "grid",
+        gap: 16,
+        gridTemplateColumns: "repeat(3, 1fr)",
+      }}
+    >
+      {(
+        [
+          "default",
+          "elevated",
+          "strong",
+          "muted",
+          "warning",
+          "interactive",
+        ] as const
+      ).map((v) => (
+        <Card key={v} variant={v}>
+          <CardHeader>
+            <CardTitle style={{ fontSize: 16 }}>{v}</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <span style={{ color: "var(--ui-ink-3)", fontSize: 13 }}>
+              variant=&quot;{v}&quot;
+            </span>
+          </CardContent>
+        </Card>
+      ))}
     </div>
   ),
 };
