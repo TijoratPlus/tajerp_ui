@@ -1,5 +1,3 @@
-import * as React from "react";
-
 export interface TajERPLogoProps {
   /**
    * `full` renders the wordmark + mark lockup (default); `icon` renders just the
