@@ -1,0 +1,23 @@
+// tsup.config.ts
+import { defineConfig } from "tsup";
+var tsup_config_default = defineConfig({
+  entry: ["src/index.ts", "src/icons.ts", "src/charts.ts"],
+  format: ["esm"],
+  dts: true,
+  sourcemap: true,
+  clean: true,
+  treeshake: true,
+  splitting: false,
+  // React is provided by the host app — never bundle it.
+  // Radix + lucide are real dependencies and stay external (imported at runtime
+  // from tajerp_ui's install), so a single copy is shared with the host app.
+  // Recharts is isolated in ./charts so server components can import Card/Button
+  // without pulling class-based chart code into the RSC bundle.
+  external: ["react", "react-dom", "react/jsx-runtime", "recharts"],
+  target: "es2021",
+  outDir: "dist"
+});
+export {
+  tsup_config_default as default
+};
+//# sourceMappingURL=data:application/json;base64,ewogICJ2ZXJzaW9uIjogMywKICAic291cmNlcyI6IFsidHN1cC5jb25maWcudHMiXSwKICAic291cmNlc0NvbnRlbnQiOiBbImNvbnN0IF9faW5qZWN0ZWRfZmlsZW5hbWVfXyA9IFwiL3Nlc3Npb25zL2NsZXZlci1leGNpdGluZy1tZW5kZWwvbW50L3RhamVycF91aS90c3VwLmNvbmZpZy50c1wiO2NvbnN0IF9faW5qZWN0ZWRfZGlybmFtZV9fID0gXCIvc2Vzc2lvbnMvY2xldmVyLWV4Y2l0aW5nLW1lbmRlbC9tbnQvdGFqZXJwX3VpXCI7Y29uc3QgX19pbmplY3RlZF9pbXBvcnRfbWV0YV91cmxfXyA9IFwiZmlsZTovLy9zZXNzaW9ucy9jbGV2ZXItZXhjaXRpbmctbWVuZGVsL21udC90YWplcnBfdWkvdHN1cC5jb25maWcudHNcIjtpbXBvcnQgeyBkZWZpbmVDb25maWcgfSBmcm9tIFwidHN1cFwiO1xuXG5leHBvcnQgZGVmYXVsdCBkZWZpbmVDb25maWcoe1xuICBlbnRyeTogW1wic3JjL2luZGV4LnRzXCIsIFwic3JjL2ljb25zLnRzXCIsIFwic3JjL2NoYXJ0cy50c1wiXSxcbiAgZm9ybWF0OiBbXCJlc21cIl0sXG4gIGR0czogdHJ1ZSxcbiAgc291cmNlbWFwOiB0cnVlLFxuICBjbGVhbjogdHJ1ZSxcbiAgdHJlZXNoYWtlOiB0cnVlLFxuICBzcGxpdHRpbmc6IGZhbHNlLFxuICAvLyBSZWFjdCBpcyBwcm92aWRlZCBieSB0aGUgaG9zdCBhcHAgXHUyMDE0IG5ldmVyIGJ1bmRsZSBpdC5cbiAgLy8gUmFkaXggKyBsdWNpZGUgYXJlIHJlYWwgZGVwZW5kZW5jaWVzIGFuZCBzdGF5IGV4dGVybmFsIChpbXBvcnRlZCBhdCBydW50aW1lXG4gIC8vIGZyb20gdGFqZXJwX3VpJ3MgaW5zdGFsbCksIHNvIGEgc2luZ2xlIGNvcHkgaXMgc2hhcmVkIHdpdGggdGhlIGhvc3QgYXBwLlxuICAvLyBSZWNoYXJ0cyBpcyBpc29sYXRlZCBpbiAuL2NoYXJ0cyBzbyBzZXJ2ZXIgY29tcG9uZW50cyBjYW4gaW1wb3J0IENhcmQvQnV0dG9uXG4gIC8vIHdpdGhvdXQgcHVsbGluZyBjbGFzcy1iYXNlZCBjaGFydCBjb2RlIGludG8gdGhlIFJTQyBidW5kbGUuXG4gIGV4dGVybmFsOiBbXCJyZWFjdFwiLCBcInJlYWN0LWRvbVwiLCBcInJlYWN0L2pzeC1ydW50aW1lXCIsIFwicmVjaGFydHNcIl0sXG4gIHRhcmdldDogXCJlczIwMjFcIixcbiAgb3V0RGlyOiBcImRpc3RcIixcbn0pO1xuIl0sCiAgIm1hcHBpbmdzIjogIjtBQUF3UixTQUFTLG9CQUFvQjtBQUVyVCxJQUFPLHNCQUFRLGFBQWE7QUFBQSxFQUMxQixPQUFPLENBQUMsZ0JBQWdCLGdCQUFnQixlQUFlO0FBQUEsRUFDdkQsUUFBUSxDQUFDLEtBQUs7QUFBQSxFQUNkLEtBQUs7QUFBQSxFQUNMLFdBQVc7QUFBQSxFQUNYLE9BQU87QUFBQSxFQUNQLFdBQVc7QUFBQSxFQUNYLFdBQVc7QUFBQTtBQUFBO0FBQUE7QUFBQTtBQUFBO0FBQUEsRUFNWCxVQUFVLENBQUMsU0FBUyxhQUFhLHFCQUFxQixVQUFVO0FBQUEsRUFDaEUsUUFBUTtBQUFBLEVBQ1IsUUFBUTtBQUNWLENBQUM7IiwKICAibmFtZXMiOiBbXQp9Cg==
