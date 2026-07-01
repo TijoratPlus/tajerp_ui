@@ -55,8 +55,9 @@ const cardVariants = cva("text-ink-1", {
   // preset via tailwind-merge. Defaults reconstruct the original Card look.
   defaultVariants: {
     variant: "default",
+    elevation: "sm",
     radius: "lg",
-    padding: "none",
+    padding: "sm",
     border: true,
   },
 });
@@ -69,7 +70,17 @@ export type CardProps = React.HTMLAttributes<HTMLElement> &
 
 const Card = React.forwardRef<HTMLElement, CardProps>(
   (
-    { className, variant, tone, elevation, radius, padding, border, as, ...props },
+    {
+      className,
+      variant,
+      tone,
+      elevation,
+      radius,
+      padding,
+      border,
+      as,
+      ...props
+    },
     ref,
   ) => {
     const Comp = (as ?? "div") as React.ElementType;
@@ -100,7 +111,11 @@ export type CardHeaderProps = React.HTMLAttributes<HTMLDivElement> &
 
 const CardHeader = React.forwardRef<HTMLDivElement, CardHeaderProps>(
   ({ className, padding, ...props }, ref) => (
-    <div ref={ref} className={cn(cardHeaderVariants({ padding }), className)} {...props} />
+    <div
+      ref={ref}
+      className={cn(cardHeaderVariants({ padding }), className)}
+      {...props}
+    />
   ),
 );
 CardHeader.displayName = "CardHeader";
@@ -111,7 +126,10 @@ const CardTitle = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <div
     ref={ref}
-    className={cn("font-semibold text-2xl text-ink-1 leading-none tracking-tight", className)}
+    className={cn(
+      "font-semibold text-ink-1 text-2xl leading-none tracking-tight",
+      className,
+    )}
     {...props}
   />
 ));
@@ -137,7 +155,11 @@ export type CardContentProps = React.HTMLAttributes<HTMLDivElement> &
 
 const CardContent = React.forwardRef<HTMLDivElement, CardContentProps>(
   ({ className, padding, ...props }, ref) => (
-    <div ref={ref} className={cn(cardContentVariants({ padding }), className)} {...props} />
+    <div
+      ref={ref}
+      className={cn(cardContentVariants({ padding }), className)}
+      {...props}
+    />
   ),
 );
 CardContent.displayName = "CardContent";
@@ -154,17 +176,21 @@ export type CardFooterProps = React.HTMLAttributes<HTMLDivElement> &
 
 const CardFooter = React.forwardRef<HTMLDivElement, CardFooterProps>(
   ({ className, padding, ...props }, ref) => (
-    <div ref={ref} className={cn(cardFooterVariants({ padding }), className)} {...props} />
+    <div
+      ref={ref}
+      className={cn(cardFooterVariants({ padding }), className)}
+      {...props}
+    />
   ),
 );
 CardFooter.displayName = "CardFooter";
 
 export {
   Card,
-  cardVariants,
   CardContent,
   CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
+  cardVariants,
 };
