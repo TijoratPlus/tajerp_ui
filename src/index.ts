@@ -3,6 +3,7 @@
 //   import "tajerp_ui/styles/tokens.css";
 
 export { cn } from "./lib/cn";
+export { Slot } from "./lib/Slot";
 
 export { Button, buttonVariants } from "./components/Button";
 export type { ButtonProps } from "./components/Button";
