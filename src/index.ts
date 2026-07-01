@@ -5,6 +5,17 @@
 export { cn } from "./lib/cn";
 export { Slot } from "./lib/Slot";
 
+export {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselPrevious,
+  CarouselNext,
+  CarouselDots,
+  useCarousel,
+} from "./components/Carousel";
+export type { CarouselProps, CarouselApi } from "./components/Carousel";
+
 export { Button, buttonVariants } from "./components/Button";
 export type { ButtonProps } from "./components/Button";
 

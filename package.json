@@ -35,6 +35,10 @@
       "types": "./dist/charts.d.ts",
       "import": "./dist/charts.js"
     },
+    "./form": {
+      "types": "./dist/form.d.ts",
+      "import": "./dist/form.js"
+    },
     "./styles/index.css": "./styles/index.css",
     "./styles/fonts.css": "./styles/fonts.css",
     "./styles/tokens.css": "./styles/tokens.css",
@@ -60,10 +64,17 @@
   "comment-deps": "Radix + lucide are real dependencies so installing tajerp_ui pulls them in — consumers should NOT install Radix themselves. Radix uses React context to connect Root/Trigger/Title, so a single physical copy must exist; routing all Radix usage through tajerp_ui guarantees that. Only react/react-dom stay peers (they must be the host app's copy).",
   "peerDependencies": {
     "react": ">=18",
-    "react-dom": ">=18"
+    "react-dom": ">=18",
+    "react-hook-form": ">=7"
+  },
+  "peerDependenciesMeta": {
+    "react-hook-form": {
+      "optional": true
+    }
   },
   "dependencies": {
     "@radix-ui/react-accordion": "^1.2.14",
+    "embla-carousel-react": "^8.6.0",
     "@radix-ui/react-avatar": "^1.1.12",
     "@radix-ui/react-dialog": "^1.1.16",
     "@radix-ui/react-popover": "^1.1.16",
@@ -85,6 +96,7 @@
     "@types/react": "^19.2.5",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^4.3.4",
+    "react-hook-form": "^7.65.0",
     "storybook": "^8.6.0",
     "tailwindcss": "^4.1.17",
     "tsup": "^8.3.5",
