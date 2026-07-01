@@ -60,7 +60,7 @@ export function Tabs({
               aria-selected={on}
               onClick={() => select(i)}
               className={cn(
-                "inline-flex items-center gap-2 border-b-2 px-3 py-3 text-[13.5px] font-semibold transition-colors duration-150 outline-none -mb-px",
+                "inline-flex items-center gap-2 border-b-2 px-3 py-3 text-[13.5px] font-semibold transition-colors duration-150 outline-none -mb-px cursor-pointer",
                 on
                   ? "border-brand text-ink-1"
                   : "border-transparent text-ink-3 hover:text-ink-1",

@@ -102,7 +102,7 @@ export function Toaster({
             <button
               type="button"
               onClick={() => dismiss(t.id)}
-              className="shrink-0 rounded-md p-0.5 text-ink-3 transition-colors hover:text-ink-1"
+              className="shrink-0 rounded-md p-0.5 text-ink-3 transition-colors hover:text-ink-1 cursor-pointer"
               aria-label="Закрыть"
             >
               <X className="size-4" />

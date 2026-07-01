@@ -93,7 +93,7 @@ export const SearchField = React.forwardRef<HTMLInputElement, SearchFieldProps>(
             aria-label="Clear search"
             onClick={clear}
             disabled={disabled}
-            className="inline-flex right-2.5 absolute justify-center items-center hover:bg-mist rounded-full outline-none focus-visible:ring-2 focus-visible:ring-brand/30 size-6 text-ink-3 hover:text-ink-1 transition-colors"
+            className="inline-flex right-2.5 absolute justify-center items-center hover:bg-mist rounded-full outline-none focus-visible:ring-2 focus-visible:ring-brand/30 size-6 text-ink-3 hover:text-ink-1 transition-colors cursor-pointer"
           >
             <X className="size-4" />
           </button>

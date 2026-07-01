@@ -44,7 +44,7 @@ export function SegmentedControl<T extends string>({
             aria-selected={active}
             onClick={() => onChange(opt.value)}
             className={cn(
-              "rounded-pill font-bold transition-colors duration-150 outline-none",
+              "rounded-pill font-bold transition-colors duration-150 outline-none cursor-pointer",
               size === "sm" ? "px-2.5 py-1 text-[11px]" : "px-3.5 py-1.5 text-[13px]",
               active
                 ? "bg-brand text-on-brand shadow-tj-sm"

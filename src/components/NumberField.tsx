@@ -80,7 +80,7 @@ export const NumberField = React.forwardRef<HTMLInputElement, NumberFieldProps>(
     const atMax = hasValue && max !== undefined && (current as number) >= max;
 
     const stepBtn =
-      "inline-flex h-full w-10 shrink-0 items-center justify-center text-ink-2 outline-none transition-colors hover:bg-mist hover:text-brand-ink focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-brand/30 disabled:pointer-events-none disabled:opacity-40";
+      "inline-flex h-full w-10 shrink-0 items-center justify-center text-ink-2 outline-none transition-colors hover:bg-mist hover:text-brand-ink focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-brand/30 cursor-pointer disabled:pointer-events-none disabled:opacity-40";
 
     return (
       <div

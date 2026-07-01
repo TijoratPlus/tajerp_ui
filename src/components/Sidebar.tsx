@@ -121,7 +121,7 @@ export const Sidebar = React.forwardRef<HTMLElement, SidebarProps>(
         isCollapsed && typeof item.label === "string" ? item.label : undefined;
 
       const rowBase =
-        "group flex w-full items-center gap-3 rounded-lg px-3 py-2 text-[13.5px] font-medium outline-none transition-colors duration-150 focus-visible:ring-2 focus-visible:ring-white/30 disabled:pointer-events-none disabled:opacity-40";
+        "group flex w-full items-center gap-3 rounded-lg px-3 py-2 text-[13.5px] font-medium outline-none transition-colors duration-150 focus-visible:ring-2 focus-visible:ring-white/30 cursor-pointer disabled:pointer-events-none disabled:opacity-40";
       const rowState = isActive
         ? "bg-brand text-on-brand shadow-tj-sm"
         : "text-white/65 hover:bg-white/10 hover:text-white";
@@ -253,7 +253,7 @@ export const Sidebar = React.forwardRef<HTMLElement, SidebarProps>(
             type="button"
             aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
             onClick={() => setCollapsed(!isCollapsed)}
-            className="flex shrink-0 items-center gap-3 border-t border-white/10 px-3 py-3 text-[13px] font-medium text-white/55 outline-none transition-colors hover:text-white focus-visible:ring-2 focus-visible:ring-white/30"
+            className="flex shrink-0 items-center gap-3 border-t border-white/10 px-3 py-3 text-[13px] font-medium text-white/55 outline-none transition-colors hover:text-white focus-visible:ring-2 focus-visible:ring-white/30 cursor-pointer"
           >
             <span className="grid size-5 shrink-0 place-items-center">
               {isCollapsed ? (
