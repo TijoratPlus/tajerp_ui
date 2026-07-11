@@ -12,7 +12,7 @@ function TableContainer({ className, ...props }: React.ComponentProps<"div">) {
     <div
       data-slot="table-container"
       className={cn(
-        "overflow-hidden rounded-lg border border-hairline bg-ui-surface shadow-tj-sm",
+        "overflow-hidden !rounded-lg border border-hairline bg-ui-surface shadow-tj-sm",
         className,
       )}
       {...props}

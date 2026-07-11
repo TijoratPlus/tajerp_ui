@@ -197,7 +197,7 @@ export const Autocomplete = React.forwardRef<
                     onPointerEnter={() => setActive(i)}
                     onClick={() => commit(option)}
                     className={cn(
-                      "flex justify-between items-center gap-2 px-3 py-2 rounded-lg font-medium text-[13.5px] text-ink-1 cursor-pointer",
+                      "flex justify-between items-center gap-2 px-3 py-2 !rounded-lg font-medium text-[13.5px] text-ink-1 cursor-pointer",
                       isActive && "bg-mist text-mist-ink",
                       option.disabled && "pointer-events-none opacity-50",
                     )}

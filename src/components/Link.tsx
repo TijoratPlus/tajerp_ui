@@ -5,7 +5,7 @@ import * as React from "react";
 import { cn } from "../lib/cn";
 
 const linkVariants = cva(
-  "inline-flex items-center gap-1 rounded-sm outline-none transition-colors duration-150 focus-visible:ring-2 focus-visible:ring-brand/30",
+  "inline-flex items-center gap-1 !rounded-sm outline-none transition-colors duration-150 focus-visible:ring-2 focus-visible:ring-brand/30",
   {
     variants: {
       variant: {

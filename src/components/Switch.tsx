@@ -34,7 +34,7 @@ export const Switch = React.forwardRef<HTMLButtonElement, SwitchProps>(
           onCheckedChange?.(!on);
         }}
         className={cn(
-          "inline-flex h-6 w-10 shrink-0 cursor-pointer items-center rounded-full border border-transparent p-0.5 transition-colors duration-150 outline-none focus-visible:ring-2 focus-visible:ring-brand/40 disabled:cursor-not-allowed disabled:opacity-60",
+          "inline-flex h-6 w-10 shrink-0 cursor-pointer items-center !rounded-full border border-transparent p-0.5 transition-colors duration-150 outline-none focus-visible:ring-2 focus-visible:ring-brand/40 disabled:cursor-not-allowed disabled:opacity-60",
           on ? "bg-brand" : "bg-ui-surface-2 border-hairline",
           className,
         )}
@@ -42,7 +42,7 @@ export const Switch = React.forwardRef<HTMLButtonElement, SwitchProps>(
       >
         <span
           className={cn(
-            "pointer-events-none block size-5 rounded-full bg-white shadow-tj-sm transition-transform duration-150",
+            "pointer-events-none block size-5 !rounded-full bg-white shadow-tj-sm transition-transform duration-150",
             on ? "translate-x-4" : "translate-x-0",
           )}
         />

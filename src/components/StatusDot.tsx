@@ -25,7 +25,7 @@ export function StatusDot({
   return (
     <span
       className={cn(
-        "inline-block size-2 rounded-full",
+        "inline-block size-2 !rounded-full",
         toneMap[tone],
         pulse && "animate-pulse",
         className,

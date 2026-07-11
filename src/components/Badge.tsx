@@ -17,8 +17,8 @@ const badgeVariants = cva(
         solid: "bg-brand text-on-brand",
       },
       size: {
-        sm: "px-2 py-0.5 text-[10px] tracking-[0.06em] rounded-pill uppercase",
-        md: "px-3 py-1 text-[11.5px] tracking-[0.04em] rounded-pill",
+        sm: "px-2 py-0.5 text-[10px] tracking-[0.06em] !rounded-pill uppercase",
+        md: "px-3 py-1 text-[11.5px] tracking-[0.04em] !rounded-pill",
       },
     },
     defaultVariants: { tone: "brand", size: "md" },
@@ -43,7 +43,7 @@ export function Pill({ className, dark, ...props }: PillProps) {
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-2 rounded-pill px-4 py-2.5 text-[13px] font-bold tracking-[0.04em] border-[1.5px]",
+        "inline-flex items-center gap-2 !rounded-pill px-4 py-2.5 text-[13px] font-bold tracking-[0.04em] border-[1.5px]",
         dark
           ? "bg-brand/20 border-brand/50 text-mist-ink"
           : "bg-mist border-brand/40 text-brand-ink",

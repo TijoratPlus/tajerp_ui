@@ -34,7 +34,7 @@ export const Slider = React.forwardRef<
       <SliderPrimitive.Track
         data-slot="slider-track"
         className={cn(
-          "relative grow overflow-hidden rounded-full bg-ui-surface-inset",
+          "relative grow overflow-hidden !rounded-full bg-ui-surface-inset",
           "h-1.5 w-full data-[orientation=vertical]:h-full data-[orientation=vertical]:w-1.5",
         )}
       >
@@ -48,7 +48,7 @@ export const Slider = React.forwardRef<
           key={i}
           data-slot="slider-thumb"
           className={cn(
-            "block size-4 cursor-grab rounded-full border-2 border-brand bg-ui-surface shadow-tj-sm outline-none transition-colors active:cursor-grabbing",
+            "block size-4 cursor-grab !rounded-full border-2 border-brand bg-ui-surface shadow-tj-sm outline-none transition-colors active:cursor-grabbing",
             "hover:bg-mist focus-visible:ring-2 focus-visible:ring-brand/40",
             "data-[disabled]:cursor-not-allowed",
           )}

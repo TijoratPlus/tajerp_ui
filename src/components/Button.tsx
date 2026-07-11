@@ -11,20 +11,30 @@ const buttonVariants = cva(
     variants: {
       variant: {
         solid:
-          "bg-brand text-on-brand shadow-tj-brand hover:bg-brand-ink disabled:bg-brand-disabled disabled:shadow-none",
+          "bg-brand text-on-brand shadow-tj-brand hover:bg-brand-ink disabled:bg-brand-disabled disabled:shadow-none !rounded-lg",
         outline:
-          "border-[1.5px] border-brand/40 bg-transparent text-brand-ink hover:bg-mist",
-        ghost: "bg-transparent text-ink-2 hover:bg-mist hover:text-brand-ink",
+          "border-[1.5px] border-brand/40 bg-transparent text-brand-ink hover:bg-mist !rounded-lg",
+        ghost:
+          "bg-transparent text-ink-2 hover:bg-mist hover:text-brand-ink !rounded-lg",
         subtle:
-          "bg-ui-surface-2 border border-hairline text-ink-2 hover:text-ink-1",
-        danger: "bg-tj-error text-white hover:opacity-90 shadow-tj-sm",
-        link: "bg-transparent text-brand-ink underline-offset-4 hover:underline shadow-none px-0 h-auto active:scale-100",
+          "bg-ui-surface-2 border border-hairline text-ink-2 hover:text-ink-1 !rounded-lg",
+        danger:
+          "bg-tj-error text-white hover:opacity-90 shadow-tj-sm !rounded-lg",
+        link: "bg-transparent text-brand-ink underline-offset-4 hover:underline shadow-none px-0 h-auto active:scale-100 !rounded-none",
       },
       size: {
-        sm: "h-9 px-3.5 text-[13px] rounded-lg",
-        md: "h-11 px-5 text-[15px] rounded-xl",
-        lg: "h-12 px-6 text-base rounded-xl",
-        icon: "h-10 w-10 rounded-xl p-0",
+        sm: "h-9 px-3.5 text-[13px] !rounded-lg",
+        md: "h-11 px-5 text-[15px] !rounded-xl",
+        lg: "h-12 px-6 text-base !rounded-xl",
+        icon: "h-10 w-10 !rounded-xl p-0",
+      },
+      radius: {
+        none: "!rounded-none",
+        sm: "!rounded-sm",
+        md: "!rounded-md",
+        lg: "!rounded-lg",
+        xl: "!rounded-xl",
+        full: "!rounded-full",
       },
     },
     defaultVariants: {
@@ -54,6 +64,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       className,
       variant,
       size,
+      radius,
       type = "button",
       loading = false,
       iconLeft,
@@ -65,11 +76,15 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     },
     ref,
   ) => {
-    const classes = cn(buttonVariants({ variant, size }), className);
+    const classes = cn(buttonVariants({ variant, size, radius }), className);
 
     if (asChild) {
       return (
-        <Slot ref={ref as React.Ref<HTMLElement>} className={classes} {...props}>
+        <Slot
+          ref={ref as React.Ref<HTMLElement>}
+          className={classes}
+          {...props}
+        >
           {children}
         </Slot>
       );

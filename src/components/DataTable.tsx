@@ -280,7 +280,7 @@ export function DataTable<T>({
           )}
           <div className="flex-1" />
           {searchable ? (
-            <div className="flex w-[260px] items-center gap-2 rounded-md border border-hairline bg-ui-bg px-3 py-2">
+            <div className="flex w-[260px] items-center gap-2 !rounded-md border border-hairline bg-ui-bg px-3 py-2">
               <Search className="size-[15px] text-ink-3" />
               <input
                 value={query}
@@ -433,7 +433,7 @@ export function DataTable<T>({
               <select
                 value={footerPager.pageSize}
                 onChange={(e) => footerPager.onPageSizeChange?.(Number(e.target.value))}
-                className="rounded-md border border-hairline bg-ui-surface px-2.5 py-1.5 text-[13px] font-semibold text-ink-1 outline-none"
+                className="!rounded-md border border-hairline bg-ui-surface px-2.5 py-1.5 text-[13px] font-semibold text-ink-1 outline-none"
               >
                 {footerPager.pageSizeOptions.map((n) => (
                   <option key={n} value={n}>
@@ -498,7 +498,7 @@ function PagerButton({
     <button
       type="button"
       className={cn(
-        "inline-flex h-[34px] min-w-[34px] items-center justify-center rounded-md border px-2 text-[13px] font-bold transition-colors disabled:cursor-default disabled:opacity-40",
+        "inline-flex h-[34px] min-w-[34px] items-center justify-center !rounded-md border px-2 text-[13px] font-bold transition-colors disabled:cursor-default disabled:opacity-40",
         active
           ? "border-transparent bg-brand text-on-brand"
           : "border-hairline bg-ui-surface text-ink-2 hover:bg-ui-bg hover:text-ink-1",

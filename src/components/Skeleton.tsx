@@ -6,9 +6,9 @@ import { cn } from "../lib/cn";
 const skeletonVariants = cva("bg-ui-surface-2 animate-pulse", {
   variants: {
     variant: {
-      rect: "rounded-md",
-      text: "h-4 rounded-md",
-      circle: "rounded-full",
+      rect: "!rounded-md",
+      text: "h-4 !rounded-md",
+      circle: "!rounded-full",
     },
   },
   defaultVariants: {

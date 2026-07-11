@@ -59,7 +59,7 @@ export const SearchField = React.forwardRef<HTMLInputElement, SearchFieldProps>(
       <div
         data-slot="search-field"
         className={cn(
-          "relative flex items-center bg-ui-surface-2 border border-hairline rounded-lg w-full h-10 text-ink-1 transition-colors duration-150",
+          "relative flex items-center bg-ui-surface-2 border border-hairline !rounded-lg w-full h-10 text-ink-1 transition-colors duration-150",
           "focus-within:border-brand focus-within:ring-2 focus-within:ring-brand/30",
           disabled && "cursor-not-allowed opacity-60",
           className,
@@ -93,7 +93,7 @@ export const SearchField = React.forwardRef<HTMLInputElement, SearchFieldProps>(
             aria-label="Clear search"
             onClick={clear}
             disabled={disabled}
-            className="inline-flex right-2.5 absolute justify-center items-center hover:bg-mist rounded-full outline-none focus-visible:ring-2 focus-visible:ring-brand/30 size-6 text-ink-3 hover:text-ink-1 transition-colors cursor-pointer"
+            className="inline-flex right-2.5 absolute justify-center items-center hover:bg-mist !rounded-full outline-none focus-visible:ring-2 focus-visible:ring-brand/30 size-6 text-ink-3 hover:text-ink-1 transition-colors cursor-pointer"
           >
             <X className="size-4" />
           </button>

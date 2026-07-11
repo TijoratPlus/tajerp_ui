@@ -30,7 +30,7 @@ export function SegmentedControl<T extends string>({
     <div
       role="tablist"
       className={cn(
-        "inline-flex items-center gap-0.5 rounded-pill border border-hairline bg-ui-surface-2 p-0.5",
+        "inline-flex items-center gap-0.5 !rounded-pill border border-hairline bg-ui-surface-2 p-0.5",
         className,
       )}
     >
@@ -44,7 +44,7 @@ export function SegmentedControl<T extends string>({
             aria-selected={active}
             onClick={() => onChange(opt.value)}
             className={cn(
-              "rounded-pill font-bold transition-colors duration-150 outline-none cursor-pointer",
+              "!rounded-pill font-bold transition-colors duration-150 outline-none cursor-pointer",
               size === "sm" ? "px-2.5 py-1 text-[11px]" : "px-3.5 py-1.5 text-[13px]",
               active
                 ? "bg-brand text-on-brand shadow-tj-sm"

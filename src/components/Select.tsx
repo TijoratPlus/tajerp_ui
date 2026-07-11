@@ -37,7 +37,7 @@ export const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
       <select
         ref={ref}
         className={cn(
-          "pr-9 pl-3.5 border rounded-lg outline-none w-full h-10 font-medium text-[14px] text-ink-1 transition-colors duration-150 appearance-none cursor-pointer",
+          "pr-9 pl-3.5 border !rounded-lg outline-none w-full h-10 font-medium text-[14px] text-ink-1 transition-colors duration-150 appearance-none cursor-pointer",
           variant === "subtle"
             ? "border-transparent bg-ui-surface-2"
             : "border-hairline bg-ui-surface-2",

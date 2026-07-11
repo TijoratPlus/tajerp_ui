@@ -29,11 +29,11 @@ const cardVariants = cva("text-ink-1", {
       lg: "shadow-tj-lg",
     },
     radius: {
-      none: "rounded-none",
-      sm: "rounded-sm",
-      md: "rounded-md",
-      lg: "rounded-lg",
-      xl: "rounded-xl",
+      none: "!rounded-none",
+      sm: "!rounded-sm",
+      md: "!rounded-md",
+      lg: "!rounded-lg",
+      xl: "!rounded-xl",
     },
     padding: {
       // Emit NO class (not `p-0`): a div is already zero-padding by default

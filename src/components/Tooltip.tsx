@@ -44,13 +44,13 @@ function TooltipContent({
         data-slot="tooltip-content"
         sideOffset={sideOffset}
         className={cn(
-          "z-50 w-fit rounded-md bg-brand-deep px-2.5 py-1.5 text-xs font-medium text-white shadow-tj-md data-[state=closed]:animate-out data-[state=open]:animate-in data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95",
+          "z-50 w-fit !rounded-md bg-brand-deep px-2.5 py-1.5 text-xs font-medium text-white shadow-tj-md data-[state=closed]:animate-out data-[state=open]:animate-in data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95",
           className,
         )}
         {...props}
       >
         {children}
-        <TooltipPrimitive.Arrow className="z-50 size-2.5 translate-y-[calc(-50%_-_2px)] rotate-45 rounded-[2px] bg-brand-deep fill-brand-deep" />
+        <TooltipPrimitive.Arrow className="z-50 size-2.5 translate-y-[calc(-50%_-_2px)] rotate-45 !rounded-[2px] bg-brand-deep fill-brand-deep" />
       </TooltipPrimitive.Content>
     </TooltipPrimitive.Portal>
   );

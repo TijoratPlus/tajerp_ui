@@ -202,7 +202,7 @@ export const CarouselPrevious = React.forwardRef<HTMLButtonElement, ButtonProps>
         onClick={scrollPrev}
         aria-label="Previous slide"
         className={cn(
-          "absolute rounded-full",
+          "absolute !rounded-full",
           orientation === "horizontal"
             ? "-left-4 top-1/2 -translate-y-1/2"
             : "-top-4 left-1/2 -translate-x-1/2 rotate-90",
@@ -229,7 +229,7 @@ export const CarouselNext = React.forwardRef<HTMLButtonElement, ButtonProps>(
         onClick={scrollNext}
         aria-label="Next slide"
         className={cn(
-          "absolute rounded-full",
+          "absolute !rounded-full",
           orientation === "horizontal"
             ? "-right-4 top-1/2 -translate-y-1/2"
             : "-bottom-4 left-1/2 -translate-x-1/2 rotate-90",
@@ -261,7 +261,7 @@ export function CarouselDots({ className }: { className?: string }) {
           aria-label={`Go to slide ${index + 1}`}
           aria-current={selectedIndex === index}
           className={cn(
-            "h-2 rounded-full transition-all duration-200 cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-brand/40",
+            "h-2 !rounded-full transition-all duration-200 cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-brand/40",
             selectedIndex === index
               ? "w-6 bg-brand"
               : "w-2 bg-hairline hover:bg-ink-4",

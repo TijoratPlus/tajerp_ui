@@ -86,7 +86,7 @@ export const NumberField = React.forwardRef<HTMLInputElement, NumberFieldProps>(
       <div
         data-slot="number-field"
         className={cn(
-          "relative flex items-center bg-ui-surface-2 border border-hairline rounded-lg w-full h-10 overflow-hidden text-ink-1 transition-colors duration-150",
+          "relative flex items-center bg-ui-surface-2 border border-hairline !rounded-lg w-full h-10 overflow-hidden text-ink-1 transition-colors duration-150",
           "focus-within:border-brand focus-within:ring-2 focus-within:ring-brand/30",
           disabled && "cursor-not-allowed opacity-60",
           className,
