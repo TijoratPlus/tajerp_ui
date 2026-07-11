@@ -80,7 +80,21 @@ export const Autocomplete = React.forwardRef<
     const [active, setActive] = React.useState(0);
 
     const innerRef = React.useRef<HTMLInputElement>(null);
+    const anchorRef = React.useRef<HTMLDivElement>(null);
     React.useImperativeHandle(ref, () => innerRef.current as HTMLInputElement);
+
+    const keepOpenOnAnchorInteraction = (e: Event) => {
+      const target = e.target as Node | null;
+      if (target && anchorRef.current?.contains(target)) {
+        e.preventDefault();
+      }
+    };
+
+    const openList = () => {
+      if (disabled) return;
+      setOpen(true);
+      setActive(0);
+    };
 
     const filtered = React.useMemo(
       () => (text.trim() ? options.filter((o) => filter(o, text)) : options),
@@ -131,9 +145,13 @@ export const Autocomplete = React.forwardRef<
     };
 
     return (
-      <Popover open={open && !disabled} onOpenChange={setOpen}>
+      <Popover open={open && !disabled} onOpenChange={setOpen} modal={false}>
         <PopoverAnchor asChild>
-          <div className={cn("relative", className)} data-slot="autocomplete">
+          <div
+            ref={anchorRef}
+            className={cn("relative", className)}
+            data-slot="autocomplete"
+          >
             <Input
               ref={innerRef}
               role="combobox"
@@ -153,7 +171,10 @@ export const Autocomplete = React.forwardRef<
                 setActive(0);
                 if (!open) setOpen(true);
               }}
-              onFocus={() => !disabled && setOpen(true)}
+              onFocus={openList}
+              onMouseDown={() => {
+                if (!disabled && !open) openList();
+              }}
               onKeyDown={handleKeyDown}
             />
             <span className="top-1/2 right-3 absolute text-ink-3 -translate-y-1/2 pointer-events-none">
@@ -171,6 +192,8 @@ export const Autocomplete = React.forwardRef<
           sideOffset={6}
           onOpenAutoFocus={(e) => e.preventDefault()}
           onCloseAutoFocus={(e) => e.preventDefault()}
+          onInteractOutside={keepOpenOnAnchorInteraction}
+          onPointerDownOutside={keepOpenOnAnchorInteraction}
           className="p-1 w-[var(--radix-popover-trigger-width)] max-h-64 overflow-y-auto"
         >
           <ul
