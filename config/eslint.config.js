@@ -17,14 +17,14 @@ import reactRefresh from "eslint-plugin-react-refresh";
 import tseslint from "typescript-eslint";
 
 /** @type {import("eslint").Linter.Config[]} */
-export default [
-  { ignores: ["dist", "node_modules"] },
+export default tseslint.config(
+  { ignores: ["dist", "node_modules", "storybook-static"] },
   {
     files: ["**/*.{ts,tsx}"],
     extends: [
       js.configs.recommended,
       ...tseslint.configs.recommended,
-      reactHooks.configs.flat.recommended,
+      reactHooks.configs["recommended-latest"],
       reactRefresh.configs.vite,
     ],
     languageOptions: {
@@ -32,4 +32,4 @@ export default [
       globals: globals.browser,
     },
   },
-].flat();
+);

@@ -83,7 +83,8 @@ export const Default: Story = {
     const setQty = (id: string, qty: number) =>
       setCart((c) => {
         if (qty <= 0) {
-          const { [id]: _, ...rest } = c;
+          const rest = { ...c };
+          delete rest[id];
           return rest;
         }
         return { ...c, [id]: qty };
