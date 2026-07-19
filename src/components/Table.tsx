@@ -78,7 +78,7 @@ function TableHead({
     <th
       data-slot="table-head"
       className={cn(
-        "select-none whitespace-nowrap border-b-[1.5px] border-hairline bg-ui-bg px-4 py-3.5 text-[11px] font-bold uppercase tracking-[0.07em] text-ink-3",
+        "select-none whitespace-nowrap border-b-[1.5px] border-hairline bg-ui-bg px-3 py-2.5 text-[11px] font-bold uppercase tracking-[0.07em] text-ink-3",
         align === "right" && "text-right",
         align === "center" && "text-center",
         className,
@@ -97,7 +97,7 @@ function TableCell({
     <td
       data-slot="table-cell"
       className={cn(
-        "px-4 py-3.5 align-middle text-[13.5px] font-medium text-ink-2",
+        "px-3 py-2.5 align-middle text-[13.5px] font-medium text-ink-2",
         align === "right" && "text-right tabular-nums",
         align === "center" && "text-center",
         className,

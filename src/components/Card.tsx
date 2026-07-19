@@ -42,9 +42,9 @@ const cardVariants = cva("text-ink-1", {
       // !important }` win over a consumer's inline/custom padding on the card
       // root — silently removing it. Empty keeps the root paddable.
       none: "",
-      sm: "p-3",
-      md: "p-4",
-      lg: "p-6",
+      sm: "p-2.5",
+      md: "p-3",
+      lg: "p-4",
     },
     border: {
       true: "border",
@@ -57,7 +57,7 @@ const cardVariants = cva("text-ink-1", {
     variant: "default",
     elevation: "sm",
     radius: "lg",
-    padding: "sm",
+    padding: "none",
     border: true,
   },
 });
@@ -99,9 +99,9 @@ const Card = React.forwardRef<HTMLElement, CardProps>(
 );
 Card.displayName = "Card";
 
-const cardHeaderVariants = cva("flex flex-col space-y-1.5", {
+const cardHeaderVariants = cva("flex flex-col space-y-1", {
   variants: {
-    padding: { default: "p-6", none: "p-0", compact: "px-4 py-3" },
+    padding: { default: "px-3 pt-3 pb-0", none: "p-0", compact: "px-2.5 pt-2.5 pb-0" },
   },
   defaultVariants: { padding: "default" },
 });
@@ -127,7 +127,7 @@ const CardTitle = React.forwardRef<
   <div
     ref={ref}
     className={cn(
-      "font-semibold text-ink-1 text-2xl leading-none tracking-tight",
+      "font-semibold text-ink-1 text-lg leading-snug tracking-tight",
       className,
     )}
     {...props}
@@ -145,7 +145,11 @@ CardDescription.displayName = "CardDescription";
 
 const cardContentVariants = cva("", {
   variants: {
-    padding: { default: "p-6 pt-0", none: "p-0", compact: "px-4 pb-4 pt-0" },
+    padding: {
+      default: "px-3 pb-3 pt-1.5",
+      none: "p-0",
+      compact: "px-2.5 pb-2.5 pt-1",
+    },
   },
   defaultVariants: { padding: "default" },
 });
@@ -166,7 +170,11 @@ CardContent.displayName = "CardContent";
 
 const cardFooterVariants = cva("flex items-center", {
   variants: {
-    padding: { default: "p-6 pt-0", none: "p-0", compact: "px-4 py-3" },
+    padding: {
+      default: "px-3 pb-3 pt-0",
+      none: "p-0",
+      compact: "px-2.5 pb-2.5 pt-0",
+    },
   },
   defaultVariants: { padding: "default" },
 });

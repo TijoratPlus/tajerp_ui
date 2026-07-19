@@ -50,7 +50,7 @@ export const Breadcrumb = React.forwardRef<HTMLElement, BreadcrumbProps>(
         className={cn("flex", className)}
         {...props}
       >
-        <ol className="flex flex-wrap items-center gap-2 text-[13px] font-medium">
+        <ol className="flex flex-wrap items-center gap-1.5 text-[13px] font-medium">
           {visible.map((item, i) => {
             const isLast = i === visible.length - 1;
 

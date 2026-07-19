@@ -43,7 +43,7 @@ export function Pill({ className, dark, ...props }: PillProps) {
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-2 !rounded-pill px-4 py-2.5 text-[13px] font-bold tracking-[0.04em] border-[1.5px]",
+        "inline-flex items-center gap-2 !rounded-pill px-3 py-2 text-[13px] font-bold tracking-[0.04em] border-[1.5px]",
         dark
           ? "bg-brand/20 border-brand/50 text-mist-ink"
           : "bg-mist border-brand/40 text-brand-ink",

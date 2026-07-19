@@ -90,7 +90,7 @@ export function Toaster({
           <div
             key={t.id}
             role="status"
-            className="pointer-events-auto flex items-start gap-3 !rounded-xl border border-hairline bg-ui-surface p-3.5 shadow-tj-lg"
+            className="pointer-events-auto flex items-start gap-2 !rounded-xl border border-hairline bg-ui-surface p-3 shadow-tj-lg"
           >
             <Icon className={cn("mt-0.5 size-5 shrink-0", cls)} />
             <div className="min-w-0 flex-1">

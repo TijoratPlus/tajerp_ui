@@ -269,9 +269,9 @@ export function DataTable<T>({
   return (
     <Wrapper className={className}>
       {showToolbar ? (
-        <div className="flex items-center gap-3 border-b-[1.5px] border-hairline px-5 py-4">
+        <div className="flex items-center gap-2 border-b-[1.5px] border-hairline px-4 py-3">
           {(title || caption) && (
-            <h3 className="text-[17px] font-bold text-ink-1">
+            <h3 className="text-[15px] font-bold text-ink-1">
               {title}
               {caption ? (
                 <span className="ml-2 text-[13px] font-medium text-ink-3">{caption}</span>
@@ -280,7 +280,7 @@ export function DataTable<T>({
           )}
           <div className="flex-1" />
           {searchable ? (
-            <div className="flex w-[260px] items-center gap-2 !rounded-md border border-hairline bg-ui-bg px-3 py-2">
+            <div className="flex w-[260px] items-center gap-1.5 !rounded-md border border-hairline bg-ui-bg px-2.5 py-1.5">
               <Search className="size-[15px] text-ink-3" />
               <input
                 value={query}
@@ -298,18 +298,18 @@ export function DataTable<T>({
       ) : null}
 
       {selectable && selectedCount > 0 ? (
-        <div className="flex items-center gap-3.5 bg-brand-deep px-5 py-3 text-white">
+        <div className="flex items-center gap-2.5 bg-brand-deep px-4 py-2.5 text-white">
           <b className="text-[13px] font-bold">{selectedCount} выбрано</b>
           {selectionActions}
         </div>
       ) : null}
 
       {loading ? (
-        <div className="px-5 py-2">
+        <div className="px-4 py-2">
           {Array.from({ length: skeletonRows }).map((_, i) => (
             <div
               key={i}
-              className="flex items-center gap-3 border-b border-hairline py-3.5 last:border-b-0"
+              className="flex items-center gap-2 border-b border-hairline py-2.5 last:border-b-0"
             >
               {selectable ? (
                 <div className="size-[18px] shrink-0 rounded bg-ui-surface-2" />
@@ -405,7 +405,7 @@ export function DataTable<T>({
       )}
 
       {footerPager && !loading && processed.length > 0 ? (
-        <div className="flex items-center gap-3.5 border-t-[1.5px] border-hairline px-5 py-3.5">
+        <div className="flex items-center gap-2.5 border-t-[1.5px] border-hairline px-4 py-2.5">
           <span className="text-[13px] font-medium text-ink-3">
             {footerPager.rangeStart != null && footerPager.rangeEnd != null ? (
               <>
@@ -433,7 +433,7 @@ export function DataTable<T>({
               <select
                 value={footerPager.pageSize}
                 onChange={(e) => footerPager.onPageSizeChange?.(Number(e.target.value))}
-                className="!rounded-md border border-hairline bg-ui-surface px-2.5 py-1.5 text-[13px] font-semibold text-ink-1 outline-none"
+                className="!rounded-md border border-hairline bg-ui-surface px-2 py-1 text-[13px] font-semibold text-ink-1 outline-none"
               >
                 {footerPager.pageSizeOptions.map((n) => (
                   <option key={n} value={n}>
@@ -498,7 +498,7 @@ function PagerButton({
     <button
       type="button"
       className={cn(
-        "inline-flex h-[34px] min-w-[34px] items-center justify-center !rounded-md border px-2 text-[13px] font-bold transition-colors disabled:cursor-default disabled:opacity-40",
+        "inline-flex h-8 min-w-8 items-center justify-center !rounded-md border px-1.5 text-[13px] font-bold transition-colors disabled:cursor-default disabled:opacity-40",
         active
           ? "border-transparent bg-brand text-on-brand"
           : "border-hairline bg-ui-surface text-ink-2 hover:bg-ui-bg hover:text-ink-1",

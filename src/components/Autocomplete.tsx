@@ -202,7 +202,7 @@ export const Autocomplete = React.forwardRef<
             className="flex flex-col gap-0.5"
           >
             {filtered.length === 0 ? (
-              <li className="px-3 py-2 text-[13px] text-ink-3">
+              <li className="px-2.5 py-1.5 text-[13px] text-ink-3">
                 {loading ? "Loading…" : emptyMessage}
               </li>
             ) : (
@@ -220,7 +220,7 @@ export const Autocomplete = React.forwardRef<
                     onPointerEnter={() => setActive(i)}
                     onClick={() => commit(option)}
                     className={cn(
-                      "flex justify-between items-center gap-2 px-3 py-2 !rounded-lg font-medium text-[13.5px] text-ink-1 cursor-pointer",
+                      "flex justify-between items-center gap-1.5 px-2.5 py-1.5 !rounded-lg font-medium text-[13.5px] text-ink-1 cursor-pointer",
                       isActive && "bg-mist text-mist-ink",
                       option.disabled && "pointer-events-none opacity-50",
                     )}

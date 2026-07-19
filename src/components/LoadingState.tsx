@@ -19,12 +19,12 @@ export const LoadingState: React.FC<LoadingStateProps> = ({
   <div
     className={cn(
       "flex flex-col items-center justify-center text-center",
-      compact ? "py-8" : "py-14",
+      compact ? "py-6" : "py-10",
       className,
     )}
   >
     <Spinner />
-    {title ? <p className="mt-3 text-base font-medium text-ink-1">{title}</p> : null}
+    {title ? <p className="mt-2 text-[15px] font-medium text-ink-1">{title}</p> : null}
     {description ? (
       <p className="mt-1 max-w-md text-sm text-ink-3">{description}</p>
     ) : null}

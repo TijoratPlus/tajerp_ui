@@ -16,7 +16,7 @@ const meta: Meta<typeof Card> = {
     docs: {
       description: {
         component:
-          "Structured content container with header, body, and footer slots. Pick a semantic `variant` preset, or compose the look directly with the tone / elevation / radius / padding / border axes (any axis overrides the preset). Use `as` to render a different element.",
+          "Structured content container with header, body, and footer slots. The root has no padding by default — slots own their inset. Set `padding` on `Card` only when using it as a plain box (no header/content/footer). Pick a semantic `variant` preset, or compose the look directly with the tone / elevation / radius / padding / border axes (any axis overrides the preset). Use `as` to render a different element.",
       },
     },
   },

@@ -59,13 +59,13 @@ export const SearchField = React.forwardRef<HTMLInputElement, SearchFieldProps>(
       <div
         data-slot="search-field"
         className={cn(
-          "relative flex items-center bg-ui-surface-2 border border-hairline !rounded-lg w-full h-10 text-ink-1 transition-colors duration-150",
+          "relative flex items-center bg-ui-surface-2 border border-hairline !rounded-lg w-full h-9 text-ink-1 transition-colors duration-150",
           "focus-within:border-brand focus-within:ring-2 focus-within:ring-brand/30",
           disabled && "cursor-not-allowed opacity-60",
           className,
         )}
       >
-        <Search className="left-3.5 absolute size-4 text-ink-3 pointer-events-none" />
+        <Search className="left-3 absolute size-4 text-ink-3 pointer-events-none" />
         <input
           ref={innerRef}
           type="search"
@@ -78,7 +78,7 @@ export const SearchField = React.forwardRef<HTMLInputElement, SearchFieldProps>(
             onKeyDown?.(e);
           }}
           className={cn(
-            "bg-transparent pr-10 pl-10 outline-none w-full h-full font-medium text-[14px] text-ink-1",
+            "bg-transparent pr-9 pl-9 outline-none w-full h-full font-medium text-[14px] text-ink-1",
             "placeholder:font-normal placeholder:text-ink-3",
             "disabled:cursor-not-allowed",
             "[&::-webkit-search-cancel-button]:appearance-none",
@@ -86,14 +86,14 @@ export const SearchField = React.forwardRef<HTMLInputElement, SearchFieldProps>(
           {...props}
         />
         {loading ? (
-          <Loader2 className="right-3.5 absolute size-4 text-ink-3 animate-spin" />
+          <Loader2 className="right-3 absolute size-4 text-ink-3 animate-spin" />
         ) : current ? (
           <button
             type="button"
             aria-label="Clear search"
             onClick={clear}
             disabled={disabled}
-            className="inline-flex right-2.5 absolute justify-center items-center hover:bg-mist !rounded-full outline-none focus-visible:ring-2 focus-visible:ring-brand/30 size-6 text-ink-3 hover:text-ink-1 transition-colors cursor-pointer"
+            className="inline-flex right-2 absolute justify-center items-center hover:bg-mist !rounded-full outline-none focus-visible:ring-2 focus-visible:ring-brand/30 size-5 text-ink-3 hover:text-ink-1 transition-colors cursor-pointer"
           >
             <X className="size-4" />
           </button>

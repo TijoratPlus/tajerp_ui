@@ -6,7 +6,7 @@ import { cn } from "../lib/cn";
 import { Slot } from "../lib/Slot";
 
 const buttonVariants = cva(
-  "inline-flex justify-center items-center gap-2 disabled:opacity-60 outline-none focus-visible:ring-2 focus-visible:ring-brand/50 font-bold whitespace-nowrap active:scale-[0.97] transition-[transform,background,box-shadow,color] duration-150 ease-tj-out cursor-pointer disabled:pointer-events-none select-none",
+  "inline-flex justify-center items-center gap-1.5 disabled:opacity-60 outline-none focus-visible:ring-2 focus-visible:ring-brand/50 font-bold whitespace-nowrap active:scale-[0.97] transition-[transform,background,box-shadow,color] duration-150 ease-tj-out cursor-pointer disabled:pointer-events-none select-none",
   {
     variants: {
       variant: {
@@ -23,10 +23,10 @@ const buttonVariants = cva(
         link: "bg-transparent text-brand-ink underline-offset-4 hover:underline shadow-none px-0 h-auto active:scale-100 !rounded-none",
       },
       size: {
-        sm: "h-9 px-3.5 text-[13px] !rounded-lg",
-        md: "h-11 px-5 text-[15px] !rounded-xl",
-        lg: "h-12 px-6 text-base !rounded-xl",
-        icon: "h-10 w-10 !rounded-xl p-0",
+        sm: "h-8 px-3 text-[13px] !rounded-lg",
+        md: "h-9 px-4 text-[14px] !rounded-xl",
+        lg: "h-10 px-4 text-[15px] !rounded-xl",
+        icon: "h-9 w-9 !rounded-xl p-0",
       },
       radius: {
         none: "!rounded-none",
