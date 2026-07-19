@@ -42,7 +42,7 @@ storybook-build: ## Build static Storybook to ./storybook-static
 
 check: typecheck lint build ## Type-check, lint, and build (CI gate)
 
-release: check ## Run checks then publish to the configured registry
+release: check ## Run checks then publish to npm (prefer git tag → GitHub Actions)
 	$(PM) publish --access public
 
 link: build ## Build, then npm-link this package globally for local consumers

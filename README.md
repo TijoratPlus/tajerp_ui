@@ -3,8 +3,8 @@
 Tijorat+ design system — the shared React component library and design tokens
 for TajERP front-ends (POS, CRM, HR, …).
 
-It is a **standalone library**, not a Frappe app. Publish it to your registry
-(or consume it via a `file:`/git dependency) and import it like any npm package.
+It is a **standalone library**, not a Frappe app. Published on npm as
+[`tajerp_ui`](https://www.npmjs.com/package/tajerp_ui).
 
 ## What's inside
 
@@ -35,22 +35,23 @@ It is a **standalone library**, not a Frappe app. Publish it to your registry
 
 ## Install
 
+```bash
+npm install tajerp_ui
+# or: yarn add tajerp_ui / pnpm add tajerp_ui
+```
+
 ```jsonc
 // consumer package.json
 {
   "dependencies": {
-    "tajerp_ui": "file:../../../tajerp_ui" // or a git / registry URL
+    "tajerp_ui": "^0.1.0"
   }
 }
 ```
 
-The package ships a prebuilt `dist/`. If you consume from source, build it once:
-
-```bash
-cd tajerp_ui
-npm install
-npm run build      # → dist/index.js + dist/index.d.ts
-```
+The published package includes a prebuilt `dist/`. For local library development
+against a consumer app, you can still link with `npm link` / `"tajerp_ui": "file:…"`
+and run `npm run build` in this repo.
 
 ## Usage
 
@@ -116,9 +117,9 @@ import the wrapped components (`Dialog`, `Sheet`, `Popover`, `Tooltip`, …) fro
 breaks if two physical copies are loaded; routing all Radix through `tajerp_ui`
 guarantees a single copy.
 
-> If a bundler resolves a symlinked `tajerp_ui` to a second Radix copy, add the
-> Radix packages to your bundler's dedupe list (Vite: `resolve.dedupe`). POS
-> already does this.
+> If you use a symlinked / `file:` copy of `tajerp_ui` and a bundler resolves a
+> second Radix copy, add the Radix packages to your bundler's dedupe list
+> (Vite: `resolve.dedupe`). This is not needed when installing from npm.
 
 Icons are available without depending on lucide directly:
 
@@ -149,7 +150,7 @@ make install        make build         make dev
 make typecheck      make lint          make format
 make storybook      make storybook-build
 make check          # typecheck + lint + build (CI gate)
-make release        # check, then publish
+make release        # check, then npm publish (local)
 ```
 
 | Script              | Description                    |
@@ -158,6 +159,25 @@ make release        # check, then publish
 | `npm run dev`       | Rebuild on change              |
 | `npm run typecheck` | `tsc --noEmit`                 |
 | `npm run storybook` | Component explorer             |
+
+## Publishing
+
+Releases go to [npm](https://www.npmjs.com/package/tajerp_ui) via GitHub Actions
+when a version tag is pushed:
+
+1. Bump `"version"` in `package.json` (keep it in sync with the tag).
+2. Commit and push to `main`.
+3. Tag and push:
+   ```bash
+   git tag v0.1.1
+   git push origin v0.1.1
+   ```
+
+The `Release` workflow runs `make check`, verifies the tag matches
+`package.json`, and runs `npm publish --access public --provenance`.
+
+The repo needs an Actions secret `NPM_TOKEN` — an npm **granular** (or
+**automation**) token that can publish and bypass 2FA.
 
 ## Conventions
 

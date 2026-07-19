@@ -2,11 +2,17 @@
 
 `tajerp_ui` is the single source of truth for TajERP UI/UX: design tokens, the
 full theme (incl. frappe-ui-react remaps), shared components, and shared
-ESLint/TS configs.
+ESLint/TS configs. Install it from npm:
+
+```bash
+npm install tajerp_ui
+```
 
 ## tajerp_pos — done
 
-1. **Dependency** — `pos/package.json`: `"tajerp_ui": "file:../../../tajerp_ui"`.
+1. **Dependency** — prefer a semver range from npm, e.g.
+   `"tajerp_ui": "^0.1.0"` in `pos/package.json`. A local `"file:…"` link is
+   fine only while developing the library itself.
 2. **Theme centralized** — `pos/src/styles/index.css` no longer defines tokens.
    It imports frappe-ui-react theme + tailwindcss, `@source`s the library, then
    `@import "tajerp_ui/styles/index.css"`. All brand tokens, the frappe-ui-react
@@ -36,15 +42,20 @@ Verified: `tsc --noEmit -p tsconfig.app.json` passes; library builds clean.
 6. **Radix is served by tajerp_ui** — POS no longer depends on `@radix-ui/*`.
    Those packages are normal dependencies of `tajerp_ui`; POS imports the wrapped
    overlays (`Dialog`, `Sheet`, …) from `tajerp_ui` only (e.g. `ResponsiveModal`
-   was rewritten to drop its raw `@radix-ui/react-dialog` import). POS's
-   `vite.config.ts` dedupes the Radix packages so the symlinked `file:` dep can't
-   resolve a second copy. Run `yarn install` so the removed deps are dropped.
+   was rewritten to drop its raw `@radix-ui/react-dialog` import). If you still
+   use a symlinked `file:` dep during library development, keep Radix in
+   Vite's `resolve.dedupe` so a second copy cannot resolve. With the npm
+   package this is unnecessary.
 
 ## Run it
 
 ```bash
-cd tajerp_ui && npm install && npm run build   # produces dist/
-cd ../bench-manager/apps/tajerp_pos/pos && yarn install && yarn build
+# consumer app (after tajerp_ui is on npm)
+cd apps/tajerp_pos/pos && yarn install && yarn build
+
+# optional: develop against a local checkout of the library
+cd tajerp_ui && npm install && npm run build
+# then point the app at "tajerp_ui": "file:…" / npm link
 ```
 
 ## Adopting in feature components (incremental)
@@ -63,7 +74,12 @@ frappe-ui-react stays as the data-widget layer (TextInput, Select, charts, …);
 
 ## Reuse in other front-ends
 
-`tajerp_hr/roster`, future apps, etc. can adopt the same way: add the dep,
-import `tajerp_ui/styles/index.css`, extend `tajerp_ui/tsconfig.base.json`, and
-use `tajerp_ui/eslint`. For CI/deploys, publish to a registry/git and replace
-the `file:` dependency with a versioned range.
+`tajerp_hr/roster`, future apps, etc. can adopt the same way:
+
+```bash
+npm install tajerp_ui
+```
+
+Then import `tajerp_ui/styles/index.css`, extend `tajerp_ui/tsconfig.base.json`,
+and use `tajerp_ui/eslint`. Prefer a versioned npm range (`^0.1.0`) for CI and
+deploys instead of `file:` or git URLs.

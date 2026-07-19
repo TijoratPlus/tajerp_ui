@@ -4,14 +4,18 @@ import { Meta } from "@storybook/blocks";
 
 # Installation
 
-Install the package from npm (or link locally during development):
+Install from [npm](https://www.npmjs.com/package/tajerp_ui):
 
 ```bash
 npm install tajerp_ui
 ```
 
 **Peer dependencies:** React 18 or 19 (`react` + `react-dom`). Radix, lucide, and
-other runtime deps are bundled — consumers should **not** install Radix separately.
+other runtime deps install transitively — consumers should **not** install Radix
+separately.
+
+For local library development, you can still `npm link` or use a `file:` path;
+the published package already includes a prebuilt `dist/`.
 
 ## Tailwind v4 wiring
 
@@ -24,7 +28,7 @@ scan the library for utility classes:
 @import "tailwindcss";
 @import "tajerp_ui/styles/index.css";
 
-@source "../node_modules/tajerp_ui/src/**/*.{ts,tsx}";
+@source "../node_modules/tajerp_ui/dist";
 ```
 
 `styles/index.css` pulls in `tokens.css` and `base.css` — the `@theme inline`
