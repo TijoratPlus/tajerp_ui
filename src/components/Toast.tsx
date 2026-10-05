@@ -32,16 +32,51 @@ function subscribe(l: () => void) {
 }
 const getSnapshot = () => items;
 
+// Auto-dismiss timers. Paused while the pointer or keyboard focus is inside the
+// stack so people can finish reading (WCAG 2.2.1 Timing Adjustable).
+const timers = new Map<
+  string,
+  { handle?: ReturnType<typeof setTimeout>; remaining: number; startedAt: number }
+>();
+let paused = false;
+
+function startTimer(id: string) {
+  const t = timers.get(id);
+  if (!t || paused) return;
+  t.startedAt = Date.now();
+  t.handle = setTimeout(() => dismiss(id), t.remaining);
+}
+function pauseTimers() {
+  if (paused) return;
+  paused = true;
+  timers.forEach((t) => {
+    if (t.handle) clearTimeout(t.handle);
+    t.handle = undefined;
+    t.remaining = Math.max(1000, t.remaining - (Date.now() - t.startedAt));
+  });
+}
+function resumeTimers() {
+  if (!paused) return;
+  paused = false;
+  timers.forEach((_, id) => startTimer(id));
+}
+
 let counter = 0;
 function push(tone: ToastTone, message: React.ReactNode, opts?: ToastOptions): string {
   const id = `t${++counter}`;
   const duration = opts?.duration ?? 5000;
   items = [...items, { id, tone, message, description: opts?.description, duration }];
   emit();
-  if (duration > 0) setTimeout(() => dismiss(id), duration);
+  if (duration > 0) {
+    timers.set(id, { remaining: duration, startedAt: Date.now() });
+    startTimer(id);
+  }
   return id;
 }
 function dismiss(id: string) {
+  const t = timers.get(id);
+  if (t?.handle) clearTimeout(t.handle);
+  timers.delete(id);
   items = items.filter((t) => t.id !== id);
   emit();
 }
@@ -59,29 +94,46 @@ const TONE: Record<
   ToastTone,
   { icon: React.ComponentType<{ className?: string }>; cls: string }
 > = {
-  success: { icon: CheckCircle2, cls: "text-tj-success" },
-  error: { icon: XCircle, cls: "text-tj-error" },
-  warning: { icon: AlertTriangle, cls: "text-tj-warning" },
-  info: { icon: Info, cls: "text-tj-info" },
+  success: { icon: CheckCircle2, cls: "text-tj-success-ink" },
+  error: { icon: XCircle, cls: "text-tj-error-ink" },
+  warning: { icon: AlertTriangle, cls: "text-tj-warning-ink" },
+  info: { icon: Info, cls: "text-tj-info-ink" },
 };
 
 /**
  * Renders active toasts in a fixed stack. Mount once near the app root.
+ *
+ * The stack is a persistent polite live region, so new toasts are announced;
+ * error toasts use `role="alert"` and interrupt. Auto-dismiss pauses while
+ * the stack is hovered or focused.
  */
 export function Toaster({
   position = "bottom-right",
+  closeLabel = "Закрыть",
 }: {
   position?: "bottom-right" | "bottom-center" | "top-right";
+  /** Accessible label of each toast's close button. */
+  closeLabel?: string;
 }) {
   const toasts = React.useSyncExternalStore(subscribe, getSnapshot, getSnapshot);
 
   return (
     <div
+      aria-live="polite"
+      aria-relevant="additions"
+      onMouseEnter={pauseTimers}
+      onMouseLeave={resumeTimers}
+      onFocus={pauseTimers}
+      onBlur={(e) => {
+        if (!e.currentTarget.contains(e.relatedTarget as Node | null)) resumeTimers();
+      }}
       className={cn(
         "pointer-events-none fixed z-[100] flex w-[360px] max-w-[calc(100vw-2rem)] flex-col gap-2",
-        position === "bottom-right" && "bottom-4 right-4",
-        position === "bottom-center" && "bottom-4 left-1/2 -translate-x-1/2",
-        position === "top-right" && "top-4 right-4",
+        position === "bottom-right" &&
+          "right-4 bottom-[max(1rem,env(safe-area-inset-bottom))]",
+        position === "bottom-center" &&
+          "left-1/2 bottom-[max(1rem,env(safe-area-inset-bottom))] -translate-x-1/2",
+        position === "top-right" && "right-4 top-[max(1rem,env(safe-area-inset-top))]",
       )}
     >
       {toasts.map((t) => {
@@ -89,10 +141,11 @@ export function Toaster({
         return (
           <div
             key={t.id}
-            role="status"
-            className="pointer-events-auto flex items-start gap-2 !rounded-xl border border-hairline bg-ui-surface p-3 shadow-tj-lg"
+            // The stack itself is the polite live region; errors escalate.
+            role={t.tone === "error" ? "alert" : undefined}
+            className="pointer-events-auto flex items-start gap-2 !rounded-xl border border-hairline bg-ui-surface p-3 shadow-tj-lg animate-in fade-in-0 slide-in-from-bottom-2"
           >
-            <Icon className={cn("mt-0.5 size-5 shrink-0", cls)} />
+            <Icon className={cn("mt-0.5 size-5 shrink-0", cls)} aria-hidden />
             <div className="min-w-0 flex-1">
               <p className="text-[13.5px] font-bold text-ink-1">{t.message}</p>
               {t.description ? (
@@ -102,10 +155,10 @@ export function Toaster({
             <button
               type="button"
               onClick={() => dismiss(t.id)}
-              className="shrink-0 !rounded-md p-0.5 text-ink-3 transition-colors hover:text-ink-1 cursor-pointer"
-              aria-label="Закрыть"
+              className="-m-1 inline-flex size-7 shrink-0 items-center justify-center !rounded-md text-ink-3 outline-none transition-colors hover:bg-ui-surface-2 hover:text-ink-1 focus-visible:ring-2 focus-visible:ring-brand/40 cursor-pointer"
+              aria-label={closeLabel}
             >
-              <X className="size-4" />
+              <X className="size-4" aria-hidden />
             </button>
           </div>
         );

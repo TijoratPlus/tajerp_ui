@@ -34,14 +34,17 @@ function AccordionTrigger({
         data-slot="accordion-trigger"
         className={cn(
           "flex flex-1 items-center justify-between gap-2 py-3 text-left text-[14px] font-semibold text-ink-1 outline-none transition-colors cursor-pointer",
-          "hover:text-brand-ink focus-visible:ring-2 focus-visible:ring-brand/30 disabled:pointer-events-none disabled:opacity-60",
+          "hover:text-brand-ink focus-visible:!rounded-md focus-visible:ring-2 focus-visible:ring-brand/40 disabled:pointer-events-none disabled:opacity-60",
           "[&[data-state=open]>svg]:rotate-180",
           className,
         )}
         {...props}
       >
         {children}
-        <ChevronDown className="size-4 shrink-0 text-ink-3 transition-transform duration-200 ease-tj-out" />
+        <ChevronDown
+          aria-hidden
+          className="size-4 shrink-0 text-ink-3 transition-transform duration-200 ease-tj-out"
+        />
       </AccordionPrimitive.Trigger>
     </AccordionPrimitive.Header>
   );

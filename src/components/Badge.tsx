@@ -10,11 +10,11 @@ const badgeVariants = cva(
       tone: {
         brand: "bg-mist text-mist-ink",
         neutral: "bg-ui-surface-2 text-ink-2 border border-hairline",
-        success: "bg-tj-success/12 text-tj-success",
-        warning: "bg-tj-warning/15 text-tj-warning",
-        error: "bg-tj-error/12 text-tj-error",
-        info: "bg-tj-info/12 text-tj-info",
-        solid: "bg-brand text-on-brand",
+        success: "bg-tj-success/12 text-tj-success-ink",
+        warning: "bg-tj-warning/15 text-tj-warning-ink",
+        error: "bg-tj-error/12 text-tj-error-ink",
+        info: "bg-tj-info/12 text-tj-info-ink",
+        solid: "bg-brand-solid text-on-brand",
       },
       size: {
         sm: "px-2 py-0.5 text-[10px] tracking-[0.06em] !rounded-pill uppercase",

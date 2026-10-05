@@ -3,7 +3,7 @@ import * as React from "react";
 
 import { cn } from "../lib/cn";
 
-const skeletonVariants = cva("bg-ui-surface-2 animate-pulse", {
+const skeletonVariants = cva("bg-ui-surface-2 motion-safe:animate-pulse", {
   variants: {
     variant: {
       rect: "!rounded-md",
@@ -36,6 +36,7 @@ export function Skeleton({
     return (
       <div
         data-slot="skeleton-group"
+        aria-hidden
         className={cn("flex flex-col gap-2", className)}
         {...props}
       >
@@ -56,6 +57,7 @@ export function Skeleton({
   return (
     <div
       data-slot="skeleton"
+      aria-hidden
       className={cn(skeletonVariants({ variant }), className)}
       {...props}
     />

@@ -61,11 +61,15 @@ export const SearchField = React.forwardRef<HTMLInputElement, SearchFieldProps>(
         className={cn(
           "relative flex items-center bg-ui-surface-2 border border-hairline !rounded-lg w-full h-9 text-ink-1 transition-colors duration-150",
           "focus-within:border-brand focus-within:ring-2 focus-within:ring-brand/30",
+          "has-[[aria-invalid=true]]:border-tj-error has-[[aria-invalid=true]]:focus-within:ring-tj-error/25",
           disabled && "cursor-not-allowed opacity-60",
           className,
         )}
       >
-        <Search className="left-3 absolute size-4 text-ink-3 pointer-events-none" />
+        <Search
+          aria-hidden
+          className="left-3 absolute size-4 text-ink-3 pointer-events-none"
+        />
         <input
           ref={innerRef}
           type="search"
@@ -86,16 +90,19 @@ export const SearchField = React.forwardRef<HTMLInputElement, SearchFieldProps>(
           {...props}
         />
         {loading ? (
-          <Loader2 className="right-3 absolute size-4 text-ink-3 animate-spin" />
+          <Loader2
+            aria-hidden
+            className="right-3 absolute size-4 text-ink-3 animate-spin"
+          />
         ) : current ? (
           <button
             type="button"
             aria-label="Clear search"
             onClick={clear}
             disabled={disabled}
-            className="inline-flex right-2 absolute justify-center items-center hover:bg-mist !rounded-full outline-none focus-visible:ring-2 focus-visible:ring-brand/30 size-5 text-ink-3 hover:text-ink-1 transition-colors cursor-pointer"
+            className="inline-flex right-1.5 absolute justify-center items-center hover:bg-mist !rounded-full outline-none focus-visible:ring-2 focus-visible:ring-brand/30 size-6 text-ink-3 hover:text-ink-1 transition-colors cursor-pointer"
           >
-            <X className="size-4" />
+            <X className="size-4" aria-hidden />
           </button>
         ) : null}
       </div>

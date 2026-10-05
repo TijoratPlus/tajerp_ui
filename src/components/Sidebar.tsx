@@ -95,6 +95,11 @@ export const Sidebar = React.forwardRef<HTMLElement, SidebarProps>(
     const [internalActive, setInternalActive] = React.useState(defaultActiveId);
     const currentActive = isActiveControlled ? activeId : internalActive;
 
+    const activeAncestors = React.useMemo(
+      () => new Set(ancestorsOf(items, currentActive)),
+      [items, currentActive],
+    );
+
     const [expanded, setExpanded] = React.useState<Set<string>>(
       () => new Set(ancestorsOf(items, currentActive ?? defaultActiveId)),
     );
@@ -118,25 +123,34 @@ export const Sidebar = React.forwardRef<HTMLElement, SidebarProps>(
       const hasChildren = !!item.children?.length;
       const isOpen = expanded.has(id);
       const isActive = id === currentActive;
+      const containsActive = hasChildren && activeAncestors.has(id);
       const title =
         isCollapsed && typeof item.label === "string" ? item.label : undefined;
 
       const rowBase =
         "group flex w-full items-center gap-2.5 !rounded-lg px-2.5 py-1.5 text-[13.5px] font-medium outline-none transition-colors duration-150 focus-visible:ring-2 focus-visible:ring-white/30 cursor-pointer disabled:pointer-events-none disabled:opacity-40";
       const rowState = isActive
-        ? "bg-brand text-on-brand shadow-tj-sm"
-        : "text-white/65 hover:bg-white/10 hover:text-white";
+        ? "bg-brand-solid text-on-brand shadow-tj-sm"
+        : containsActive
+          ? "text-white hover:bg-white/10"
+          : "text-white/70 hover:bg-white/10 hover:text-white";
 
       const indent =
         !isCollapsed && depth > 0 ? { paddingLeft: 12 + depth * 16 } : undefined;
 
       const iconNode = item.icon ? (
-        <span className="grid size-5 shrink-0 place-items-center [&>svg]:size-[18px]">
+        <span
+          aria-hidden
+          className="grid size-5 shrink-0 place-items-center [&>svg]:size-[18px]"
+        >
           {item.icon}
         </span>
       ) : null;
 
-      const labelNode = isCollapsed ? null : (
+      // Collapsed rows keep the label for assistive tech (icon-only visually).
+      const labelNode = isCollapsed ? (
+        <span className="sr-only">{item.label}</span>
+      ) : (
         <span className="min-w-0 flex-1 truncate text-left">{item.label}</span>
       );
 
@@ -165,6 +179,7 @@ export const Sidebar = React.forwardRef<HTMLElement, SidebarProps>(
               {badgeNode}
               {!isCollapsed ? (
                 <ChevronDown
+                  aria-hidden
                   className={cn(
                     "size-4 shrink-0 text-white/50 transition-transform duration-200 ease-tj-out",
                     isOpen && "rotate-180",
@@ -196,10 +211,14 @@ export const Sidebar = React.forwardRef<HTMLElement, SidebarProps>(
         <li key={id}>
           {item.href ? (
             <a
-              href={item.href}
+              href={item.disabled ? undefined : item.href}
               title={title}
               aria-current={isActive ? "page" : undefined}
-              onClick={() => !item.disabled && select(id, item)}
+              aria-disabled={item.disabled || undefined}
+              onClick={(e) => {
+                if (item.disabled) e.preventDefault();
+                else select(id, item);
+              }}
               className={cn(rowBase, rowState, item.disabled && "pointer-events-none opacity-40")}
               style={indent}
             >
@@ -253,14 +272,15 @@ export const Sidebar = React.forwardRef<HTMLElement, SidebarProps>(
           <button
             type="button"
             aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+            aria-expanded={!isCollapsed}
             onClick={() => setCollapsed(!isCollapsed)}
             className="flex shrink-0 items-center gap-2.5 border-t border-white/10 px-2.5 py-2.5 text-[13px] font-medium text-white/55 outline-none transition-colors hover:text-white focus-visible:ring-2 focus-visible:ring-white/30 cursor-pointer"
           >
             <span className="grid size-5 shrink-0 place-items-center">
               {isCollapsed ? (
-                <PanelLeft className="size-[18px]" />
+                <PanelLeft className="size-[18px]" aria-hidden />
               ) : (
-                <PanelLeftClose className="size-[18px]" />
+                <PanelLeftClose className="size-[18px]" aria-hidden />
               )}
             </span>
             {!isCollapsed ? <span>Collapse</span> : null}

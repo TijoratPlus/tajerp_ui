@@ -154,7 +154,7 @@ function Kpi({
             {icon}
           </span>
           <span
-            className={`inline-flex items-center gap-0.5 text-[12px] font-bold ${up ? "text-tj-success" : "text-tj-error"}`}
+            className={`inline-flex items-center gap-0.5 text-[12px] font-bold ${up ? "text-tj-success-ink" : "text-tj-error-ink"}`}
           >
             {up ? <ArrowUpRight className="size-3.5" /> : <ArrowDownRight className="size-3.5" />}
             {delta}

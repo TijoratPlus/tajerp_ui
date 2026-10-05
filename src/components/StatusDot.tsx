@@ -5,6 +5,11 @@ import { cn } from "../lib/cn";
 export interface StatusDotProps extends React.HTMLAttributes<HTMLSpanElement> {
   tone?: "success" | "warning" | "error" | "brand" | "neutral";
   pulse?: boolean;
+  /**
+   * Text meaning of the dot (e.g. "In stock"). Colour alone is not perceivable
+   * by every user, so pass this whenever no visible text sits next to the dot.
+   */
+  label?: string;
 }
 
 const toneMap: Record<NonNullable<StatusDotProps["tone"]>, string> = {
@@ -19,15 +24,19 @@ const toneMap: Record<NonNullable<StatusDotProps["tone"]>, string> = {
 export function StatusDot({
   tone = "neutral",
   pulse = false,
+  label,
   className,
   ...props
 }: StatusDotProps) {
   return (
     <span
+      role={label ? "img" : undefined}
+      aria-label={label}
+      aria-hidden={label ? undefined : true}
       className={cn(
         "inline-block size-2 !rounded-full",
         toneMap[tone],
-        pulse && "animate-pulse",
+        pulse && "motion-safe:animate-pulse",
         className,
       )}
       {...props}
