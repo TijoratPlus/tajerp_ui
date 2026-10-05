@@ -48,7 +48,9 @@ export const Slider = React.forwardRef<
           key={i}
           data-slot="slider-thumb"
           className={cn(
-            "block size-4 cursor-grab !rounded-full border-2 border-brand bg-ui-surface shadow-tj-sm outline-none transition-colors active:cursor-grabbing",
+            "relative block size-4 cursor-grab !rounded-full border-2 border-brand bg-ui-surface shadow-tj-sm outline-none transition-colors active:cursor-grabbing",
+            // 16px visual thumb, 28px pointer target.
+            "after:absolute after:-inset-1.5 after:!rounded-full",
             "hover:bg-mist focus-visible:ring-2 focus-visible:ring-brand/40",
             "data-[disabled]:cursor-not-allowed",
           )}

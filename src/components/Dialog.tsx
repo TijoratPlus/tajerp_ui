@@ -56,15 +56,15 @@ function DialogContent({
       <DialogPrimitive.Content
         data-slot="dialog-content"
         className={cn(
-          "z-50 fixed top-1/2 left-1/2 grid w-full max-w-lg -translate-x-1/2 -translate-y-1/2 gap-3 !rounded-xl border border-hairline bg-ui-surface p-4 shadow-tj-lg duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95",
+          "z-50 fixed top-1/2 left-1/2 grid w-[calc(100%-2rem)] max-w-lg max-h-[calc(100dvh-2rem)] overflow-y-auto overscroll-contain -translate-x-1/2 -translate-y-1/2 gap-3 !rounded-xl border border-hairline bg-ui-surface p-4 shadow-tj-lg duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95",
           className,
         )}
         {...props}
       >
         {children}
         {showCloseButton ? (
-          <DialogPrimitive.Close className="absolute top-3 right-3 !rounded-sm opacity-70 transition-opacity hover:opacity-100 focus:outline-hidden focus:ring-2 focus:ring-brand disabled:pointer-events-none">
-            <XIcon className="size-4" />
+          <DialogPrimitive.Close className="absolute top-2 right-2 inline-flex size-8 items-center justify-center !rounded-md text-ink-3 transition-colors outline-none hover:bg-ui-surface-2 hover:text-ink-1 focus-visible:ring-2 focus-visible:ring-brand/50 cursor-pointer disabled:pointer-events-none">
+            <XIcon className="size-4" aria-hidden />
             <span className="sr-only">Close</span>
           </DialogPrimitive.Close>
         ) : null}
@@ -77,7 +77,7 @@ function DialogHeader({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
       data-slot="dialog-header"
-      className={cn("flex flex-col gap-1 text-center sm:text-left", className)}
+      className={cn("flex flex-col gap-1 px-8 text-center sm:pl-0 sm:text-left", className)}
       {...props}
     />
   );

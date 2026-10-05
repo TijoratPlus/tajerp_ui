@@ -128,8 +128,20 @@ import { Search, Plus } from "tajerp_ui/icons";
 ```
 
 The consuming app must also have **Tailwind CSS v4** (components are styled with
-Tailwind utilities) and, for the slide/fade animations on `Sheet`/`Dialog`,
-`tw-animate-css`.
+Tailwind utilities). The enter/exit animations used by `Dialog`, `Sheet`,
+`Popover`, `Tooltip` and `Toast` (`animate-in`, `fade-in-0`, `slide-in-from-*`,
+…) ship in `styles/tokens.css`, so `tw-animate-css` is no longer required; apps
+that already use it can keep it. Animations fall back to a plain fade under
+`prefers-reduced-motion`.
+
+### Accessibility
+
+Components target WCAG 2.2 AA: text tokens hold 4.5:1 contrast in light and dark
+themes, every control has a visible `focus-visible` ring, small controls (checkbox,
+slider thumb, close/clear buttons, carousel dots) meet the 24px pointer target, and composite widgets (`Tabs`, `SegmentedControl`, `DataTable`
+sorting/rows/pager, `Autocomplete`) are fully keyboard-operable. Use the
+text-safe colour utilities (`bg-brand-solid`, `text-tj-*-ink`) for text — see
+**Foundations → Colors** in Storybook.
 
 ## Storybook
 

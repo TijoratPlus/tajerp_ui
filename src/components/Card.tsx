@@ -13,7 +13,7 @@ const cardVariants = cva("text-ink-1", {
       muted: "border-hairline bg-ui-surface-2 shadow-none",
       warning: "border-tj-warning/40 bg-ui-surface shadow-tj-md",
       interactive:
-        "border-hairline bg-ui-surface shadow-none transition-all duration-200 ease-tj-out hover:-translate-y-0.5 hover:border-brand/40 hover:shadow-tj-md",
+        "border-hairline bg-ui-surface shadow-none transition-[translate,border-color,box-shadow] duration-200 ease-tj-out motion-safe:hover:-translate-y-0.5 hover:border-brand/40 hover:shadow-tj-md focus-within:border-brand/40",
     },
     // Composable axes — override individual properties of the preset.
     tone: {

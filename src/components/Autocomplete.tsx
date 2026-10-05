@@ -101,6 +101,14 @@ export const Autocomplete = React.forwardRef<
       [options, text, filter],
     );
 
+    // Keep the keyboard-highlighted option visible in the scrolling list.
+    React.useEffect(() => {
+      if (!open) return;
+      document
+        .getElementById(`${listId}-opt-${active}`)
+        ?.scrollIntoView({ block: "nearest" });
+    }, [open, active, listId]);
+
     const setText = (next: string) => {
       if (!isInputControlled) setInternalInput(next);
       onInputChange?.(next);
@@ -177,7 +185,10 @@ export const Autocomplete = React.forwardRef<
               }}
               onKeyDown={handleKeyDown}
             />
-            <span className="top-1/2 right-3 absolute text-ink-3 -translate-y-1/2 pointer-events-none">
+            <span
+              aria-hidden
+              className="top-1/2 right-3 absolute text-ink-3 -translate-y-1/2 pointer-events-none"
+            >
               {loading ? (
                 <Loader2 className="size-4 animate-spin" />
               ) : (
@@ -202,7 +213,7 @@ export const Autocomplete = React.forwardRef<
             className="flex flex-col gap-0.5"
           >
             {filtered.length === 0 ? (
-              <li className="px-2.5 py-1.5 text-[13px] text-ink-3">
+              <li role="presentation" className="px-2.5 py-1.5 text-[13px] text-ink-3">
                 {loading ? "Loading…" : emptyMessage}
               </li>
             ) : (
@@ -227,7 +238,7 @@ export const Autocomplete = React.forwardRef<
                   >
                     <span className="truncate">{option.label}</span>
                     {isSelected ? (
-                      <Check className="size-4 text-brand shrink-0" />
+                      <Check className="size-4 text-brand shrink-0" aria-hidden />
                     ) : null}
                   </li>
                 );

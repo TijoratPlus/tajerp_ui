@@ -98,6 +98,46 @@
   --safe-area-inset-right: env(safe-area-inset-right, 0px);
 }
 
+/* Dark theme — follows the brand's --ui-* dark tokens (tokens.css) so the
+   page body, borders and shadcn-style widgets switch together with the
+   tajerp_ui components. */
+[data-theme="dark"],
+.dark {
+  --background: var(--ui-bg);
+  --foreground: var(--ui-ink-1);
+  --card: var(--ui-surface);
+  --card-foreground: var(--ui-ink-1);
+  --popover: var(--ui-surface);
+  --popover-foreground: var(--ui-ink-1);
+  --primary: var(--ui-brand-solid);
+  --primary-foreground: var(--ui-on-brand);
+  --secondary: var(--ui-surface-inset);
+  --secondary-foreground: var(--ui-ink-1);
+  --muted: var(--ui-surface-2);
+  --muted-foreground: var(--ui-ink-3);
+  --accent: var(--ui-mist);
+  --accent-foreground: var(--ui-mist-ink);
+  --destructive: var(--ui-error-ink);
+  --destructive-foreground: var(--ui-bg);
+  --border: var(--ui-hairline);
+  --input: var(--ui-surface-2);
+  --ring: var(--ui-brand);
+  --success: var(--ui-success-ink);
+  --success-foreground: var(--ui-bg);
+  --warning: var(--ui-warning-ink);
+  --warning-foreground: var(--ui-bg);
+  --sidebar: var(--ui-surface-2);
+  --sidebar-foreground: var(--ui-ink-1);
+  --sidebar-primary: var(--ui-brand-solid);
+  --sidebar-primary-foreground: var(--ui-on-brand);
+  --sidebar-accent: var(--ui-mist);
+  --sidebar-accent-foreground: var(--ui-mist-ink);
+  --sidebar-active: var(--ui-brand-solid);
+  --sidebar-active-foreground: var(--ui-on-brand);
+  --sidebar-border: var(--ui-hairline);
+  --sidebar-ring: var(--ui-brand);
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;

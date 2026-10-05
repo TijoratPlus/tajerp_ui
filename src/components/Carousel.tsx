@@ -210,7 +210,7 @@ export const CarouselPrevious = React.forwardRef<HTMLButtonElement, ButtonProps>
         )}
         {...props}
       >
-        <ChevronLeft className="size-4" />
+        <ChevronLeft className="size-4" aria-hidden />
       </Button>
     );
   },
@@ -237,7 +237,7 @@ export const CarouselNext = React.forwardRef<HTMLButtonElement, ButtonProps>(
         )}
         {...props}
       >
-        <ChevronRight className="size-4" />
+        <ChevronRight className="size-4" aria-hidden />
       </Button>
     );
   },
@@ -261,7 +261,8 @@ export function CarouselDots({ className }: { className?: string }) {
           aria-label={`Go to slide ${index + 1}`}
           aria-current={selectedIndex === index}
           className={cn(
-            "h-2 !rounded-full transition-all duration-200 cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-brand/40",
+            // 8px visual dot, 24px pointer target.
+            "relative h-2 !rounded-full transition-[width,background-color] duration-200 cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-brand/40 after:absolute after:-inset-2",
             selectedIndex === index
               ? "w-6 bg-brand"
               : "w-2 bg-hairline hover:bg-ink-4",

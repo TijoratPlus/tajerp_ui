@@ -88,6 +88,7 @@ export const NumberField = React.forwardRef<HTMLInputElement, NumberFieldProps>(
         className={cn(
           "relative flex items-center bg-ui-surface-2 border border-hairline !rounded-lg w-full h-9 overflow-hidden text-ink-1 transition-colors duration-150",
           "focus-within:border-brand focus-within:ring-2 focus-within:ring-brand/30",
+          "has-[[aria-invalid=true]]:border-tj-error has-[[aria-invalid=true]]:focus-within:ring-tj-error/25",
           disabled && "cursor-not-allowed opacity-60",
           className,
         )}
@@ -100,7 +101,7 @@ export const NumberField = React.forwardRef<HTMLInputElement, NumberFieldProps>(
           disabled={disabled || atMin}
           className={cn(stepBtn, "border-r border-hairline")}
         >
-          <Minus className="size-4" />
+          <Minus className="size-4" aria-hidden />
         </button>
 
         <div className="flex flex-1 justify-center items-center gap-1 px-2 min-w-0">
@@ -152,7 +153,7 @@ export const NumberField = React.forwardRef<HTMLInputElement, NumberFieldProps>(
           disabled={disabled || atMax}
           className={cn(stepBtn, "border-l border-hairline")}
         >
-          <Plus className="size-4" />
+          <Plus className="size-4" aria-hidden />
         </button>
       </div>
     );

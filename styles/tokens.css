@@ -30,7 +30,7 @@
   --tj-ink: rgb(0, 0, 0);
   --tj-ink-1: rgb(12, 30, 22); /* body ink on light */
   --tj-ink-2: rgb(45, 68, 56); /* secondary ink */
-  --tj-ink-3: rgb(122, 156, 140); /* meta / captions */
+  --tj-ink-3: rgb(85, 114, 100); /* meta / captions — 4.6:1+ on every light surface (WCAG AA) */
   --tj-ink-4: rgb(159, 184, 173); /* disabled / low contrast */
   --tj-white: rgb(255, 255, 255);
 
@@ -139,6 +139,10 @@
   --ui-brand-ink: var(--tj-green-ink);
   --ui-brand-deep: var(--tj-green-deep);
   --ui-brand-disabled: rgb(179, 212, 201);
+  /* Fill for brand surfaces that carry text (solid buttons, active tabs/pages).
+     The logo green only reaches 3.4:1 against white text; these reach 4.6:1+. */
+  --ui-brand-solid: rgb(24, 133, 92);
+  --ui-brand-solid-hover: var(--tj-green-ink);
 
   --ui-hairline: var(--tj-green-haze);
   --ui-border-brand: rgba(29, 159, 110, 0.3);
@@ -150,6 +154,14 @@
   --ui-error: var(--tj-coral);
   --ui-error-bg: var(--tj-coral-mist);
   --ui-info: var(--tj-info);
+
+  /* Status *text* colours. The base status hues above are for icons, dots and
+     borders; text (badges, form errors, danger fills) uses these, which hold
+     4.5:1 against surfaces and their own 12–15% tinted backgrounds. */
+  --ui-success-ink: rgb(16, 120, 55);
+  --ui-warning-ink: rgb(150, 97, 6);
+  --ui-error-ink: rgb(196, 52, 34);
+  --ui-info-ink: rgb(23, 89, 234);
 
   --ui-card-shadow: var(--tj-shadow-sm);
 }
@@ -172,6 +184,8 @@
   --ui-brand-ink: var(--tj-green-soft);
   --ui-brand-deep: #050e0a;
   --ui-brand-disabled: #2f5847;
+  --ui-brand-solid: rgb(24, 133, 92);
+  --ui-brand-solid-hover: var(--tj-green-ink);
 
   --ui-hairline: rgba(168, 222, 202, 0.12);
   --ui-border-brand: rgba(168, 222, 202, 0.25);
@@ -180,6 +194,11 @@
 
   --ui-error: var(--tj-coral);
   --ui-error-bg: rgba(224, 92, 75, 0.16);
+
+  --ui-success-ink: rgb(74, 222, 128);
+  --ui-warning-ink: rgb(251, 191, 36);
+  --ui-error-ink: rgb(240, 153, 122);
+  --ui-info-ink: rgb(147, 197, 253);
 
   --ui-card-shadow: 0 1px 0 rgba(0, 0, 0, 0.2);
 }
@@ -197,6 +216,8 @@
   --color-brand-ink: var(--ui-brand-ink);
   --color-brand-deep: var(--ui-brand-deep);
   --color-brand-disabled: var(--ui-brand-disabled);
+  --color-brand-solid: var(--ui-brand-solid);
+  --color-brand-solid-hover: var(--ui-brand-solid-hover);
 
   --color-ui-bg: var(--ui-bg);
   --color-ui-surface: var(--ui-surface);
@@ -220,6 +241,10 @@
   --color-tj-error: var(--ui-error);
   --color-tj-error-bg: var(--ui-error-bg);
   --color-tj-info: var(--ui-info);
+  --color-tj-success-ink: var(--ui-success-ink);
+  --color-tj-warning-ink: var(--ui-warning-ink);
+  --color-tj-error-ink: var(--ui-error-ink);
+  --color-tj-info-ink: var(--ui-info-ink);
 
   /* Radii */
   --radius-xs: var(--tj-radius-xs);
@@ -260,5 +285,121 @@
   }
   to {
     height: 0;
+  }
+}
+
+/* ============================================================
+   Enter / exit animation utilities.
+
+   Dialog, Sheet, Popover, Tooltip and Toast compose these
+   (`animate-in fade-in-0 zoom-in-95`, `slide-in-from-right`, …).
+   They are the shadcn vocabulary, defined here so the library
+   does not depend on a Tailwind animation plugin. Radix waits for
+   `animationend` before unmounting, so exit animations play out.
+
+   Duration follows Tailwind's `duration-*` utilities; default is
+   --tj-dur-base. Under prefers-reduced-motion only the opacity
+   fade remains — no scale or slide.
+   ============================================================ */
+@keyframes tj-enter {
+  from {
+    opacity: var(--tj-enter-opacity, 1);
+    transform: translate3d(
+        var(--tj-enter-translate-x, 0),
+        var(--tj-enter-translate-y, 0),
+        0
+      )
+      scale(var(--tj-enter-scale, 1));
+  }
+}
+
+@keyframes tj-exit {
+  to {
+    opacity: var(--tj-exit-opacity, 1);
+    transform: translate3d(
+        var(--tj-exit-translate-x, 0),
+        var(--tj-exit-translate-y, 0),
+        0
+      )
+      scale(var(--tj-exit-scale, 1));
+  }
+}
+
+@keyframes tj-fade-enter {
+  from {
+    opacity: var(--tj-enter-opacity, 1);
+  }
+}
+
+@keyframes tj-fade-exit {
+  to {
+    opacity: var(--tj-exit-opacity, 1);
+  }
+}
+
+@utility animate-in {
+  animation-name: tj-enter;
+  animation-duration: var(--tw-duration, var(--tj-dur-base));
+  animation-timing-function: var(--tj-ease-out);
+  @media (prefers-reduced-motion: reduce) {
+    animation-name: tj-fade-enter;
+  }
+}
+
+@utility animate-out {
+  animation-name: tj-exit;
+  animation-duration: var(--tw-duration, var(--tj-dur-fast));
+  animation-timing-function: var(--tj-ease-in);
+  animation-fill-mode: forwards;
+  @media (prefers-reduced-motion: reduce) {
+    animation-name: tj-fade-exit;
+  }
+}
+
+@utility fade-in-0 {
+  --tj-enter-opacity: 0;
+}
+@utility fade-out-0 {
+  --tj-exit-opacity: 0;
+}
+@utility zoom-in-95 {
+  --tj-enter-scale: 0.95;
+}
+@utility zoom-out-95 {
+  --tj-exit-scale: 0.95;
+}
+@utility slide-in-from-top {
+  --tj-enter-translate-y: -100%;
+}
+@utility slide-in-from-bottom {
+  --tj-enter-translate-y: 100%;
+}
+@utility slide-in-from-left {
+  --tj-enter-translate-x: -100%;
+}
+@utility slide-in-from-right {
+  --tj-enter-translate-x: 100%;
+}
+@utility slide-out-to-top {
+  --tj-exit-translate-y: -100%;
+}
+@utility slide-out-to-bottom {
+  --tj-exit-translate-y: 100%;
+}
+@utility slide-out-to-left {
+  --tj-exit-translate-x: -100%;
+}
+@utility slide-out-to-right {
+  --tj-exit-translate-x: 100%;
+}
+/* Small offset used by toasts. */
+@utility slide-in-from-bottom-2 {
+  --tj-enter-translate-y: 0.5rem;
+}
+
+/* Height animations (Accordion) collapse instantly under reduced motion. */
+@media (prefers-reduced-motion: reduce) {
+  [data-slot="accordion-content"] {
+    animation-duration: 1ms !important;
   }
 }

@@ -6,12 +6,12 @@ import { cn } from "../lib/cn";
 import { Slot } from "../lib/Slot";
 
 const buttonVariants = cva(
-  "inline-flex justify-center items-center gap-1.5 disabled:opacity-60 outline-none focus-visible:ring-2 focus-visible:ring-brand/50 font-bold whitespace-nowrap active:scale-[0.97] transition-[transform,background,box-shadow,color] duration-150 ease-tj-out cursor-pointer disabled:pointer-events-none select-none",
+  "inline-flex justify-center items-center gap-1.5 disabled:opacity-60 outline-none focus-visible:ring-2 focus-visible:ring-brand/50 focus-visible:ring-offset-1 focus-visible:ring-offset-ui-surface font-bold whitespace-nowrap motion-safe:active:scale-[0.97] transition-[transform,background,box-shadow,color] duration-150 ease-tj-out cursor-pointer disabled:pointer-events-none select-none",
   {
     variants: {
       variant: {
         solid:
-          "bg-brand text-on-brand shadow-tj-brand hover:bg-brand-ink disabled:bg-brand-disabled disabled:shadow-none !rounded-lg",
+          "bg-brand-solid text-on-brand shadow-tj-brand hover:bg-brand-solid-hover disabled:bg-brand-disabled disabled:shadow-none !rounded-lg",
         outline:
           "border-[1.5px] border-brand/40 bg-transparent text-brand-ink hover:bg-mist !rounded-lg",
         ghost:
@@ -19,7 +19,7 @@ const buttonVariants = cva(
         subtle:
           "bg-ui-surface-2 border border-hairline text-ink-2 hover:text-ink-1 !rounded-lg",
         danger:
-          "bg-tj-error text-white hover:opacity-90 shadow-tj-sm !rounded-lg",
+          "bg-tj-error-ink text-white hover:opacity-90 focus-visible:ring-tj-error/50 shadow-tj-sm !rounded-lg",
         link: "bg-transparent text-brand-ink underline-offset-4 hover:underline shadow-none px-0 h-auto active:scale-100 !rounded-none",
       },
       size: {
@@ -95,10 +95,11 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         ref={ref}
         type={type}
         disabled={disabled || loading}
+        aria-busy={loading || undefined}
         className={classes}
         {...props}
       >
-        {loading ? <Loader2 className="size-4 animate-spin" /> : iconLeft}
+        {loading ? <Loader2 className="size-4 animate-spin" aria-hidden /> : iconLeft}
         {children}
         {iconRight}
       </button>

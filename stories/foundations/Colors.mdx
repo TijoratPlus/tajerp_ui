@@ -46,3 +46,24 @@ Brand palette, neutrals, and semantic status colours. All values are defined in
 
 Components read `--ui-*` tokens (see **Get Started → Theming**). They map to the
 raw palette above and adapt in dark mode — toggle the Theme toolbar to compare.
+
+## Text-safe colours (contrast)
+
+Every pairing below holds at least **4.5:1** (WCAG AA for normal text) in both
+light and dark themes. The base brand green and status hues are for icons,
+dots, borders and charts (3:1 is enough there) — **not** for text.
+
+| Use | Utility | Instead of |
+|-----|---------|------------|
+| Filled surface carrying white text (buttons, active tab/page/segment) | `bg-brand-solid` · hover `bg-brand-solid-hover` | `bg-brand` (3.4:1 under white text) |
+| Status text and badges | `text-tj-success-ink` · `text-tj-warning-ink` · `text-tj-error-ink` · `text-tj-info-ink` | `text-tj-success` etc. (1.9–3.1:1) |
+| Danger fill under white text | `bg-tj-error-ink` | `bg-tj-error` |
+| Captions, placeholders, table headers | `text-ink-3` | — (darkened to pass) |
+
+<div style={{ display: "grid", gap: 16, gridTemplateColumns: "repeat(auto-fill, minmax(140px, 1fr))", maxWidth: 720, marginTop: 24 }}>
+  <Swatch name="Brand solid" varName="--ui-brand-solid" />
+  <Swatch name="Success ink" varName="--ui-success-ink" />
+  <Swatch name="Warning ink" varName="--ui-warning-ink" />
+  <Swatch name="Error ink" varName="--ui-error-ink" />
+  <Swatch name="Info ink" varName="--ui-info-ink" />
+</div>

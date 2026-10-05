@@ -42,6 +42,7 @@ export const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
             ? "border-transparent bg-ui-surface-2"
             : "border-hairline bg-ui-surface-2",
           "focus-visible:border-brand focus-visible:ring-2 focus-visible:ring-brand/30",
+          "aria-[invalid=true]:border-tj-error aria-[invalid=true]:focus-visible:ring-tj-error/25",
           "disabled:cursor-not-allowed disabled:opacity-60",
           className,
         )}
@@ -64,7 +65,10 @@ export const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
             })
           : children}
       </select>
-      <ChevronDown className="right-3 absolute size-4 text-ink-3 pointer-events-none" />
+      <ChevronDown
+        aria-hidden
+        className="right-3 absolute size-4 text-ink-3 pointer-events-none"
+      />
     </div>
   ),
 );

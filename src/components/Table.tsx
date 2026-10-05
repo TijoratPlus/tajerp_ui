@@ -72,11 +72,13 @@ function TableRow({
 function TableHead({
   className,
   align = "left",
+  scope = "col",
   ...props
 }: React.ComponentProps<"th"> & { align?: "left" | "right" | "center" }) {
   return (
     <th
       data-slot="table-head"
+      scope={scope}
       className={cn(
         "select-none whitespace-nowrap border-b-[1.5px] border-hairline bg-ui-bg px-3 py-2.5 text-[11px] font-bold uppercase tracking-[0.07em] text-ink-3",
         align === "right" && "text-right",

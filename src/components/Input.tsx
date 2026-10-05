@@ -13,6 +13,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
         "flex bg-ui-surface-2 px-3 border border-hairline !rounded-lg outline-none w-full h-9 font-medium text-[14px] text-ink-1 transition-colors duration-150",
         "placeholder:text-ink-3 placeholder:font-normal",
         "focus-visible:border-brand focus-visible:ring-2 focus-visible:ring-brand/30",
+        "aria-[invalid=true]:border-tj-error aria-[invalid=true]:focus-visible:ring-tj-error/25",
         "disabled:cursor-not-allowed disabled:opacity-60",
         className,
       )}

@@ -20,15 +20,16 @@ export const ErrorState: React.FC<ErrorStateProps> = ({
   className,
 }) => (
   <div
+    role="alert"
     className={cn(
       "flex flex-col justify-center items-center bg-tj-error/5 py-8 border border-tj-error/30 !rounded-lg text-center",
       className,
     )}
   >
     <div className="bg-tj-error/10 mb-3 p-2.5 !rounded-full">
-      <AlertCircle className="w-6 h-6 text-tj-error" />
+      <AlertCircle className="w-6 h-6 text-tj-error" aria-hidden />
     </div>
-    <p className="font-medium text-tj-error text-[15px]">{title}</p>
+    <p className="font-semibold text-tj-error-ink text-[15px]">{title}</p>
     {description ? (
       <p className="mt-1 max-w-lg text-ink-3 text-sm">{description}</p>
     ) : null}

@@ -85,7 +85,7 @@ const columns: DataTableColumn<Invoice>[] = [
     sortable: true,
     sortAccessor: (r) => r.amount,
     cell: (r) => (
-      <span className={r.amount < 0 ? "font-bold text-tj-error" : "font-bold text-ink-1"}>
+      <span className={r.amount < 0 ? "font-bold text-tj-error-ink" : "font-bold text-ink-1"}>
         {fmt(r.amount)}
       </span>
     ),

@@ -50,6 +50,41 @@ export interface DataTablePagination {
   onPageSizeChange?: (size: number) => void;
 }
 
+/** UI strings. Defaults are Russian; pass any subset to localise. */
+export interface DataTableLabels {
+  search?: string;
+  selectAll?: string;
+  selectRow?: string;
+  /** e.g. `(n) => \`${n} selected\`` */
+  selected?: (count: number) => React.ReactNode;
+  shown?: string;
+  of?: string;
+  total?: string;
+  rowsPerPage?: string;
+  previousPage?: string;
+  nextPage?: string;
+  /** Accessible name of a numbered page button. */
+  page?: (page: number) => string;
+  pagination?: string;
+  loading?: string;
+}
+
+const DEFAULT_LABELS: Required<DataTableLabels> = {
+  search: "Поиск",
+  selectAll: "Выбрать все",
+  selectRow: "Выбрать строку",
+  selected: (n) => `${n} выбрано`,
+  shown: "Показано",
+  of: "из",
+  total: "Всего",
+  rowsPerPage: "Строк:",
+  previousPage: "Назад",
+  nextPage: "Вперёд",
+  page: (n) => `Страница ${n}`,
+  pagination: "Страницы",
+  loading: "Загрузка…",
+};
+
 /** Internal pagination — DataTable manages page state and slices rows itself. */
 export interface DataTableAutoPagination {
   pageSize?: number;
@@ -97,6 +132,7 @@ export interface DataTableProps<T> {
   footer?: React.ReactNode;
   onRowClick?: (row: T) => void;
   className?: string;
+  labels?: DataTableLabels;
 }
 
 function getPageNumbers(current: number, total: number): (number | "...")[] {
@@ -123,9 +159,10 @@ function compare(
 }
 
 function SortIcon({ dir }: { dir?: SortDir }) {
-  if (!dir) return <ChevronsUpDown className="size-3 opacity-50" />;
+  if (!dir) return <ChevronsUpDown className="size-3 opacity-50" aria-hidden />;
   return (
     <ChevronUp
+      aria-hidden
       className={cn(
         "size-3 text-brand transition-transform",
         dir === "desc" && "rotate-180",
@@ -163,7 +200,9 @@ export function DataTable<T>({
   footer,
   onRowClick,
   className,
+  labels,
 }: DataTableProps<T>) {
+  const t = { ...DEFAULT_LABELS, ...labels };
   const [query, setQuery] = React.useState("");
   const [sort, setSort] = React.useState<{ key: string; dir: SortDir } | undefined>(
     defaultSort,
@@ -267,9 +306,9 @@ export function DataTable<T>({
   const Wrapper = bordered ? TableContainer : PlainWrapper;
 
   return (
-    <Wrapper className={className}>
+    <Wrapper className={className} aria-busy={loading || undefined}>
       {showToolbar ? (
-        <div className="flex items-center gap-2 border-b-[1.5px] border-hairline px-4 py-3">
+        <div className="flex flex-wrap items-center gap-2 border-b-[1.5px] border-hairline px-4 py-3">
           {(title || caption) && (
             <h3 className="text-[15px] font-bold text-ink-1">
               {title}
@@ -280,16 +319,18 @@ export function DataTable<T>({
           )}
           <div className="flex-1" />
           {searchable ? (
-            <div className="flex w-[260px] items-center gap-1.5 !rounded-md border border-hairline bg-ui-bg px-2.5 py-1.5">
-              <Search className="size-[15px] text-ink-3" />
+            <div className="flex w-full items-center gap-1.5 !rounded-md border border-hairline bg-ui-bg px-2.5 py-1.5 transition-colors focus-within:border-brand focus-within:ring-2 focus-within:ring-brand/30 sm:w-[260px]">
+              <Search className="size-[15px] shrink-0 text-ink-3" aria-hidden />
               <input
+                type="search"
+                aria-label={t.search}
                 value={query}
                 onChange={(e) => {
                   setQuery(e.target.value);
                   onSearch?.(e.target.value);
                 }}
                 placeholder={searchPlaceholder}
-                className="w-full border-0 bg-transparent text-[13.5px] font-medium text-ink-1 outline-none placeholder:text-ink-3"
+                className="w-full min-w-0 border-0 bg-transparent [&::-webkit-search-cancel-button]:appearance-none text-[13.5px] font-medium text-ink-1 outline-none placeholder:text-ink-3"
               />
             </div>
           ) : null}
@@ -297,26 +338,34 @@ export function DataTable<T>({
         </div>
       ) : null}
 
+      {/* Always mounted, so screen readers announce selection changes. */}
+      {selectable ? (
+        <span role="status" className="sr-only">
+          {selectedCount > 0 ? t.selected(selectedCount) : null}
+        </span>
+      ) : null}
       {selectable && selectedCount > 0 ? (
-        <div className="flex items-center gap-2.5 bg-brand-deep px-4 py-2.5 text-white">
-          <b className="text-[13px] font-bold">{selectedCount} выбрано</b>
+        <div className="flex flex-wrap items-center gap-2.5 bg-brand-deep px-4 py-2.5 text-white">
+          <b className="text-[13px] font-bold">{t.selected(selectedCount)}</b>
           {selectionActions}
         </div>
       ) : null}
 
       {loading ? (
-        <div className="px-4 py-2">
+        <div className="px-4 py-2" role="status">
+          <span className="sr-only">{t.loading}</span>
           {Array.from({ length: skeletonRows }).map((_, i) => (
             <div
               key={i}
+              aria-hidden
               className="flex items-center gap-2 border-b border-hairline py-2.5 last:border-b-0"
             >
               {selectable ? (
-                <div className="size-[18px] shrink-0 rounded bg-ui-surface-2" />
+                <div className="size-[18px] shrink-0 rounded bg-ui-surface-2 motion-safe:animate-pulse" />
               ) : null}
-              <div className="h-3 flex-1 animate-pulse rounded bg-ui-surface-2" />
-              <div className="h-3 w-24 animate-pulse rounded bg-ui-surface-2" />
-              <div className="h-3 w-16 animate-pulse rounded bg-ui-surface-2" />
+              <div className="h-3 flex-1 rounded bg-ui-surface-2 motion-safe:animate-pulse" />
+              <div className="h-3 w-24 rounded bg-ui-surface-2 motion-safe:animate-pulse" />
+              <div className="h-3 w-16 rounded bg-ui-surface-2 motion-safe:animate-pulse" />
             </div>
           ))}
         </div>
@@ -332,34 +381,58 @@ export function DataTable<T>({
                     checked={allSelected}
                     indeterminate={!allSelected && someSelected}
                     onCheckedChange={toggleAll}
-                    aria-label="Выбрать все"
+                    aria-label={t.selectAll}
                   />
                 </TableHead>
               ) : null}
-              {columns.map((col) => (
-                <TableHead
-                  key={col.key}
-                  align={col.align}
-                  style={col.width ? { width: col.width } : undefined}
-                  onClick={() => onHeaderSort(col)}
-                  className={cn(
-                    col.sortable && "cursor-pointer hover:text-ink-1",
-                    col.headClassName,
-                  )}
-                >
-                  <span
-                    className={cn(
-                      "inline-flex items-center gap-1.5",
-                      col.align === "right" && "flex-row-reverse",
-                    )}
-                  >
+              {columns.map((col) => {
+                const dir = sort?.key === col.key ? sort.dir : undefined;
+                const inner = (
+                  <>
                     {col.header}
+                    {col.sortable ? <SortIcon dir={dir} /> : null}
+                  </>
+                );
+                return (
+                  <TableHead
+                    key={col.key}
+                    align={col.align}
+                    aria-sort={
+                      col.sortable
+                        ? dir === "asc"
+                          ? "ascending"
+                          : dir === "desc"
+                            ? "descending"
+                            : "none"
+                        : undefined
+                    }
+                    style={col.width ? { width: col.width } : undefined}
+                    className={col.headClassName}
+                  >
                     {col.sortable ? (
-                      <SortIcon dir={sort?.key === col.key ? sort.dir : undefined} />
-                    ) : null}
-                  </span>
-                </TableHead>
-              ))}
+                      <button
+                        type="button"
+                        onClick={() => onHeaderSort(col)}
+                        className={cn(
+                          "-mx-1 inline-flex items-center gap-1.5 !rounded-sm px-1 uppercase tracking-[inherit] outline-none transition-colors cursor-pointer hover:text-ink-1 focus-visible:ring-2 focus-visible:ring-brand/40",
+                          col.align === "right" && "flex-row-reverse",
+                        )}
+                      >
+                        {inner}
+                      </button>
+                    ) : (
+                      <span
+                        className={cn(
+                          "inline-flex items-center gap-1.5",
+                          col.align === "right" && "flex-row-reverse",
+                        )}
+                      >
+                        {inner}
+                      </span>
+                    )}
+                  </TableHead>
+                );
+              })}
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -371,7 +444,23 @@ export function DataTable<T>({
                   key={k}
                   selected={isSel}
                   onClick={onRowClick ? () => onRowClick(row) : undefined}
-                  className={onRowClick ? "cursor-pointer" : undefined}
+                  tabIndex={onRowClick ? 0 : undefined}
+                  onKeyDown={
+                    onRowClick
+                      ? (e) => {
+                          if (e.target !== e.currentTarget) return;
+                          if (e.key === "Enter" || e.key === " ") {
+                            e.preventDefault();
+                            onRowClick(row);
+                          }
+                        }
+                      : undefined
+                  }
+                  className={
+                    onRowClick
+                      ? "cursor-pointer outline-none focus-visible:bg-mist focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-brand"
+                      : undefined
+                  }
                   style={rowHeight != null ? { height: rowHeight } : undefined}
                 >
                   {selectable ? (
@@ -379,7 +468,7 @@ export function DataTable<T>({
                       <Checkbox
                         checked={isSel}
                         onCheckedChange={() => toggleRow(row)}
-                        aria-label="Выбрать строку"
+                        aria-label={t.selectRow}
                       />
                     </TableCell>
                   ) : null}
@@ -409,31 +498,31 @@ export function DataTable<T>({
           <span className="text-[13px] font-medium text-ink-3">
             {footerPager.rangeStart != null && footerPager.rangeEnd != null ? (
               <>
-                Показано{" "}
+                {t.shown}{" "}
                 <b className="font-bold text-ink-1">
                   {footerPager.rangeStart}–{footerPager.rangeEnd}
                 </b>
                 {footerPager.total != null ? (
                   <>
                     {" "}
-                    из <b className="font-bold text-ink-1">{footerPager.total}</b>
+                    {t.of} <b className="font-bold text-ink-1">{footerPager.total}</b>
                   </>
                 ) : null}
               </>
             ) : footerPager.total != null ? (
               <>
-                Всего <b className="font-bold text-ink-1">{footerPager.total}</b>
+                {t.total} <b className="font-bold text-ink-1">{footerPager.total}</b>
               </>
             ) : null}
           </span>
 
           {footerPager.onPageSizeChange && footerPager.pageSizeOptions ? (
-            <div className="flex items-center gap-2 text-[13px] text-ink-3">
-              Строк:
+            <label className="flex items-center gap-2 text-[13px] text-ink-3">
+              {t.rowsPerPage}
               <select
                 value={footerPager.pageSize}
                 onChange={(e) => footerPager.onPageSizeChange?.(Number(e.target.value))}
-                className="!rounded-md border border-hairline bg-ui-surface px-2 py-1 text-[13px] font-semibold text-ink-1 outline-none"
+                className="!rounded-md border border-hairline bg-ui-surface px-2 py-1 text-[13px] font-semibold text-ink-1 outline-none cursor-pointer focus-visible:border-brand focus-visible:ring-2 focus-visible:ring-brand/30"
               >
                 {footerPager.pageSizeOptions.map((n) => (
                   <option key={n} value={n}>
@@ -441,27 +530,29 @@ export function DataTable<T>({
                   </option>
                 ))}
               </select>
-            </div>
+            </label>
           ) : null}
 
           {footerPager.pageCount > 1 ? (
-            <div className="ml-auto flex items-center gap-1">
+            <nav aria-label={t.pagination} className="ml-auto flex items-center gap-1">
               <PagerButton
                 disabled={footerPager.page <= 1}
                 onClick={() => footerPager.onPageChange(footerPager.page - 1)}
-                aria-label="Назад"
+                aria-label={t.previousPage}
               >
-                <ChevronLeft className="size-[15px]" />
+                <ChevronLeft className="size-[15px]" aria-hidden />
               </PagerButton>
               {getPageNumbers(footerPager.page, footerPager.pageCount).map((p, i) =>
                 p === "..." ? (
-                  <span key={`e${i}`} className="px-1.5 text-ink-3">
+                  <span key={`e${i}`} aria-hidden className="px-1.5 text-ink-3">
                     …
                   </span>
                 ) : (
                   <PagerButton
                     key={p}
                     active={p === footerPager.page}
+                    aria-current={p === footerPager.page ? "page" : undefined}
+                    aria-label={t.page(p)}
                     onClick={() => footerPager.onPageChange(p)}
                   >
                     {p}
@@ -471,11 +562,11 @@ export function DataTable<T>({
               <PagerButton
                 disabled={footerPager.page >= footerPager.pageCount}
                 onClick={() => footerPager.onPageChange(footerPager.page + 1)}
-                aria-label="Вперёд"
+                aria-label={t.nextPage}
               >
-                <ChevronRight className="size-[15px]" />
+                <ChevronRight className="size-[15px]" aria-hidden />
               </PagerButton>
-            </div>
+            </nav>
           ) : null}
         </div>
       ) : null}
@@ -498,9 +589,9 @@ function PagerButton({
     <button
       type="button"
       className={cn(
-        "inline-flex h-8 min-w-8 items-center justify-center !rounded-md border px-1.5 text-[13px] font-bold transition-colors disabled:cursor-default disabled:opacity-40",
+        "inline-flex h-8 min-w-8 items-center justify-center !rounded-md border px-1.5 text-[13px] font-bold tabular-nums outline-none transition-colors cursor-pointer focus-visible:ring-2 focus-visible:ring-brand/50 disabled:cursor-default disabled:opacity-40",
         active
-          ? "border-transparent bg-brand text-on-brand"
+          ? "border-transparent bg-brand-solid text-on-brand"
           : "border-hairline bg-ui-surface text-ink-2 hover:bg-ui-bg hover:text-ink-1",
         className,
       )}

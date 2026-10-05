@@ -28,7 +28,10 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
     )}
   >
     {icon ? (
-      <div className="mb-3 flex size-12 items-center justify-center !rounded-full bg-mist text-mist-ink">
+      <div
+        aria-hidden
+        className="mb-3 flex size-12 items-center justify-center !rounded-full bg-mist text-mist-ink"
+      >
         {icon}
       </div>
     ) : null}
