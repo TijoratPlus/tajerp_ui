@@ -1,0 +1,19 @@
+---
+description: Do not create Jira work, git branches, or commits unless the user explicitly asks
+alwaysApply: true
+---
+
+# Wait for an explicit ask
+
+Do not create Jira issues, git branches, commits, pushes, or pull requests unless the user explicitly asks for that action in this conversation.
+
+Implementing or finishing code is not permission to:
+
+- create or clone a Jira story, task, bug, or sub-task
+- transition a Jira issue, assign it, or comment on it
+- create, rename, or switch git branches
+- `git commit`, `git push`, or open a PR
+
+If a project guide describes a one-branch / one-PR / one-story workflow, follow it only after the user asks. Until then, edit files in the current workspace and leave git and Jira alone.
+
+Do not use Jira or Atlassian skills (create-task, capture-tasks-from-meeting-notes, spec-to-backlog, triage-issue) unless the user asked to create or change tickets.
