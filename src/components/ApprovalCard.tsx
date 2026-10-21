@@ -63,7 +63,8 @@ export interface ApprovalStep {
   decidedAt?: Date | number | string;
 }
 
-type ActionResult = void | Promise<unknown>;
+// Any return value is allowed; a returned Promise drives the loading state.
+type ActionResult = unknown;
 
 export type ApprovalCardMessages = {
   approve: string;
