@@ -8,10 +8,16 @@
         registers semantic utilities (bg-brand, text-ink-1, …)
         that automatically adapt to light/dark.
 
-   Dark mode: set [data-theme="dark"] on a wrapping element.
+   Dark mode: set [data-theme="dark"] (or .dark) on <html>. Portaled
+   overlays (Dialog, Popover, …) render under <body>, so a theme set on an
+   inner wrapper does not reach them.
 
-   Fonts (Inter, Faster One): import "tajerp_ui/styles/fonts.css" before
-   tailwindcss, or add the Google Fonts <link> tags in your HTML shell.
+   Density: set data-density="compact" | "comfortable" | "touch" on any
+   ancestor to resize controls (see --tj-control-*).
+
+   Fonts (Inter, Faster One): import "tajerp_ui/styles/fonts.css" (Google
+   Fonts) before tailwindcss, or "tajerp_ui/styles/fonts-local.css"
+   (self-hosted, works offline).
    ============================================================ */
 
 :root {
@@ -47,6 +53,10 @@
   --tj-coral-tint: rgb(255, 189, 167);
   --tj-sand: rgb(245, 240, 228);
 
+  /* ---- Warm neutrals (tijorat.plus marketing surfaces, receipts) ---- */
+  --tj-cream: rgb(243, 239, 230);
+  --tj-cream-deep: rgb(233, 227, 212);
+
   /* ---- Radii ---- */
   --tj-radius-xs: 4px;
   --tj-radius-sm: 6px;
@@ -73,7 +83,8 @@
 
   /* ---- Type families ---- */
   --tj-font-sans:
-    "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    "Inter", "Inter Variable", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Roboto, sans-serif;
   --tj-font-display: "Faster One", "Inter", sans-serif; /* logo / hero only */
 
   /* ---- Type scale ---- */
@@ -88,6 +99,18 @@
   --tj-fs-4xl: 48px;
   --tj-fs-5xl: 58px;
   --tj-fs-6xl: 72px;
+
+  /* ---- UI type scale (component text) ----
+     Role-based sizes used inside components. Registered as Tailwind
+     utilities `text-ui-micro` … `text-ui-title`. The marketing scale above
+     (--tj-fs-*) is for hero / landing typography. */
+  --tj-fs-ui-micro: 10px; /* compact badges */
+  --tj-fs-ui-caption: 11px; /* table heads, meta, counters */
+  --tj-fs-ui-helper: 12.5px; /* helper / error text, toast description */
+  --tj-fs-ui-label: 13px; /* labels, small buttons, captions */
+  --tj-fs-ui-body: 13.5px; /* menu items, table cells, tabs */
+  --tj-fs-ui-control: 14px; /* inputs, default buttons */
+  --tj-fs-ui-title: 15px; /* card / section titles */
 
   /* ---- Line height ---- */
   --tj-lh-tight: 1;
@@ -108,7 +131,8 @@
     0 4px 12px rgba(12, 30, 22, 0.06), 0 1px 2px rgba(12, 30, 22, 0.04);
   --tj-shadow-lg:
     0 12px 32px rgba(12, 30, 22, 0.1), 0 2px 6px rgba(12, 30, 22, 0.05);
-  --tj-shadow-brand: 0 8px 24px rgba(29, 159, 110, 0.22);
+  --tj-shadow-brand: 0 8px 24px
+    color-mix(in srgb, var(--tj-green) 22%, transparent);
 
   /* ---- Motion ---- */
   --tj-ease-out: cubic-bezier(0.2, 0.7, 0.2, 1);
@@ -117,6 +141,28 @@
   --tj-dur-fast: 120ms;
   --tj-dur-base: 200ms;
   --tj-dur-slow: 360ms;
+
+  /* ---- Layering ----
+     Overlays share one level and stack by DOM order (a popover opened from a
+     dialog portals later, so it wins). Hosts with their own high z-indexes
+     (e.g. Bootstrap modals at 1050 in the Frappe desk) can raise these. */
+  --tj-z-sticky: 10;
+  --tj-z-dropdown: 50;
+  --tj-z-overlay: 50;
+  --tj-z-modal: 50;
+  --tj-z-popover: 50;
+  --tj-z-tooltip: 60;
+  --tj-z-toast: 100;
+
+  /* ---- Density ----
+     Control heights (buttons, inputs, selects) and table cell padding.
+     Switch per subtree with data-density="compact" | "comfortable" | "touch".
+     `touch` targets POS tablets (44px+ targets, WCAG 2.5.5). */
+  --tj-control-sm: 32px;
+  --tj-control-md: 36px;
+  --tj-control-lg: 40px;
+  --tj-cell-py: 10px;
+  --tj-cell-px: 12px;
 
   /* ============================================================
      Semantic runtime tokens — what components actually read.
@@ -127,7 +173,15 @@
   --ui-surface: var(--tj-white);
   --ui-surface-2: rgb(247, 249, 248);
   --ui-surface-inset: rgb(238, 249, 244);
+  --ui-surface-warm: var(--tj-cream);
   --ui-rail-bg: var(--tj-green-forest);
+  /* Text and states on the dark navigation rail (Sidebar). */
+  --ui-rail-ink: var(--tj-white);
+  --ui-rail-ink-muted: rgba(255, 255, 255, 0.72);
+  --ui-rail-hover: rgba(255, 255, 255, 0.1);
+  --ui-rail-border: rgba(255, 255, 255, 0.1);
+  /* Scrim behind modal dialogs and sheets. */
+  --ui-overlay: rgba(5, 14, 10, 0.5);
 
   --ui-ink-1: var(--tj-ink-1);
   --ui-ink-2: var(--tj-ink-2);
@@ -141,11 +195,13 @@
   --ui-brand-disabled: rgb(179, 212, 201);
   /* Fill for brand surfaces that carry text (solid buttons, active tabs/pages).
      The logo green only reaches 3.4:1 against white text; these reach 4.6:1+. */
-  --ui-brand-solid: rgb(24, 133, 92);
+  --ui-brand-solid: color-mix(in srgb, var(--tj-green) 84%, black);
   --ui-brand-solid-hover: var(--tj-green-ink);
 
   --ui-hairline: var(--tj-green-haze);
-  --ui-border-brand: rgba(29, 159, 110, 0.3);
+  --ui-border-brand: color-mix(in srgb, var(--tj-green) 30%, transparent);
+  /* Focus ring — one colour for every control (WCAG 2.4.7 / 2.4.11). */
+  --ui-focus: color-mix(in srgb, var(--tj-green) 50%, transparent);
   --ui-mist: var(--tj-green-mist);
   --ui-mist-ink: var(--tj-green-ink);
 
@@ -163,7 +219,41 @@
   --ui-error-ink: rgb(196, 52, 34);
   --ui-info-ink: rgb(23, 89, 234);
 
+  /* Data-visualisation palette — brand green first, then hues that stay
+     distinguishable for the common colour-vision deficiencies. */
+  --ui-chart-1: rgb(29, 159, 110);
+  --ui-chart-2: rgb(59, 130, 246);
+  --ui-chart-3: rgb(245, 158, 11);
+  --ui-chart-4: rgb(224, 92, 75);
+  --ui-chart-5: rgb(139, 92, 246);
+  --ui-chart-6: rgb(6, 182, 212);
+  --ui-chart-7: rgb(100, 116, 139);
+  --ui-chart-8: rgb(132, 204, 22);
+
   --ui-card-shadow: var(--tj-shadow-sm);
+}
+
+/* Density presets — see --tj-control-* above. */
+[data-density="compact"] {
+  --tj-control-sm: 28px;
+  --tj-control-md: 32px;
+  --tj-control-lg: 36px;
+  --tj-cell-py: 6px;
+  --tj-cell-px: 10px;
+}
+[data-density="comfortable"] {
+  --tj-control-sm: 32px;
+  --tj-control-md: 36px;
+  --tj-control-lg: 40px;
+  --tj-cell-py: 10px;
+  --tj-cell-px: 12px;
+}
+[data-density="touch"] {
+  --tj-control-sm: 40px;
+  --tj-control-md: 44px;
+  --tj-control-lg: 52px;
+  --tj-cell-py: 14px;
+  --tj-cell-px: 14px;
 }
 
 [data-theme="dark"],
@@ -172,7 +262,9 @@
   --ui-surface: #132621;
   --ui-surface-2: #0f1d17;
   --ui-surface-inset: #133626;
+  --ui-surface-warm: #1c211a;
   --ui-rail-bg: #050e0a;
+  --ui-overlay: rgba(0, 0, 0, 0.6);
 
   --ui-ink-1: #f1f6f4;
   --ui-ink-2: #b8cfc6;
@@ -184,10 +276,11 @@
   --ui-brand-ink: var(--tj-green-soft);
   --ui-brand-deep: #050e0a;
   --ui-brand-disabled: #2f5847;
-  --ui-brand-solid: rgb(24, 133, 92);
+  --ui-brand-solid: color-mix(in srgb, var(--tj-green) 84%, black);
   --ui-brand-solid-hover: var(--tj-green-ink);
 
   --ui-hairline: rgba(168, 222, 202, 0.12);
+  --ui-focus: rgba(52, 211, 153, 0.55);
   --ui-border-brand: rgba(168, 222, 202, 0.25);
   --ui-mist: rgba(29, 159, 110, 0.18);
   --ui-mist-ink: var(--tj-green-soft);
@@ -199,6 +292,15 @@
   --ui-warning-ink: rgb(251, 191, 36);
   --ui-error-ink: rgb(240, 153, 122);
   --ui-info-ink: rgb(147, 197, 253);
+
+  --ui-chart-1: rgb(52, 211, 153);
+  --ui-chart-2: rgb(96, 165, 250);
+  --ui-chart-3: rgb(251, 191, 36);
+  --ui-chart-4: rgb(240, 153, 122);
+  --ui-chart-5: rgb(167, 139, 250);
+  --ui-chart-6: rgb(34, 211, 238);
+  --ui-chart-7: rgb(148, 163, 184);
+  --ui-chart-8: rgb(163, 230, 53);
 
   --ui-card-shadow: 0 1px 0 rgba(0, 0, 0, 0.2);
 }
@@ -223,7 +325,14 @@
   --color-ui-surface: var(--ui-surface);
   --color-ui-surface-2: var(--ui-surface-2);
   --color-ui-surface-inset: var(--ui-surface-inset);
+  --color-ui-surface-warm: var(--ui-surface-warm);
   --color-ui-rail: var(--ui-rail-bg);
+  --color-ui-overlay: var(--ui-overlay);
+  --color-rail-ink: var(--ui-rail-ink);
+  --color-rail-ink-muted: var(--ui-rail-ink-muted);
+  --color-rail-hover: var(--ui-rail-hover);
+  --color-rail-border: var(--ui-rail-border);
+  --color-focus: var(--ui-focus);
 
   --color-ink-1: var(--ui-ink-1);
   --color-ink-2: var(--ui-ink-2);
@@ -246,6 +355,32 @@
   --color-tj-error-ink: var(--ui-error-ink);
   --color-tj-info-ink: var(--ui-info-ink);
 
+  /* Data-visualisation palette */
+  --color-chart-1: var(--ui-chart-1);
+  --color-chart-2: var(--ui-chart-2);
+  --color-chart-3: var(--ui-chart-3);
+  --color-chart-4: var(--ui-chart-4);
+  --color-chart-5: var(--ui-chart-5);
+  --color-chart-6: var(--ui-chart-6);
+  --color-chart-7: var(--ui-chart-7);
+  --color-chart-8: var(--ui-chart-8);
+
+  /* UI type scale — text-ui-micro … text-ui-title */
+  --text-ui-micro: var(--tj-fs-ui-micro);
+  --text-ui-caption: var(--tj-fs-ui-caption);
+  --text-ui-helper: var(--tj-fs-ui-helper);
+  --text-ui-label: var(--tj-fs-ui-label);
+  --text-ui-body: var(--tj-fs-ui-body);
+  --text-ui-control: var(--tj-fs-ui-control);
+  --text-ui-title: var(--tj-fs-ui-title);
+
+  /* Density-aware control sizes — h-control-md, size-control-sm, … */
+  --spacing-control-sm: var(--tj-control-sm);
+  --spacing-control-md: var(--tj-control-md);
+  --spacing-control-lg: var(--tj-control-lg);
+  --spacing-cell-x: var(--tj-cell-px);
+  --spacing-cell-y: var(--tj-cell-py);
+
   /* Radii */
   --radius-xs: var(--tj-radius-xs);
   --radius-sm: var(--tj-radius-sm);
@@ -260,6 +395,7 @@
   --shadow-tj-md: var(--tj-shadow-md);
   --shadow-tj-lg: var(--tj-shadow-lg);
   --shadow-tj-brand: var(--tj-shadow-brand);
+  --shadow-tj-card: var(--ui-card-shadow);
 
   /* Motion */
   --ease-tj-out: var(--tj-ease-out);

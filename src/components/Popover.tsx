@@ -2,45 +2,62 @@ import * as PopoverPrimitive from "@radix-ui/react-popover";
 import * as React from "react";
 
 import { cn } from "../lib/cn";
+import { floatingPanelClass } from "../lib/overlay";
+import { usePortalContainer } from "./TajUIProvider";
 
-function Popover({
-  ...props
-}: React.ComponentProps<typeof PopoverPrimitive.Root>) {
+function Popover(props: React.ComponentProps<typeof PopoverPrimitive.Root>) {
   return <PopoverPrimitive.Root data-slot="popover" {...props} />;
 }
 
-function PopoverTrigger({
-  ...props
-}: React.ComponentProps<typeof PopoverPrimitive.Trigger>) {
-  return <PopoverPrimitive.Trigger data-slot="popover-trigger" {...props} />;
-}
+const PopoverTrigger = React.forwardRef<
+  React.ElementRef<typeof PopoverPrimitive.Trigger>,
+  React.ComponentPropsWithoutRef<typeof PopoverPrimitive.Trigger>
+>((props, ref) => (
+  <PopoverPrimitive.Trigger ref={ref} data-slot="popover-trigger" {...props} />
+));
+PopoverTrigger.displayName = "PopoverTrigger";
 
-function PopoverAnchor({
-  ...props
-}: React.ComponentProps<typeof PopoverPrimitive.Anchor>) {
-  return <PopoverPrimitive.Anchor data-slot="popover-anchor" {...props} />;
-}
+const PopoverAnchor = React.forwardRef<
+  React.ElementRef<typeof PopoverPrimitive.Anchor>,
+  React.ComponentPropsWithoutRef<typeof PopoverPrimitive.Anchor>
+>((props, ref) => (
+  <PopoverPrimitive.Anchor ref={ref} data-slot="popover-anchor" {...props} />
+));
+PopoverAnchor.displayName = "PopoverAnchor";
 
-function PopoverContent({
-  className,
-  align = "center",
-  sideOffset = 6,
-  ...props
-}: React.ComponentProps<typeof PopoverPrimitive.Content>) {
+const PopoverClose = React.forwardRef<
+  React.ElementRef<typeof PopoverPrimitive.Close>,
+  React.ComponentPropsWithoutRef<typeof PopoverPrimitive.Close>
+>((props, ref) => (
+  <PopoverPrimitive.Close ref={ref} data-slot="popover-close" {...props} />
+));
+PopoverClose.displayName = "PopoverClose";
+
+export type PopoverContentProps = React.ComponentPropsWithoutRef<
+  typeof PopoverPrimitive.Content
+> & {
+  /** Portal target. Defaults to the TajUIProvider container, then <body>. */
+  container?: HTMLElement | null;
+};
+
+const PopoverContent = React.forwardRef<
+  React.ElementRef<typeof PopoverPrimitive.Content>,
+  PopoverContentProps
+>(({ className, align = "center", sideOffset = 6, container, ...props }, ref) => {
+  const providerContainer = usePortalContainer();
   return (
-    <PopoverPrimitive.Portal>
+    <PopoverPrimitive.Portal container={container ?? providerContainer}>
       <PopoverPrimitive.Content
+        ref={ref}
         data-slot="popover-content"
         align={align}
         sideOffset={sideOffset}
-        className={cn(
-          "z-50 w-72 !rounded-lg border border-hairline bg-ui-surface p-3 text-ink-1 shadow-tj-lg outline-none data-[state=closed]:animate-out data-[state=open]:animate-in data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95",
-          className,
-        )}
+        className={cn(floatingPanelClass, "w-72 p-3", className)}
         {...props}
       />
     </PopoverPrimitive.Portal>
   );
-}
+});
+PopoverContent.displayName = "PopoverContent";
 
-export { Popover, PopoverTrigger, PopoverContent, PopoverAnchor };
+export { Popover, PopoverTrigger, PopoverContent, PopoverAnchor, PopoverClose };

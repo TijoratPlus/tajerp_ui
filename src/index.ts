@@ -1,9 +1,58 @@
 // ─── tajerp_ui — Tijorat+ design system ─────────────────────────────
-// Import design tokens once in your app entry:
-//   import "tajerp_ui/styles/tokens.css";
+// Import the theme once in your app's CSS entry (after tailwindcss):
+//   @import "tajerp_ui/styles/index.css";
 
 export { cn } from "./lib/cn";
 export { Slot } from "./lib/Slot";
+export type { ControlSize } from "./lib/control";
+
+// ── Configuration, i18n and formatting ──────────────────────────────
+export {
+  TajUIProvider,
+  useCommonMessages,
+  useFormat,
+  useLocale,
+  useMessages,
+  usePortalContainer,
+} from "./components/TajUIProvider";
+export type {
+  MessageOverrides,
+  TajUIProviderProps,
+} from "./components/TajUIProvider";
+export {
+  DEFAULT_LOCALE,
+  LOCALES,
+  LOCALE_NAMES,
+  LOCALE_SHORT,
+} from "./i18n/locale";
+export type { Locale } from "./i18n/locale";
+export { commonMessages, defineMessages } from "./i18n/messages";
+export type { MessageDict, MessageNamespace } from "./i18n/messages";
+export {
+  SOMONI_SYMBOL,
+  decimalSeparator,
+  formatDate,
+  formatMoney,
+  formatNumber,
+  formatRelative,
+  parseNumber,
+} from "./i18n/format";
+export type {
+  DateFormatOptions,
+  MoneyFormatOptions,
+  NumberFormatOptions,
+} from "./i18n/format";
+
+export {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupInput,
+} from "./components/InputGroup";
+export type {
+  InputGroupAddonProps,
+  InputGroupInputProps,
+  InputGroupProps,
+} from "./components/InputGroup";
 
 export {
   Carousel,
@@ -53,6 +102,7 @@ export type { LoadingStateProps } from "./components/LoadingState";
 export { ErrorState } from "./components/ErrorState";
 export type { ErrorStateProps } from "./components/ErrorState";
 
+export type { SheetContentProps } from "./components/Sheet";
 export {
   Sheet,
   SheetClose,
@@ -66,6 +116,7 @@ export {
   SheetTrigger,
 } from "./components/Sheet";
 
+export type { DialogContentProps } from "./components/Dialog";
 export {
   Dialog,
   DialogClose,
@@ -90,13 +141,16 @@ export {
   TooltipProvider,
   TooltipTrigger,
 } from "./components/Tooltip";
+export type { TooltipContentProps } from "./components/Tooltip";
 
 export {
   Popover,
   PopoverAnchor,
+  PopoverClose,
   PopoverContent,
   PopoverTrigger,
 } from "./components/Popover";
+export type { PopoverContentProps } from "./components/Popover";
 
 export { Separator } from "./components/Separator";
 export type { SeparatorProps } from "./components/Separator";

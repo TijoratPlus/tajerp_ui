@@ -7,12 +7,15 @@
      @source "../../node_modules/tajerp_ui/dist";
      @import "tajerp_ui/styles/index.css";
 
-   Load fonts first (before tailwindcss) via HTML <link> tags or
-   @import "tajerp_ui/styles/fonts.css";
+   Load fonts first (before tailwindcss) via HTML <link> tags,
+   @import "tajerp_ui/styles/fonts.css" (Google Fonts) or
+   @import "tajerp_ui/styles/fonts-local.css" (self-hosted, offline).
 
-   If you only need the raw design tokens (no shadcn token remaps),
+   If you only need the raw design tokens (no frappe-ui / shadcn remaps),
    import "tajerp_ui/styles/tokens.css" instead.
    ============================================================ */
 
 @import "./tokens.css";
+/* frappe-ui-react colour remaps — plain CSS variables, harmless without it. */
+@import "./frappe-theme.css";
 @import "./base.css";

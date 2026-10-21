@@ -1,0 +1,19 @@
+/* ============================================================
+   Self-hosted Inter (variable, 100–900) — no network needed.
+
+   Use this instead of fonts.css in apps that must work offline (the POS
+   keeps selling without internet). Requires a bundler that resolves
+   package CSS imports and copies the referenced font files (Vite,
+   webpack, esbuild with a CSS loader):
+
+     @import "tajerp_ui/styles/fonts-local.css";
+
+   Includes the cyrillic-ext subset, which carries the Tajik letters
+   ӣ ӯ ҳ қ ғ ҷ. Each subset has a unicode-range, so browsers download only
+   what a page actually renders.
+
+   Faster One (the logo face) is not bundled: it has no Cyrillic glyphs and
+   is used only for Latin display text. The TajERPLogo component is an SVG
+   and needs no font.
+   ============================================================ */
+@import "@fontsource-variable/inter";
