@@ -12,10 +12,12 @@ export {
   useCommonMessages,
   useFormat,
   useLocale,
+  useDensity,
   useMessages,
   usePortalContainer,
 } from "./components/TajUIProvider";
 export type {
+  Density,
   MessageOverrides,
   TajUIProviderProps,
 } from "./components/TajUIProvider";

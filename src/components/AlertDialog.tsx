@@ -7,7 +7,7 @@ import * as React from "react";
 import { cn } from "../lib/cn";
 import { overlayClass } from "../lib/overlay";
 import { buttonVariants } from "./Button";
-import { useCommonMessages, usePortalContainer } from "./TajUIProvider";
+import { useCommonMessages, useDensity, usePortalContainer } from "./TajUIProvider";
 
 /**
  * Modal confirmation that interrupts the user and requires an explicit answer
@@ -64,12 +64,15 @@ export type AlertDialogContentProps = React.ComponentPropsWithoutRef<
 const AlertDialogContent = React.forwardRef<
   React.ElementRef<typeof AlertDialogPrimitive.Content>,
   AlertDialogContentProps
->(({ className, size = "sm", ...props }, ref) => (
+>(({ className, size = "sm", ...props }, ref) => {
+  const density = useDensity();
+  return (
   <AlertDialogPortal>
     <AlertDialogOverlay />
     <AlertDialogPrimitive.Content
       ref={ref}
       data-slot="alert-dialog-content"
+      data-density={density}
       className={cn(
         "fixed top-1/2 left-1/2 z-(--tj-z-modal) grid w-[calc(100%-2rem)] max-h-[calc(100dvh-2rem)] overflow-y-auto overscroll-contain -translate-x-1/2 -translate-y-1/2 gap-4 !rounded-xl border border-hairline bg-ui-surface p-5 text-ink-1 shadow-tj-lg duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95",
         size === "sm" ? "max-w-sm" : "max-w-lg",
@@ -78,7 +81,8 @@ const AlertDialogContent = React.forwardRef<
       {...props}
     />
   </AlertDialogPortal>
-));
+  );
+});
 AlertDialogContent.displayName = "AlertDialogContent";
 
 const AlertDialogHeader = React.forwardRef<

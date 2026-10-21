@@ -18,7 +18,8 @@ export interface SegmentedControlProps<T extends string> {
   /** @deprecated Use `onValueChange`. */
   onChange?: (value: T) => void;
   className?: string;
-  size?: "sm" | "md";
+  /** `lg` follows the density tokens (44px+ in touch density, for POS). */
+  size?: "sm" | "md" | "lg";
   /** Accessible name for the group, e.g. "Language" or "Theme". */
   "aria-label"?: string;
   "aria-labelledby"?: string;
@@ -87,7 +88,9 @@ export function SegmentedControl<T extends string>({
               "focus-visible:ring-2 focus-visible:ring-focus disabled:cursor-not-allowed disabled:opacity-50",
               size === "sm"
                 ? "min-h-6 px-2.5 py-0.5 text-ui-caption"
-                : "min-h-7 px-3 py-1 text-ui-label",
+                : size === "lg"
+                  ? "min-h-control-md px-4 text-ui-control"
+                  : "min-h-7 px-3 py-1 text-ui-label",
               active
                 ? "bg-brand-solid text-on-brand shadow-tj-sm"
                 : "text-ink-3 hover:text-ink-1",

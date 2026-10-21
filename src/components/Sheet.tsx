@@ -4,7 +4,7 @@ import * as React from "react";
 
 import { cn } from "../lib/cn";
 import { closeButtonClass, overlayClass } from "../lib/overlay";
-import { useCommonMessages, usePortalContainer } from "./TajUIProvider";
+import { useCommonMessages, useDensity, usePortalContainer } from "./TajUIProvider";
 
 function Sheet(props: React.ComponentProps<typeof SheetPrimitive.Root>) {
   return <SheetPrimitive.Root data-slot="sheet" {...props} />;
@@ -60,6 +60,15 @@ export type SheetContentProps = React.ComponentPropsWithoutRef<
   showCloseButton?: boolean;
   /** Accessible name of the close button. Defaults to the locale's "Close". */
   closeLabel?: string;
+  /** Width of left/right sheets from the sm breakpoint. Defaults to "sm". */
+  size?: "sm" | "md" | "lg" | "xl";
+};
+
+const sheetWidths: Record<NonNullable<SheetContentProps["size"]>, string> = {
+  sm: "sm:max-w-sm",
+  md: "sm:max-w-lg",
+  lg: "sm:max-w-2xl",
+  xl: "sm:max-w-4xl",
 };
 
 const SheetContent = React.forwardRef<
@@ -67,23 +76,34 @@ const SheetContent = React.forwardRef<
   SheetContentProps
 >(
   (
-    { className, children, side = "right", showCloseButton = true, closeLabel, ...props },
+    {
+      className,
+      children,
+      side = "right",
+      showCloseButton = true,
+      closeLabel,
+      size = "sm",
+      ...props
+    },
     ref,
   ) => {
     const t = useCommonMessages();
+    const density = useDensity();
     return (
       <SheetPortal>
         <SheetOverlay />
         <SheetPrimitive.Content
           ref={ref}
           data-slot="sheet-content"
+          data-density={density}
           data-side={side}
           className={cn(
             "fixed z-(--tj-z-modal) pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)] flex flex-col gap-3 overflow-y-auto overscroll-contain bg-ui-bg shadow-tj-lg transition data-[state=closed]:animate-out data-[state=open]:animate-in data-[state=closed]:duration-200 data-[state=open]:duration-300",
             side === "right" &&
-              "data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right inset-y-0 right-0 h-full w-3/4 border-l border-hairline sm:max-w-sm",
+              "data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right inset-y-0 right-0 h-full w-3/4 border-l border-hairline",
             side === "left" &&
-              "data-[state=closed]:slide-out-to-left data-[state=open]:slide-in-from-left inset-y-0 left-0 h-full w-3/4 border-r border-hairline sm:max-w-sm",
+              "data-[state=closed]:slide-out-to-left data-[state=open]:slide-in-from-left inset-y-0 left-0 h-full w-3/4 border-r border-hairline",
+            (side === "left" || side === "right") && sheetWidths[size],
             side === "top" &&
               "data-[state=closed]:slide-out-to-top data-[state=open]:slide-in-from-top inset-x-0 top-0 h-auto border-b border-hairline",
             side === "bottom" &&

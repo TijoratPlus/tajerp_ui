@@ -3,7 +3,7 @@ import * as React from "react";
 
 import { cn } from "../lib/cn";
 import { floatingPanelClass } from "../lib/overlay";
-import { usePortalContainer } from "./TajUIProvider";
+import { useDensity, usePortalContainer } from "./TajUIProvider";
 
 /**
  * Preview on hover or keyboard focus (customer card behind a name, product
@@ -46,11 +46,13 @@ const HoverCardContent = React.forwardRef<
   HoverCardContentProps
 >(({ className, align = "center", sideOffset = 6, container, ...props }, ref) => {
   const providerContainer = usePortalContainer();
+  const density = useDensity();
   return (
     <HoverCardPrimitive.Portal container={container ?? providerContainer}>
       <HoverCardPrimitive.Content
         ref={ref}
         data-slot="hover-card-content"
+        data-density={density}
         align={align}
         sideOffset={sideOffset}
         className={cn(

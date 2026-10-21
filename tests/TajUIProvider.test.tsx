@@ -62,3 +62,21 @@ describe("TajUIProvider", () => {
     expect(title.closest(".tj-react-root")).not.toBeNull();
   });
 });
+
+describe("TajUIProvider density", () => {
+  it("applies density to the subtree and to portaled overlays", async () => {
+    render(
+      <TajUIProvider density="touch">
+        <p>Касса</p>
+        <Dialog open>
+          <DialogContent aria-describedby={undefined}>
+            <DialogTitle>Оплата</DialogTitle>
+          </DialogContent>
+        </Dialog>
+      </TajUIProvider>,
+    );
+    expect(screen.getByText("Касса").closest("[data-density]")).toHaveAttribute("data-density", "touch");
+    const dialog = await screen.findByRole("dialog");
+    expect(dialog).toHaveAttribute("data-density", "touch");
+  });
+});

@@ -4,7 +4,7 @@ import * as React from "react";
 
 import { cn } from "../lib/cn";
 import { floatingPanelClass } from "../lib/overlay";
-import { usePortalContainer } from "./TajUIProvider";
+import { useDensity, usePortalContainer } from "./TajUIProvider";
 
 /**
  * Shared item chrome. Height grows with density (min-h-control-sm → 40px in
@@ -58,11 +58,13 @@ const DropdownMenuContent = React.forwardRef<
   DropdownMenuContentProps
 >(({ className, sideOffset = 6, align = "start", container, ...props }, ref) => {
   const providerContainer = usePortalContainer();
+  const density = useDensity();
   return (
     <DropdownMenuPrimitive.Portal container={container ?? providerContainer}>
       <DropdownMenuPrimitive.Content
         ref={ref}
         data-slot="dropdown-menu-content"
+        data-density={density}
         sideOffset={sideOffset}
         align={align}
         className={cn(
@@ -243,11 +245,13 @@ const DropdownMenuSubContent = React.forwardRef<
   DropdownMenuSubContentProps
 >(({ className, container, sideOffset = 4, ...props }, ref) => {
   const providerContainer = usePortalContainer();
+  const density = useDensity();
   return (
     <DropdownMenuPrimitive.Portal container={container ?? providerContainer}>
       <DropdownMenuPrimitive.SubContent
         ref={ref}
         data-slot="dropdown-menu-sub-content"
+        data-density={density}
         sideOffset={sideOffset}
         className={cn(
           floatingPanelClass,

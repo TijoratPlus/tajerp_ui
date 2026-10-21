@@ -3,7 +3,7 @@ import * as React from "react";
 
 import { cn } from "../lib/cn";
 import { floatingPanelClass } from "../lib/overlay";
-import { usePortalContainer } from "./TajUIProvider";
+import { useDensity, usePortalContainer } from "./TajUIProvider";
 
 function Popover(props: React.ComponentProps<typeof PopoverPrimitive.Root>) {
   return <PopoverPrimitive.Root data-slot="popover" {...props} />;
@@ -45,11 +45,13 @@ const PopoverContent = React.forwardRef<
   PopoverContentProps
 >(({ className, align = "center", sideOffset = 6, container, ...props }, ref) => {
   const providerContainer = usePortalContainer();
+  const density = useDensity();
   return (
     <PopoverPrimitive.Portal container={container ?? providerContainer}>
       <PopoverPrimitive.Content
         ref={ref}
         data-slot="popover-content"
+        data-density={density}
         align={align}
         sideOffset={sideOffset}
         className={cn(floatingPanelClass, "w-72 p-3", className)}

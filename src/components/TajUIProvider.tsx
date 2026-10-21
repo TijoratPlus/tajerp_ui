@@ -21,8 +21,12 @@ import {
 /** Per-namespace string overrides, e.g. `{ dataTable: { noData: "…" } }`. */
 export type MessageOverrides = Record<string, Partial<MessageDict>>;
 
+export type Density = "compact" | "comfortable" | "touch";
+
 interface TajUIContextValue {
   locale: Locale;
+  /** Density for portaled overlays (they render outside the app subtree). */
+  density?: Density;
   messages?: MessageOverrides;
   portalContainer?: HTMLElement | null;
   /** Default currency for money formatting (ISO 4217). */
@@ -42,6 +46,12 @@ export interface TajUIProviderProps {
   messages?: MessageOverrides;
   /** Default currency for `useFormat().money`. Defaults to "TJS". */
   currency?: string;
+  /**
+   * Control density for this subtree *and* its portaled overlays (Dialog,
+   * Sheet, Popover, DropdownMenu, AlertDialog). Setting `data-density` on a
+   * wrapper alone does not reach overlays, which render under <body>.
+   */
+  density?: Density;
   /**
    * Element that Dialog, Sheet, Popover, Tooltip, DropdownMenu, … portal
    * into. Defaults to `document.body`.
@@ -68,6 +78,7 @@ export function TajUIProvider({
   currency,
   portalContainer,
   scopedPortal = false,
+  density,
 }: TajUIProviderProps) {
   const parent = React.useContext(TajUIContext);
   const [scopedHost, setScopedHost] = React.useState<HTMLElement | null>(null);
@@ -89,6 +100,7 @@ export function TajUIProvider({
     () => ({
       locale: locale ?? parent.locale,
       currency: currency ?? parent.currency,
+      density: density ?? parent.density,
       messages: messages
         ? mergeOverrides(parent.messages, messages)
         : parent.messages,
@@ -99,10 +111,20 @@ export function TajUIProvider({
             ? scopedHost
             : parent.portalContainer,
     }),
-    [locale, currency, messages, portalContainer, scopedPortal, scopedHost, parent],
+    [locale, currency, density, messages, portalContainer, scopedPortal, scopedHost, parent],
   );
 
-  return <TajUIContext.Provider value={value}>{children}</TajUIContext.Provider>;
+  return (
+    <TajUIContext.Provider value={value}>
+      {density ? (
+        <div data-density={density} style={{ display: "contents" }}>
+          {children}
+        </div>
+      ) : (
+        children
+      )}
+    </TajUIContext.Provider>
+  );
 }
 
 function mergeOverrides(
@@ -118,6 +140,14 @@ function mergeOverrides(
 /** Current interface language. */
 export function useLocale(): Locale {
   return React.useContext(TajUIContext).locale;
+}
+
+/**
+ * Density set on the nearest TajUIProvider. Overlay contents spread it as
+ * `data-density` so portaled UI matches the screen that opened it.
+ */
+export function useDensity(): Density | undefined {
+  return React.useContext(TajUIContext).density;
 }
 
 /** Container for Radix portals (undefined → document.body). */
