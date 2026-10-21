@@ -39,8 +39,8 @@ type FormFieldContextValue<
   name: TName;
 };
 
-const FormFieldContext = React.createContext<FormFieldContextValue>(
-  {} as FormFieldContextValue,
+const FormFieldContext = React.createContext<FormFieldContextValue | null>(
+  null,
 );
 
 function FormField<
@@ -56,11 +56,12 @@ function FormField<
 
 type FormItemContextValue = {
   id: string;
+  /** FormDescription registers itself so controls reference it only when present. */
+  hasDescription: boolean;
+  setHasDescription: (has: boolean) => void;
 };
 
-const FormItemContext = React.createContext<FormItemContextValue>(
-  {} as FormItemContextValue,
-);
+const FormItemContext = React.createContext<FormItemContextValue | null>(null);
 
 function useFormField() {
   const fieldContext = React.useContext(FormFieldContext);
@@ -70,12 +71,17 @@ function useFormField() {
   if (!fieldContext) {
     throw new Error("useFormField should be used within <FormField>");
   }
+  if (!itemContext) {
+    throw new Error("useFormField should be used within <FormItem>");
+  }
 
   const fieldState = getFieldState(fieldContext.name, formState);
-  const { id } = itemContext;
+  const { id, hasDescription, setHasDescription } = itemContext;
 
   return {
     id,
+    hasDescription,
+    setHasDescription,
     name: fieldContext.name,
     formItemId: `${id}-form-item`,
     formDescriptionId: `${id}-form-item-description`,
@@ -89,8 +95,13 @@ const FormItem = React.forwardRef<
   React.HTMLAttributes<HTMLDivElement>
 >(({ className, ...props }, ref) => {
   const id = React.useId();
+  const [hasDescription, setHasDescription] = React.useState(false);
+  const value = React.useMemo(
+    () => ({ id, hasDescription, setHasDescription }),
+    [id, hasDescription],
+  );
   return (
-    <FormItemContext.Provider value={{ id }}>
+    <FormItemContext.Provider value={value}>
       <div
         ref={ref}
         data-slot="form-item"
@@ -102,37 +113,50 @@ const FormItem = React.forwardRef<
 });
 FormItem.displayName = "FormItem";
 
-const FormLabel = React.forwardRef<
-  HTMLLabelElement,
-  React.ComponentPropsWithoutRef<typeof Label>
->(({ className, ...props }, ref) => {
-  const { error, formItemId } = useFormField();
-  return (
-    <Label
-      ref={ref}
-      data-slot="form-label"
-      data-error={!!error}
-      className={cn(error && "text-tj-error-ink", className)}
-      htmlFor={formItemId}
-      {...props}
-    />
-  );
-});
+export type FormLabelProps = React.ComponentPropsWithoutRef<typeof Label> & {
+  /** Append a required marker (an asterisk, hidden from screen readers). */
+  required?: boolean;
+};
+
+const FormLabel = React.forwardRef<HTMLLabelElement, FormLabelProps>(
+  ({ className, required, children, ...props }, ref) => {
+    const { error, formItemId } = useFormField();
+    return (
+      <Label
+        ref={ref}
+        data-slot="form-label"
+        data-error={!!error}
+        className={cn(error && "text-tj-error-ink", className)}
+        htmlFor={formItemId}
+        {...props}
+      >
+        {children}
+        {required ? (
+          <span aria-hidden className="ml-0.5 text-tj-error-ink">
+            *
+          </span>
+        ) : null}
+      </Label>
+    );
+  },
+);
 FormLabel.displayName = "FormLabel";
 
 const FormControl = React.forwardRef<
   React.ElementRef<typeof Slot>,
   React.ComponentPropsWithoutRef<typeof Slot>
 >((props, ref) => {
-  const { error, formItemId, formDescriptionId, formMessageId } =
+  const { error, formItemId, formDescriptionId, formMessageId, hasDescription } =
     useFormField();
+  const describedBy =
+    [hasDescription && formDescriptionId, error && formMessageId]
+      .filter(Boolean)
+      .join(" ") || undefined;
   return (
     <Slot
       ref={ref}
       id={formItemId}
-      aria-describedby={
-        error ? `${formDescriptionId} ${formMessageId}` : `${formDescriptionId}`
-      }
+      aria-describedby={describedBy}
       aria-invalid={!!error}
       {...props}
     />
@@ -144,13 +168,17 @@ const FormDescription = React.forwardRef<
   HTMLParagraphElement,
   React.HTMLAttributes<HTMLParagraphElement>
 >(({ className, ...props }, ref) => {
-  const { formDescriptionId } = useFormField();
+  const { formDescriptionId, setHasDescription } = useFormField();
+  React.useEffect(() => {
+    setHasDescription(true);
+    return () => setHasDescription(false);
+  }, [setHasDescription]);
   return (
     <p
       ref={ref}
       id={formDescriptionId}
       data-slot="form-description"
-      className={cn("text-[12.5px] text-ink-3", className)}
+      className={cn("text-ui-helper text-ink-3", className)}
       {...props}
     />
   );
@@ -169,7 +197,8 @@ const FormMessage = React.forwardRef<
       ref={ref}
       id={formMessageId}
       data-slot="form-message"
-      className={cn("text-[12.5px] font-medium text-tj-error-ink", className)}
+      aria-live="polite"
+      className={cn("text-ui-helper font-medium text-tj-error-ink", className)}
       {...props}
     >
       {body}

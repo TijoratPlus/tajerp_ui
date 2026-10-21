@@ -1,17 +1,22 @@
 import * as React from "react";
 
 import { cn } from "../lib/cn";
+import { useRovingFocus } from "../lib/useRovingFocus";
 
 export interface SegmentedOption<T extends string> {
   value: T;
   label: React.ReactNode;
   disabled?: boolean;
+  /** Accessible name when `label` is an icon. */
+  "aria-label"?: string;
 }
 
 export interface SegmentedControlProps<T extends string> {
   options: SegmentedOption<T>[];
   value: T;
-  onChange: (value: T) => void;
+  onValueChange?: (value: T) => void;
+  /** @deprecated Use `onValueChange`. */
+  onChange?: (value: T) => void;
   className?: string;
   size?: "sm" | "md";
   /** Accessible name for the group, e.g. "Language" or "Theme". */
@@ -29,48 +34,33 @@ export interface SegmentedControlProps<T extends string> {
 export function SegmentedControl<T extends string>({
   options,
   value,
+  onValueChange,
   onChange,
   className,
   size = "md",
   ...aria
 }: SegmentedControlProps<T>) {
-  const refs = React.useRef<Array<HTMLButtonElement | null>>([]);
-  const enabled = options
-    .map((opt, i) => (opt.disabled ? -1 : i))
-    .filter((i) => i >= 0);
-  const selectedIndex = options.findIndex((opt) => opt.value === value);
-  const tabStop = selectedIndex >= 0 ? selectedIndex : (enabled[0] ?? -1);
-
-  const onKeyDown = (e: React.KeyboardEvent, index: number) => {
-    const pos = enabled.indexOf(index);
-    let next: number | undefined;
-    switch (e.key) {
-      case "ArrowRight":
-      case "ArrowDown":
-        next = enabled[(pos + 1) % enabled.length];
-        break;
-      case "ArrowLeft":
-      case "ArrowUp":
-        next = enabled[(pos - 1 + enabled.length) % enabled.length];
-        break;
-      case "Home":
-        next = enabled[0];
-        break;
-      case "End":
-        next = enabled[enabled.length - 1];
-        break;
-      default:
-        return;
-    }
-    e.preventDefault();
-    if (next === undefined) return;
-    refs.current[next]?.focus();
-    onChange(options[next].value);
+  const emit = (next: T) => {
+    onValueChange?.(next);
+    onChange?.(next);
   };
+  const isDisabled = React.useCallback(
+    (i: number) => !!options[i]?.disabled,
+    [options],
+  );
+  const roving = useRovingFocus({
+    count: options.length,
+    isDisabled,
+    orientation: "both",
+    onMove: (i) => emit(options[i].value),
+  });
+  const selectedIndex = options.findIndex((opt) => opt.value === value);
+  const tabStop = selectedIndex >= 0 ? selectedIndex : (roving.enabled[0] ?? -1);
 
   return (
     <div
       role="radiogroup"
+      data-slot="segmented-control"
       {...aria}
       className={cn(
         "inline-flex items-center gap-0.5 !rounded-pill border border-hairline bg-ui-surface-2 p-0.5",
@@ -82,22 +72,22 @@ export function SegmentedControl<T extends string>({
         return (
           <button
             key={opt.value}
-            ref={(el) => {
-              refs.current[i] = el;
-            }}
+            ref={roving.setRef(i)}
             type="button"
             role="radio"
             aria-checked={active}
+            aria-label={opt["aria-label"]}
+            data-state={active ? "on" : "off"}
             disabled={opt.disabled}
             tabIndex={i === tabStop ? 0 : -1}
-            onClick={() => onChange(opt.value)}
-            onKeyDown={(e) => onKeyDown(e, i)}
+            onClick={() => emit(opt.value)}
+            onKeyDown={(e) => roving.onKeyDown(e, i)}
             className={cn(
               "!rounded-pill font-bold transition-colors duration-150 outline-none cursor-pointer",
-              "focus-visible:ring-2 focus-visible:ring-brand/50 disabled:cursor-not-allowed disabled:opacity-50",
+              "focus-visible:ring-2 focus-visible:ring-focus disabled:cursor-not-allowed disabled:opacity-50",
               size === "sm"
-                ? "min-h-6 px-2.5 py-0.5 text-[11px]"
-                : "px-3 py-1 text-[13px]",
+                ? "min-h-6 px-2.5 py-0.5 text-ui-caption"
+                : "min-h-7 px-3 py-1 text-ui-label",
               active
                 ? "bg-brand-solid text-on-brand shadow-tj-sm"
                 : "text-ink-3 hover:text-ink-1",

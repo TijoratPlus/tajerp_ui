@@ -1,0 +1,23 @@
+[
+  {
+    "name": "tajerp_ui (all components, gzip)",
+    "path": "dist/index.js",
+    "import": "*",
+    "ignore": ["react", "react-dom"],
+    "limit": "120 kB"
+  },
+  {
+    "name": "Button + Card (tree-shaken)",
+    "path": "dist/index.js",
+    "import": "{ Button, Card }",
+    "ignore": ["react", "react-dom"],
+    "limit": "30 kB"
+  },
+  {
+    "name": "tajerp_ui/charts",
+    "path": "dist/charts.js",
+    "import": "*",
+    "ignore": ["react", "react-dom", "recharts"],
+    "limit": "20 kB"
+  }
+]

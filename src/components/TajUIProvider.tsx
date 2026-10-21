@@ -162,6 +162,8 @@ export function useFormat() {
   return React.useMemo(
     () => ({
       locale,
+      /** Default currency (ISO 4217) used by `money`. */
+      currency,
       number: (value: number, opts?: Omit<NumberFormatOptions, "locale">) =>
         formatNumber(value, { locale, ...opts }),
       money: (value: number, opts?: Omit<MoneyFormatOptions, "locale">) =>

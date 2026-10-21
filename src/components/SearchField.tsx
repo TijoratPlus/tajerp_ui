@@ -1,11 +1,15 @@
-import { Loader2, Search, X } from "lucide-react";
+import { Search, X } from "lucide-react";
 import * as React from "react";
 
+import type { ControlSize } from "../lib/control";
 import { cn } from "../lib/cn";
+import { InputGroup, InputGroupAddon, InputGroupInput } from "./InputGroup";
+import { Spinner } from "./Spinner";
+import { useCommonMessages } from "./TajUIProvider";
 
 export type SearchFieldProps = Omit<
   React.InputHTMLAttributes<HTMLInputElement>,
-  "value" | "defaultValue" | "onChange" | "type"
+  "value" | "defaultValue" | "onChange" | "type" | "size"
 > & {
   value?: string;
   defaultValue?: string;
@@ -17,6 +21,10 @@ export type SearchFieldProps = Omit<
   onSearch?: (value: string) => void;
   /** Swap the clear button for a spinner. */
   loading?: boolean;
+  /** Control height (density-aware). Defaults to "md". */
+  size?: ControlSize;
+  /** Accessible name of the clear button. Defaults to the locale's. */
+  clearLabel?: string;
 };
 
 /** Text input pre-wired for search: leading icon + clear button + Enter handler. */
@@ -31,12 +39,15 @@ export const SearchField = React.forwardRef<HTMLInputElement, SearchFieldProps>(
       onSearch,
       loading,
       disabled,
-      placeholder = "Search…",
+      placeholder,
       onKeyDown,
+      size = "md",
+      clearLabel,
       ...props
     },
     ref,
   ) => {
+    const t = useCommonMessages();
     const isControlled = value !== undefined;
     const [internal, setInternal] = React.useState(defaultValue ?? "");
     const current = isControlled ? value : internal;
@@ -56,56 +67,52 @@ export const SearchField = React.forwardRef<HTMLInputElement, SearchFieldProps>(
     };
 
     return (
-      <div
+      <InputGroup
         data-slot="search-field"
-        className={cn(
-          "relative flex items-center bg-ui-surface-2 border border-hairline !rounded-lg w-full h-9 text-ink-1 transition-colors duration-150",
-          "focus-within:border-brand focus-within:ring-2 focus-within:ring-brand/30",
-          "has-[[aria-invalid=true]]:border-tj-error has-[[aria-invalid=true]]:focus-within:ring-tj-error/25",
-          disabled && "cursor-not-allowed opacity-60",
-          className,
-        )}
+        size={size}
+        disabled={disabled}
+        className={className}
       >
-        <Search
-          aria-hidden
-          className="left-3 absolute size-4 text-ink-3 pointer-events-none"
-        />
-        <input
+        <InputGroupAddon>
+          <Search aria-hidden />
+        </InputGroupAddon>
+        <InputGroupInput
           ref={innerRef}
           type="search"
           value={current}
           disabled={disabled}
-          placeholder={placeholder}
+          placeholder={placeholder ?? t.search}
           onChange={(e) => setValue(e.target.value)}
           onKeyDown={(e) => {
             if (e.key === "Enter") onSearch?.(current);
+            if (e.key === "Escape" && current) {
+              e.preventDefault();
+              clear();
+            }
             onKeyDown?.(e);
           }}
-          className={cn(
-            "bg-transparent pr-9 pl-9 outline-none w-full h-full font-medium text-[14px] text-ink-1",
-            "placeholder:font-normal placeholder:text-ink-3",
-            "disabled:cursor-not-allowed",
-            "[&::-webkit-search-cancel-button]:appearance-none",
-          )}
+          className="pl-2 pr-1"
           {...props}
         />
         {loading ? (
-          <Loader2
-            aria-hidden
-            className="right-3 absolute size-4 text-ink-3 animate-spin"
-          />
+          <InputGroupAddon>
+            <Spinner className="size-4 text-current" />
+          </InputGroupAddon>
         ) : current ? (
           <button
             type="button"
-            aria-label="Clear search"
+            aria-label={clearLabel ?? t.clearSearch}
             onClick={clear}
             disabled={disabled}
-            className="inline-flex right-1.5 absolute justify-center items-center hover:bg-mist !rounded-full outline-none focus-visible:ring-2 focus-visible:ring-brand/30 size-6 text-ink-3 hover:text-ink-1 transition-colors cursor-pointer"
+            className={cn(
+              "mr-1.5 inline-flex size-6 shrink-0 items-center justify-center !rounded-full text-ink-3 outline-none transition-colors cursor-pointer",
+              "hover:bg-mist hover:text-ink-1 focus-visible:ring-2 focus-visible:ring-focus",
+            )}
           >
             <X className="size-4" aria-hidden />
           </button>
         ) : null}
-      </div>
+      </InputGroup>
     );
   },
 );

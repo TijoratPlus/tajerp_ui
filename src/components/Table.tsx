@@ -5,11 +5,15 @@ import { cn } from "../lib/cn";
 /**
  * Low-level table primitives styled with Tijorat+ tokens. Compose them directly
  * for bespoke tables, or use <DataTable> for the batteries-included version.
+ *
+ * Cell padding follows the density tokens (`data-density="compact"` for
+ * dense reports, `"touch"` for tablets).
  */
 
-function TableContainer({ className, ...props }: React.ComponentProps<"div">) {
-  return (
+const TableContainer = React.forwardRef<HTMLDivElement, React.ComponentPropsWithoutRef<"div">>(
+  ({ className, ...props }, ref) => (
     <div
+      ref={ref}
       data-slot="table-container"
       className={cn(
         "overflow-hidden !rounded-lg border border-hairline bg-ui-surface shadow-tj-sm",
@@ -17,107 +21,161 @@ function TableContainer({ className, ...props }: React.ComponentProps<"div">) {
       )}
       {...props}
     />
-  );
-}
+  ),
+);
+TableContainer.displayName = "TableContainer";
 
-function Table({ className, ...props }: React.ComponentProps<"table">) {
-  return (
-    <div className="relative w-full overflow-x-auto">
+export type TableProps = React.ComponentPropsWithoutRef<"table"> & {
+  /**
+   * Height limit of the scroll area. With it, the area scrolls vertically and
+   * `<TableHead sticky>` headers stay visible.
+   */
+  maxHeight?: number | string;
+  /** Classes for the scrolling wrapper. */
+  containerClassName?: string;
+};
+
+const Table = React.forwardRef<HTMLTableElement, TableProps>(
+  ({ className, maxHeight, containerClassName, ...props }, ref) => (
+    <div
+      data-slot="table-scroll"
+      className={cn(
+        "relative w-full overflow-x-auto",
+        maxHeight != null && "overflow-y-auto overscroll-contain",
+        containerClassName,
+      )}
+      style={maxHeight != null ? { maxHeight } : undefined}
+    >
       <table
+        ref={ref}
         data-slot="table"
-        className={cn("w-full border-collapse text-left", className)}
+        className={cn("w-full border-separate border-spacing-0 text-left", className)}
         {...props}
       />
     </div>
-  );
-}
+  ),
+);
+Table.displayName = "Table";
 
-function TableHeader({ className, ...props }: React.ComponentProps<"thead">) {
-  return <thead data-slot="table-header" className={className} {...props} />;
-}
+const TableHeader = React.forwardRef<
+  HTMLTableSectionElement,
+  React.ComponentPropsWithoutRef<"thead">
+>(({ className, ...props }, ref) => (
+  <thead ref={ref} data-slot="table-header" className={className} {...props} />
+));
+TableHeader.displayName = "TableHeader";
 
-function TableBody({ className, ...props }: React.ComponentProps<"tbody">) {
-  return <tbody data-slot="table-body" className={className} {...props} />;
-}
+const TableBody = React.forwardRef<
+  HTMLTableSectionElement,
+  React.ComponentPropsWithoutRef<"tbody">
+>(({ className, ...props }, ref) => (
+  <tbody
+    ref={ref}
+    data-slot="table-body"
+    className={cn("[&>tr:last-child>td]:border-b-0", className)}
+    {...props}
+  />
+));
+TableBody.displayName = "TableBody";
 
-function TableFooter({ className, ...props }: React.ComponentProps<"tfoot">) {
-  return (
-    <tfoot
-      data-slot="table-footer"
-      className={cn("bg-ui-bg font-medium", className)}
-      {...props}
-    />
-  );
-}
+const TableFooter = React.forwardRef<
+  HTMLTableSectionElement,
+  React.ComponentPropsWithoutRef<"tfoot">
+>(({ className, ...props }, ref) => (
+  <tfoot
+    ref={ref}
+    data-slot="table-footer"
+    className={cn(
+      "bg-ui-bg font-semibold [&>tr>td]:border-t-[1.5px] [&>tr>td]:border-b-0 [&>tr>td]:border-hairline [&>tr>td]:text-ink-1",
+      className,
+    )}
+    {...props}
+  />
+));
+TableFooter.displayName = "TableFooter";
 
-function TableRow({
-  className,
-  selected,
-  ...props
-}: React.ComponentProps<"tr"> & { selected?: boolean }) {
-  return (
+export type TableRowProps = React.ComponentPropsWithoutRef<"tr"> & {
+  selected?: boolean;
+};
+
+const TableRow = React.forwardRef<HTMLTableRowElement, TableRowProps>(
+  ({ className, selected, ...props }, ref) => (
     <tr
+      ref={ref}
       data-slot="table-row"
       data-selected={selected ? "" : undefined}
+      aria-selected={selected || undefined}
       className={cn(
-        "border-b border-hairline transition-colors duration-100 last:border-b-0",
+        "transition-colors duration-100",
         selected ? "bg-mist hover:bg-mist" : "hover:bg-ui-bg",
         className,
       )}
       {...props}
     />
-  );
-}
+  ),
+);
+TableRow.displayName = "TableRow";
 
-function TableHead({
-  className,
-  align = "left",
-  scope = "col",
-  ...props
-}: React.ComponentProps<"th"> & { align?: "left" | "right" | "center" }) {
-  return (
+type Align = "left" | "right" | "center";
+
+export type TableHeadProps = React.ComponentPropsWithoutRef<"th"> & {
+  align?: Align;
+  /** Stick to the top of a scrolling <Table maxHeight>. */
+  sticky?: boolean;
+};
+
+const TableHead = React.forwardRef<HTMLTableCellElement, TableHeadProps>(
+  ({ className, align = "left", scope = "col", sticky, ...props }, ref) => (
     <th
+      ref={ref}
       data-slot="table-head"
       scope={scope}
       className={cn(
-        "select-none whitespace-nowrap border-b-[1.5px] border-hairline bg-ui-bg px-3 py-2.5 text-[11px] font-bold uppercase tracking-[0.07em] text-ink-3",
+        "select-none whitespace-nowrap border-b-[1.5px] border-hairline bg-ui-bg px-cell-x py-2.5 text-ui-caption font-bold uppercase tracking-[0.07em] text-ink-3",
+        sticky && "sticky top-0 z-(--tj-z-sticky)",
         align === "right" && "text-right",
         align === "center" && "text-center",
         className,
       )}
       {...props}
     />
-  );
-}
+  ),
+);
+TableHead.displayName = "TableHead";
 
-function TableCell({
-  className,
-  align = "left",
-  ...props
-}: React.ComponentProps<"td"> & { align?: "left" | "right" | "center" }) {
-  return (
+export type TableCellProps = React.ComponentPropsWithoutRef<"td"> & {
+  align?: Align;
+};
+
+const TableCell = React.forwardRef<HTMLTableCellElement, TableCellProps>(
+  ({ className, align = "left", ...props }, ref) => (
     <td
+      ref={ref}
       data-slot="table-cell"
       className={cn(
-        "px-3 py-2.5 align-middle text-[13.5px] font-medium text-ink-2",
+        "border-b border-hairline px-cell-x py-cell-y align-middle text-ui-body font-medium text-ink-2",
         align === "right" && "text-right tabular-nums",
         align === "center" && "text-center",
         className,
       )}
       {...props}
     />
-  );
-}
+  ),
+);
+TableCell.displayName = "TableCell";
 
-function TableCaption({ className, ...props }: React.ComponentProps<"caption">) {
-  return (
-    <caption
-      data-slot="table-caption"
-      className={cn("mt-3 text-sm text-ink-3", className)}
-      {...props}
-    />
-  );
-}
+const TableCaption = React.forwardRef<
+  HTMLTableCaptionElement,
+  React.ComponentPropsWithoutRef<"caption">
+>(({ className, ...props }, ref) => (
+  <caption
+    ref={ref}
+    data-slot="table-caption"
+    className={cn("mt-3 text-sm text-ink-3", className)}
+    {...props}
+  />
+));
+TableCaption.displayName = "TableCaption";
 
 export {
   Table,

@@ -7,6 +7,13 @@
 
 export type ControlSize = "sm" | "md" | "lg";
 
+/** Text size that pairs with each control size. */
+export const controlText: Record<ControlSize, string> = {
+  sm: "text-ui-label",
+  md: "text-ui-control",
+  lg: "text-ui-title",
+};
+
 /** Height + text size per control size. */
 export const controlSize: Record<ControlSize, string> = {
   sm: "h-control-sm text-ui-label",

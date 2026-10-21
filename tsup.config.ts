@@ -23,6 +23,9 @@ export default defineConfig({
     "react-hook-form",
     "embla-carousel-react",
   ],
+  // Components use hooks/context: mark the bundles as client modules for
+  // React Server Component frameworks (Next.js app router).
+  banner: { js: '"use client";' },
   target: "es2021",
   outDir: "dist",
 });
