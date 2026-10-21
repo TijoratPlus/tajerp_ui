@@ -63,3 +63,5 @@ export function Skeleton({
     />
   );
 }
+
+export { skeletonVariants };

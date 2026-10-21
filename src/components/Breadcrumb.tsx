@@ -2,6 +2,22 @@ import { ChevronRight, MoreHorizontal } from "lucide-react";
 import * as React from "react";
 
 import { cn } from "../lib/cn";
+import { defineMessages } from "../i18n/messages";
+import { useMessages } from "./TajUIProvider";
+
+const breadcrumbMessages = defineMessages("breadcrumb", {
+  ru: { label: "Навигационная цепочка", more: "Скрытые разделы" },
+  tg: { label: "Пайроҳа", more: "Бахшҳои пинҳон" },
+  en: { label: "Breadcrumb", more: "Hidden sections" },
+});
+
+/** Props handed to `renderLink` — spread them onto your router's link. */
+export interface BreadcrumbLinkProps {
+  href: string;
+  className: string;
+  onClick?: React.MouseEventHandler<HTMLAnchorElement>;
+  children: React.ReactNode;
+}
 
 export interface BreadcrumbItem {
   label: React.ReactNode;
@@ -20,6 +36,9 @@ export interface BreadcrumbProps
    * first crumb and the last `maxItems - 1` crumbs visible.
    */
   maxItems?: number;
+  /** Render crumbs with your router's link component (no page reload). */
+  renderLink?: (props: BreadcrumbLinkProps) => React.ReactNode;
+  labels?: Partial<(typeof breadcrumbMessages.locales)["ru"]>;
 }
 
 const sep = (separator: React.ReactNode) => (
@@ -32,9 +51,13 @@ const sep = (separator: React.ReactNode) => (
   </li>
 );
 
+const crumbLinkClass =
+  "!rounded-sm text-ink-3 outline-none transition-colors duration-150 hover:text-brand-ink focus-visible:ring-2 focus-visible:ring-focus";
+
 /** Data-driven breadcrumb trail. The last item is rendered as the current page. */
 export const Breadcrumb = React.forwardRef<HTMLElement, BreadcrumbProps>(
-  ({ items, separator, maxItems, className, ...props }, ref) => {
+  ({ items, separator, maxItems, renderLink, labels, className, ...props }, ref) => {
+    const t = useMessages(breadcrumbMessages, labels);
     const collapsed =
       maxItems !== undefined && maxItems > 1 && items.length > maxItems;
 
@@ -45,12 +68,12 @@ export const Breadcrumb = React.forwardRef<HTMLElement, BreadcrumbProps>(
     return (
       <nav
         ref={ref}
-        aria-label="Breadcrumb"
+        aria-label={t.label}
         data-slot="breadcrumb"
         className={cn("flex", className)}
         {...props}
       >
-        <ol className="flex flex-wrap items-center gap-1.5 text-[13px] font-medium">
+        <ol className="flex flex-wrap items-center gap-1.5 text-ui-label font-medium">
           {visible.map((item, i) => {
             const isLast = i === visible.length - 1;
 
@@ -58,8 +81,8 @@ export const Breadcrumb = React.forwardRef<HTMLElement, BreadcrumbProps>(
               return (
                 <React.Fragment key="ellipsis">
                   <li className="flex items-center text-ink-3">
-                    <MoreHorizontal className="size-4" />
-                    <span className="sr-only">More</span>
+                    <MoreHorizontal className="size-4" aria-hidden />
+                    <span className="sr-only">{t.more}</span>
                   </li>
                   {sep(separator)}
                 </React.Fragment>
@@ -83,12 +106,15 @@ export const Breadcrumb = React.forwardRef<HTMLElement, BreadcrumbProps>(
                     >
                       {content}
                     </span>
+                  ) : renderLink ? (
+                    renderLink({
+                      href: item.href,
+                      onClick: item.onClick,
+                      className: crumbLinkClass,
+                      children: content,
+                    })
                   ) : (
-                    <a
-                      href={item.href}
-                      onClick={item.onClick}
-                      className="!rounded-sm text-ink-3 outline-none transition-colors duration-150 hover:text-brand-ink focus-visible:ring-2 focus-visible:ring-brand/30"
-                    >
+                    <a href={item.href} onClick={item.onClick} className={crumbLinkClass}>
                       {content}
                     </a>
                   )}

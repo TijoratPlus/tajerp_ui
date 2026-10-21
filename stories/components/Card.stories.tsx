@@ -16,7 +16,7 @@ const meta: Meta<typeof Card> = {
     docs: {
       description: {
         component:
-          "Structured content container with header, body, and footer slots. The root has no padding by default — slots own their inset. Set `padding` on `Card` only when using it as a plain box (no header/content/footer). Pick a semantic `variant` preset, or compose the look directly with the tone / elevation / radius / padding / border axes (any axis overrides the preset). Use `as` to render a different element.",
+          "Structured content container with header, body, and footer slots. The root has no padding by default — slots own their inset. Set `padding` on `Card` only when using it as a plain box (no header/content/footer). Pick a semantic `variant` preset, or compose the look directly with the surface / elevation / radius / padding / border axes (any axis overrides the preset). Use `as` to render a different element.",
       },
     },
   },
@@ -32,9 +32,9 @@ const meta: Meta<typeof Card> = {
         "interactive",
       ],
     },
-    tone: {
+    surface: {
       control: "select",
-      options: ["surface", "surface-2", "inset", "mist"],
+      options: ["surface", "surface-2", "inset", "mist", "warm"],
     },
     elevation: { control: "select", options: ["none", "sm", "md", "lg"] },
     radius: { control: "select", options: ["none", "sm", "md", "lg", "xl"] },
@@ -102,13 +102,16 @@ export const Variants: Story = {
   ),
 };
 
-/** Card doubles as the low-level box primitive — compose tone directly. */
-export const Tones: Story = {
+/**
+ * Card doubles as the low-level box primitive — compose the surface directly.
+ * `warm` is the cream surface of the tijorat.plus brand (promos, onboarding).
+ */
+export const Surfaces: Story = {
   render: () => (
     <div style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>
-      {(["surface", "surface-2", "inset", "mist"] as const).map((t) => (
-        <Card key={t} tone={t} padding="lg" border>
-          tone=&quot;{t}&quot;
+      {(["surface", "surface-2", "inset", "mist", "warm"] as const).map((t) => (
+        <Card key={t} surface={t} padding="lg" border>
+          surface=&quot;{t}&quot;
         </Card>
       ))}
     </div>

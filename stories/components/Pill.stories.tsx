@@ -28,7 +28,7 @@ export const OnDark: Story = {
         className="dark"
         style={{ background: "var(--ui-rail-bg)", padding: 16, borderRadius: 12 }}
       >
-        <Pill dark>На тёмном</Pill>
+        <Pill surface="dark">На тёмном</Pill>
       </div>
     </div>
   ),

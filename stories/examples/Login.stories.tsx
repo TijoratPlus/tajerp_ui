@@ -39,18 +39,18 @@ export const Default: Story = {
         <div className="relative hidden flex-col justify-between overflow-hidden bg-brand-deep p-12 lg:flex">
           <TajERPLogo className="text-[30px]" />
           <div>
-            <h2 className="max-w-sm text-[30px] font-bold leading-tight text-white">
+            <h2 className="max-w-sm text-[30px] font-bold leading-tight text-on-brand">
               Управляйте магазином из любой точки
             </h2>
-            <p className="mt-4 max-w-sm text-[15px] leading-relaxed text-white/70">
+            <p className="mt-4 max-w-sm text-[15px] leading-relaxed text-on-brand/70">
               Касса, склад и аналитика Tijorat+ — в одном аккаунте. Войдите,
               чтобы открыть смену.
             </p>
             <ul className="mt-8 flex flex-col gap-3">
               {["Офлайн-режим касс", "Аналитика в реальном времени", "Данные хранятся в РТ"].map(
                 (t) => (
-                  <li key={t} className="flex items-center gap-2.5 text-[14px] text-white/85">
-                    <span className="grid size-5 place-items-center rounded-full bg-white/15">
+                  <li key={t} className="flex items-center gap-2.5 text-[14px] text-on-brand/85">
+                    <span className="grid size-5 place-items-center rounded-full bg-on-brand/15">
                       <Check className="size-3" />
                     </span>
                     {t}
@@ -59,7 +59,7 @@ export const Default: Story = {
               )}
             </ul>
           </div>
-          <p className="text-[12px] text-white/40">© 2026 Tijorat+</p>
+          <p className="text-ui-caption text-rail-ink-muted">© 2026 Tijorat+</p>
         </div>
 
         {/* Form */}
@@ -77,7 +77,7 @@ export const Default: Story = {
               <SegmentedControl
                 size="sm"
                 value={lang}
-                onChange={setLang}
+                onValueChange={setLang}
                 options={[
                   { value: "RU", label: "RU" },
                   { value: "TJ", label: "TJ" },

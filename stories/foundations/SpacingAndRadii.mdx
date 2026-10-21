@@ -5,7 +5,12 @@ import { TokenRow } from "./_blocks";
 
 # Spacing & Radii
 
-4px base spacing scale and corner radii used across components.
+Spacing scale for layouts and corner radii used across components.
+
+> The `--tj-sp-*` names are a design-tool scale, **not** Tailwind's (`sp-3` is
+> 10px, Tailwind's `p-3` is 12px). Components use Tailwind spacing utilities;
+> reach for `--tj-sp-*` in custom CSS. Control heights and table-cell padding
+> follow **Foundations → Density** instead.
 
 ## Spacing scale
 
@@ -15,10 +20,14 @@ import { TokenRow } from "./_blocks";
     ["--tj-sp-2", "8px"],
     ["--tj-sp-3", "10px"],
     ["--tj-sp-4", "12px"],
+    ["--tj-sp-5", "16px"],
     ["--tj-sp-6", "20px"],
     ["--tj-sp-8", "28px"],
+    ["--tj-sp-10", "32px"],
     ["--tj-sp-12", "40px"],
     ["--tj-sp-16", "56px"],
+    ["--tj-sp-20", "64px"],
+    ["--tj-sp-24", "80px"],
   ].map(([name, value]) => (
     <TokenRow
       key={name}

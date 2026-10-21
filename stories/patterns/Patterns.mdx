@@ -1,0 +1,109 @@
+import { Meta } from "@storybook/blocks";
+import { Banner, Button, EmptyState, ErrorState, StateView, SyncStatus } from "../../src";
+import { PackageOpen, ServerCrash, Store } from "lucide-react";
+
+<Meta title="Patterns/Overview" />
+
+# Patterns
+
+Shared UX rules for every TajERP screen. Follow them so the POS, warehouse,
+accounting and CRM apps behave the same way.
+
+## Forms and documents
+
+- **Labels:** one column on phones and two on desktop. Labels go above the
+  field (`Label` + control, or `FormItem`). Required fields carry
+  `<FormLabel required>`. Never rely on placeholders as labels.
+- **Validation:** validate on blur and on submit, not on every keystroke.
+  Errors come from `FormMessage`; they are linked to the field through
+  `aria-describedby`, and the field gets `aria-invalid`.
+- **Field types:**
+  - Amounts use `MoneyInput`, quantities `NumberField`, phones `PhoneInput`
+    (+992) and dates `DatePicker`. All of them accept "," and "." decimals.
+  - Do not use `type="number"`; it rejects the comma on Russian and Tajik
+    keyboards.
+- **Document lifecycle:** Черновик → Проведён → Отменён. Show the state with a
+  `Badge`. Primary actions sit bottom-right ("Провести"), secondary ones as
+  `variant="subtle"`. Destructive and irreversible actions ("Отменить чек",
+  "Удалить") go through `confirm({ tone: "danger" })`.
+- **Long documents:** use a `Stepper` (Документ → Позиции → Проверка) and
+  keep tab state with `<Tabs keepMounted>`.
+
+## List → detail
+
+- **Lists:** a `DataTable` with search, sort and pagination. Make rows
+  clickable (`onRowClick`) to open the detail. Put bulk actions in the
+  selection bar.
+- **Opening details:** on desktop, open the detail in a `Sheet` (side="right")
+  to keep the list's context. On phones, navigate to a full page. Both use
+  `AppShell`.
+- **Reports:** use `FilterBar` + `DateRangePicker` presets + `ExportMenu`. Use
+  `data-density="compact"` for wide tables, and a totals row (`column.footer`)
+  computed over **all filtered rows**.
+
+## Empty, loading and error states
+
+Every list and panel has all three. An empty state says what is missing and
+offers the next step:
+
+<div style={{ display: "grid", gap: 16, gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", margin: "16px 0" }}>
+  <EmptyState icon={<PackageOpen />} title="Товаров пока нет" description="Добавьте первый товар или импортируйте каталог из Excel." actionLabel="Добавить товар" onAction={() => {}} />
+  <ErrorState title="Не удалось загрузить продажи" description="Сервер не отвечает. Данные на устройстве сохранены." actionLabel="Повторить" onAction={() => {}} />
+  <StateView media={<Store />} title="Касса закрыта" description="Откройте смену, чтобы начать продажи." actions={<Button size="sm">Открыть смену</Button>} />
+</div>
+
+- **Loading:** use skeletons (`Skeleton`, `DataTable loading`) where the layout
+  is known. Use a `LoadingState` spinner only for unknown layouts. Never block
+  the POS with a full-screen spinner.
+- **Errors:** errors say what happened and what still works, and offer
+  "Повторить". Avoid codes and stack traces.
+
+## Offline and sync (POS)
+
+The POS keeps selling without internet. Make the connection state visible but
+calm:
+
+<div style={{ display: "flex", flexDirection: "column", gap: 12, margin: "16px 0" }}>
+  <Banner tone="warning">Нет соединения — продажи сохраняются на устройстве и отправятся автоматически.</Banner>
+  <div style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>
+    <SyncStatus status="offline" pending={3} />
+    <SyncStatus status="syncing" pending={3} />
+    <SyncStatus status="online" lastSyncedAt={Date.now() - 60_000} />
+  </div>
+</div>
+
+- Use `useOnlineStatus()` + `OfflineIndicator` in the topbar, and a `Banner`
+  only while offline.
+- Queue work and never drop a sale. Disable only actions that truly need the
+  network, such as TijoratAI, SMS and bank QR checks, and say why.
+- Self-host fonts (`fonts-local.css`), so a cold start without internet still
+  renders correctly.
+
+## TijoratAI: nothing without your "yes"
+
+- Every AI action is a **draft** shown as an `ApprovalCard` with Approve, Edit
+  and Reject. The card shows who requested it (AI badge), the amount, the
+  affected items and the approval chain.
+- Approving returns a Promise. The card shows the loading state, and then a
+  toast offers "Отменить" when the action can be undone.
+- Every decision lands in the `ActivityTimeline` (audit log).
+- Respect roles: hide profit and cost figures from cashiers instead of
+  disabling them.
+
+## Touch and density
+
+- On tablets, set `data-density="touch"`: controls are 44px+ high, and table
+  rows and calendar days grow too.
+- Primary POS actions use `<Button size="xl">`. Quantities use `NumberField`
+  steppers or the `Numpad`.
+- `BarcodeInput` keeps focus for scanners (`refocus`). Never steal focus while
+  the cashier is typing elsewhere.
+
+## Language and money
+
+- Never concatenate strings in components. Use `useMessages` /
+  `defineMessages`, and see **Get Started → Localization**.
+- Print money through `useFormat().money` (`1 234,50 с`) and right-align
+  amounts in tables with `tabular-nums` (`align: "right"` does this).
+- Dates are shown as `дд.мм.гггг`; relative time ("5 минут назад") goes in
+  feeds, with the exact date in a tooltip or a `<time>` title.

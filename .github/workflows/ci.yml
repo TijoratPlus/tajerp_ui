@@ -24,8 +24,50 @@ jobs:
           node-version: 20
           cache: npm
 
+      # `prepare` builds the library (JS + CSS) during install.
       - name: Install dependencies
         run: npm ci
 
-      - name: Type-check, lint, and build
-        run: make check
+      - name: Type-check
+        run: npm run typecheck
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Unit + accessibility tests
+        run: npm test
+
+      - name: Package checks (publint, attw, size-limit)
+        run: |
+          npm run lint:package
+          npm run size
+
+  stories:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build Storybook
+        run: npm run build-storybook -- --quiet
+
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Smoke + axe test every story
+        run: npm run test:stories
+
+      - name: Upload story screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: story-screenshots
+          path: test-results/screens
+          retention-days: 7

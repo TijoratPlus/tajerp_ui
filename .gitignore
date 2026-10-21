@@ -5,3 +5,6 @@ storybook-static
 .DS_Store
 .turbo
 coverage
+test-results
+playwright-report
+tsup.config.bundled_*.mjs

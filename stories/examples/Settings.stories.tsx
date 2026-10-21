@@ -87,6 +87,7 @@ function GeneralTab() {
         <Row title="Валюта" desc="Используется в чеках и отчётах">
           <div className="w-44">
             <Select
+              aria-label="Валюта"
               value={currency}
               onChange={(e) => setCurrency(e.target.value)}
               options={[

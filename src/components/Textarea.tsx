@@ -1,5 +1,11 @@
 import * as React from "react";
 
+import {
+  controlDisabled,
+  controlFocus,
+  controlFrame,
+  controlInvalid,
+} from "../lib/control";
 import { cn } from "../lib/cn";
 
 export type TextareaProps = React.TextareaHTMLAttributes<HTMLTextAreaElement>;
@@ -8,12 +14,14 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
   ({ className, ...props }, ref) => (
     <textarea
       ref={ref}
+      data-slot="textarea"
       className={cn(
-        "flex bg-ui-surface-2 px-3 py-2 border border-hairline !rounded-lg outline-none w-full min-h-16 font-medium text-[14px] text-ink-1 transition-colors duration-150",
+        "flex w-full min-h-16 px-3 py-2 font-medium text-ui-control",
+        controlFrame,
         "placeholder:text-ink-3 placeholder:font-normal",
-        "focus-visible:border-brand focus-visible:ring-2 focus-visible:ring-brand/30",
-        "aria-[invalid=true]:border-tj-error aria-[invalid=true]:focus-visible:ring-tj-error/25",
-        "disabled:cursor-not-allowed disabled:opacity-60",
+        controlFocus,
+        controlInvalid,
+        controlDisabled,
         className,
       )}
       {...props}

@@ -3,9 +3,10 @@ import { ArrowUpRight } from "lucide-react";
 import * as React from "react";
 
 import { cn } from "../lib/cn";
+import { Slot } from "../lib/Slot";
 
 const linkVariants = cva(
-  "inline-flex items-center gap-1 !rounded-sm outline-none transition-colors duration-150 focus-visible:ring-2 focus-visible:ring-brand/30",
+  "inline-flex items-center gap-1 !rounded-sm outline-none transition-colors duration-150 focus-visible:ring-2 focus-visible:ring-focus",
   {
     variants: {
       variant: {
@@ -30,14 +31,29 @@ export type LinkProps = React.AnchorHTMLAttributes<HTMLAnchorElement> &
   VariantProps<typeof linkVariants> & {
     /** Open in a new tab and append an external-link icon. */
     external?: boolean;
+    /**
+     * Style your router's link component instead of rendering an `<a>`:
+     * `<Link asChild><NavLink to="/pos">Касса</NavLink></Link>`.
+     */
+    asChild?: boolean;
   };
 
 /** Styled anchor with brand variants and optional external-link affordance. */
 export const Link = React.forwardRef<HTMLAnchorElement, LinkProps>(
   (
-    { className, variant, underline, external, children, target, rel, ...props },
+    { className, variant, underline, external, children, target, rel, asChild, ...props },
     ref,
-  ) => (
+  ) =>
+    asChild ? (
+      <Slot
+        ref={ref as React.Ref<HTMLElement>}
+        data-slot="link"
+        className={cn(linkVariants({ variant, underline }), className)}
+        {...props}
+      >
+        {children}
+      </Slot>
+    ) : (
     <a
       ref={ref}
       data-slot="link"
@@ -49,7 +65,7 @@ export const Link = React.forwardRef<HTMLAnchorElement, LinkProps>(
       {children}
       {external ? <ArrowUpRight className="size-[1em]" aria-hidden /> : null}
     </a>
-  ),
+    ),
 );
 Link.displayName = "Link";
 

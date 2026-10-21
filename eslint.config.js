@@ -13,7 +13,7 @@ export default [
   },
   {
     // Storybook CSF `render` callbacks are not components; hooks inside them are fine.
-    files: ["stories/**/*.{ts,tsx}"],
+    files: ["stories/**/*.{ts,tsx}", ".storybook/**/*.{ts,tsx}"],
     rules: {
       "react-hooks/rules-of-hooks": "off",
       "react-refresh/only-export-components": "off",
