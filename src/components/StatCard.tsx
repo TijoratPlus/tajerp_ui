@@ -430,32 +430,36 @@ export const StatCard = React.forwardRef<HTMLElement, StatCardProps>(
           </span>
         ) : (
           <>
-            <span className="flex items-end justify-between gap-3">
-              <span className="flex min-w-0 flex-col gap-1">
-                <span
-                  data-slot="stat-card-value"
-                  className="truncate font-bold leading-tight tracking-tight text-ink-1 tabular-nums text-(length:--tj-fs-lg)"
-                >
-                  {display}
-                </span>
+            {/* The value gets the full width (amounts like "184 200,00 с"
+                must never truncate); delta and sparkline share the row below. */}
+            <span
+              data-slot="stat-card-value"
+              className="font-bold leading-tight tracking-tight text-ink-1 tabular-nums break-words text-(length:--tj-fs-lg)"
+            >
+              {display}
+            </span>
+            {delta !== undefined || (sparkline && sparkline.length > 0) ? (
+              <span className="flex items-end justify-between gap-3">
                 {delta !== undefined ? (
-                  <span className="flex flex-wrap items-center gap-1.5">
+                  <span className="flex min-w-0 flex-wrap items-center gap-1.5">
                     <Delta value={delta} invert={invertDelta} labels={labels} />
                     <span className="text-ui-caption text-ink-3">
                       {deltaLabel ?? t.deltaLabel}
                     </span>
                   </span>
+                ) : (
+                  <span />
+                )}
+                {sparkline && sparkline.length > 0 ? (
+                  <Sparkline
+                    data={sparkline}
+                    tone={tone}
+                    height={32}
+                    className="w-20 shrink-0"
+                  />
                 ) : null}
               </span>
-              {sparkline && sparkline.length > 0 ? (
-                <Sparkline
-                  data={sparkline}
-                  tone={tone}
-                  height={36}
-                  className="w-24 shrink-0"
-                />
-              ) : null}
-            </span>
+            ) : null}
             {footer ? (
               <span data-slot="stat-card-footer" className="block">
                 {footer}

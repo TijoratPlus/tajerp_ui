@@ -238,7 +238,7 @@ export const ChatBubble = React.forwardRef<HTMLElement, ChatBubbleProps>(
               isUser
                 ? "bg-brand-solid text-on-brand !rounded-2xl !rounded-br-sm"
                 : "border border-hairline bg-ui-surface-2 text-ink-1 !rounded-2xl !rounded-bl-sm",
-              status === "error" && "opacity-80",
+              status === "error" && "ring-1 ring-tj-error",
             )}
           >
             {children}

@@ -39,7 +39,13 @@ async function checkStory(page: Page, story: IndexEntry, theme: string) {
   await page.addScriptTag({ path: AXE_PATH });
   const violations = await page.evaluate(async () => {
     const axe = (window as unknown as { axe: typeof import("axe-core") }).axe;
-    const result = await axe.run(document, {
+    // Inactive (disabled) UI is exempt from contrast requirements (WCAG
+    // 1.4.3), so disabled controls and their labels are left out.
+    const context = {
+      include: [["body"]],
+      exclude: [["[data-disabled]"], ['[aria-disabled="true"]'], ["[disabled]"]],
+    };
+    const result = await axe.run(context, {
       runOnly: { type: "tag", values: ["wcag2a", "wcag2aa", "wcag21aa", "wcag22aa"] },
     });
     return result.violations

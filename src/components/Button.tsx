@@ -19,7 +19,7 @@ const buttonVariants = cva(
         subtle:
           "bg-ui-surface-2 border border-hairline text-ink-2 hover:text-ink-1 !rounded-lg",
         danger:
-          "bg-tj-error-ink text-on-brand hover:opacity-90 focus-visible:ring-tj-error/50 shadow-tj-sm !rounded-lg",
+          "bg-danger-solid text-on-brand hover:opacity-90 focus-visible:ring-tj-error/50 shadow-tj-sm !rounded-lg",
         link: "bg-transparent text-brand-ink underline-offset-4 hover:underline shadow-none px-0 h-auto active:scale-100 !rounded-none",
       },
       // Heights follow the density tokens (--tj-control-*).

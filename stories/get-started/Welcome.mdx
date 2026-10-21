@@ -17,13 +17,16 @@ import { Button, TajERPLogo } from "../../src";
   </div>
 </div>
 
-**tajerp_ui** is the shared React component library and design-token package for
-[Tijorat+](https://www.tijorat.plus) products — POS, inventory, analytics, and
-back-office tools built on TajERP.
+**tajerp_ui** is the shared React component library and design-token package
+for [Tijorat+](https://www.tijorat.plus) products. That covers the POS (offline
+on tablets and phones), stock, money and taxes, customers, staff, branch
+dashboards and the TijoratAI assistant.
 
-It ships styled primitives (buttons, inputs, tables, overlays), semantic tokens
-(`--ui-*` CSS variables), and Tailwind v4 theme registration so every app looks
-and behaves consistently.
+It ships accessible components (WCAG 2.2 AA), semantic tokens (`--ui-*` CSS
+variables) with dark mode and density modes, and component strings in Russian,
+Tajik and English. Money is printed in somoni (`1 234,50 с`). Use the
+**Theme**, **Language** and **Density** toolbars to preview every story in
+each mode.
 
 ## Live example
 
@@ -35,10 +38,26 @@ and behaves consistently.
 
 ## What's inside
 
-- **Components** — accessible, brand-styled building blocks built on Radix where needed
-- **Tokens** — brand greens, ink scale, status colours, spacing, radii, shadows
-- **Icons** — lucide re-exported from `tajerp_ui/icons`
-- **Charts** — `AxisChart` wrapper around Recharts (`tajerp_ui/charts`)
+- **Foundations:** brand greens and warm surfaces, ink scale, status colours,
+  chart palette, the `text-ui-*` type scale, density, radii, shadows and
+  layering.
+- **Primitives:** Button, Input, Select, NumberField, Checkbox, Switch,
+  RadioGroup, Toggle, Tabs, Dialog, Sheet, Popover, DropdownMenu, AlertDialog
+  with `confirm()`, Tooltip, Toast and more.
+- **Data:** DataTable, with sticky header, pinned columns, totals, expandable
+  rows, server sort and CSV export, plus Pagination, StatCard, Sparkline,
+  DescriptionList and ActivityTimeline.
+- **Inputs:** Calendar, DatePicker, DateRangePicker with report presets,
+  MultiSelect, Command palette (⌘K), FileUpload, MoneyInput and PhoneInput
+  (+992).
+- **POS:** ProductTile, CartLine, CartSummary, PaymentSplit (cash, card, Alif
+  Pay, Eskhata), Numpad, BarcodeInput and the scanner hook, ReceiptPreview
+  (58/80 mm) and SyncStatus/OfflineIndicator.
+- **Business and AI:** AppShell, Topbar, BranchSwitcher, LanguageSwitcher,
+  FilterBar, ExportMenu, ApprovalCard, ChatBubble and AIAssistantPanel.
+- **Entry points:** icons are lucide, from `tajerp_ui/icons`. Charts
+  (AxisChart, DonutChart) come from `tajerp_ui/charts`, and react-hook-form
+  bindings from `tajerp_ui/form`.
 
 ## Links
 
@@ -46,5 +65,6 @@ and behaves consistently.
 - [GitHub repository](https://github.com/TijoratPlus/tajerp_ui)
 - [tijorat.plus](https://www.tijorat.plus)
 
-Use the sidebar to browse **Foundations** (colours, type, spacing) and
-**Components** grouped by category.
+Start with **Examples** for full screens: Dashboard, POS tablet, customer
+card, AI approvals, sales report and warehouse receiving. **Patterns** covers
+the shared UX rules, and **Components** is grouped by category.

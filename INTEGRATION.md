@@ -83,3 +83,31 @@ npm install tajerp_ui
 Then import `tajerp_ui/styles/index.css`, extend `tajerp_ui/tsconfig.base.json`,
 and use `tajerp_ui/eslint`. Prefer a versioned npm range (`^0.1.0`) for CI and
 deploys instead of `file:` or git URLs.
+
+## Upgrading to the next minor (i18n, density, new components)
+
+Nothing breaks at compile time, but check these:
+
+1. **Root providers.** Wrap the app in `<TajUIProvider locale={lang}>` and
+   pass the user's language (`"ru" | "tg" | "en"`). Mount `<Toaster />` and
+   `<ConfirmHost />` once. Without a provider, strings default to Russian;
+   several components used to default to English.
+2. **Theme on `<html>`.** If dark mode was set on an inner wrapper (for
+   example `#root`), move it to `<html>`. Otherwise portaled overlays stay
+   light.
+3. **POS tablets.** Set `data-density="touch"` on the POS root so every control
+   is 44px+ high. Replace local numpad, barcode and payment widgets with
+   `Numpad`, `BarcodeInput` / `useBarcodeScanner` and `PaymentSplit`.
+4. **Offline.** Switch the font import to `tajerp_ui/styles/fonts-local.css` so
+   a cold start without internet renders Inter, including the Tajik letters.
+5. **Frappe desk pages** (`compiled.css`). Wrap them in
+   `<TajUIProvider scopedPortal>` so dialogs and popovers stay styled.
+6. **Deprecated props** (they still work):
+   - `SegmentedControl onChange` → `onValueChange`
+   - `Card tone` → `surface`
+   - `Pill dark` → `surface="dark"`
+7. **`Input size`** is now the control size. If you passed a numeric HTML
+   `size`, rename it to `htmlSize`.
+8. **POS `DataTable` adapter.** It can drop its own sort state in favour of
+   `sort` / `onSortChange` / `manualSorting`. It can also use `column.footer`
+   for totals and `dataTableToCSV` for exports.

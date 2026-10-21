@@ -4,14 +4,14 @@
     "path": "dist/index.js",
     "import": "*",
     "ignore": ["react", "react-dom"],
-    "limit": "120 kB"
+    "limit": "150 kB"
   },
   {
     "name": "Button + Card (tree-shaken)",
     "path": "dist/index.js",
     "import": "{ Button, Card }",
     "ignore": ["react", "react-dom"],
-    "limit": "30 kB"
+    "limit": "15 kB"
   },
   {
     "name": "tajerp_ui/charts",

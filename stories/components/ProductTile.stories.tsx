@@ -62,7 +62,7 @@ export const POSGrid: Story = {
       { id: "p6", name: "Кекс шоколадный с вишней и орехами", price: 16, stock: 18 },
     ];
     return (
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(140px, 1fr))", gap: 12, maxWidth: 640 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(140px, 1fr))", gap: 12, width: "100%", maxWidth: 640 }}>
         {products.map((p) => (
           <ProductTile
             key={p.id}

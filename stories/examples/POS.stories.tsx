@@ -129,7 +129,7 @@ export const Default: Story = {
           </header>
 
           <div className="border-b border-hairline px-6 py-3">
-            <SegmentedControl value={cat} onChange={setCat} options={CATS} />
+            <SegmentedControl aria-label="Категория" value={cat} onValueChange={setCat} options={CATS} />
           </div>
 
           <div className="grid flex-1 grid-cols-2 content-start gap-3 overflow-y-auto p-6 sm:grid-cols-3 xl:grid-cols-4">
@@ -189,6 +189,7 @@ export const Default: Story = {
                     </div>
                     <div className="w-[116px] shrink-0">
                       <NumberField
+                        aria-label={`Количество: ${l.product.name}`}
                         value={l.qty}
                         min={0}
                         onValueChange={(q) => setQty(l.product.id, q)}

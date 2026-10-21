@@ -219,8 +219,8 @@ export const Default: Story = {
       {/* CTA */}
       <section className="mx-auto max-w-6xl px-6 pb-20">
         <div className="overflow-hidden rounded-2xl bg-brand-deep px-8 py-14 text-center">
-          <h2 className="text-[30px] font-bold text-white">Готовы продавать умнее?</h2>
-          <p className="mx-auto mt-3 max-w-md text-[15px] text-white/70">
+          <h2 className="text-[30px] font-bold text-on-brand">Готовы продавать умнее?</h2>
+          <p className="mx-auto mt-3 max-w-md text-[15px] text-on-brand/70">
             Присоединяйтесь к тысячам магазинов на Tijorat+. Первая касса —
             бесплатно навсегда.
           </p>

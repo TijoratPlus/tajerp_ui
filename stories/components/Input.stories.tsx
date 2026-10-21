@@ -39,9 +39,12 @@ export const WithLabel: Story = {
 export const States: Story = {
   render: () => (
     <div style={{ display: "grid", gap: 12, maxWidth: 320 }}>
-      <Input placeholder="Обычное поле" />
-      <Input defaultValue="С текстом" />
-      <Input placeholder="Отключено" disabled />
+      <Input aria-label="Обычное поле" placeholder="Обычное поле" />
+      <Input aria-label="С текстом" defaultValue="С текстом" />
+      <Input aria-label="Ошибка" defaultValue="+992 93" aria-invalid />
+      <Input aria-label="Отключено" placeholder="Отключено" disabled />
+      <Input aria-label="Маленькое" size="sm" placeholder="size=sm" />
+      <Input aria-label="Большое" size="lg" placeholder="size=lg" />
     </div>
   ),
 };

@@ -1,12 +1,14 @@
+/* Self-hosted Inter (works offline, includes the Tajik letters). */
+@import "../styles/fonts-local.css";
 @import "tailwindcss";
 
 /* Scan the library source so Storybook compiles the utility classes
    used inside the components. */
 @source "../src/**/*.tsx";
+@source "../stories/**/*.tsx";
 
-/* Design tokens + shadcn base tokens (no frappe-ui-react remap needed here). */
-@import "../styles/tokens.css";
-@import "../styles/base.css";
+/* Full theme: tokens + frappe-ui remaps + shadcn base tokens. */
+@import "../styles/index.css";
 
 /* Storybook canvas */
 body {

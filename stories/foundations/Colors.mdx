@@ -18,7 +18,20 @@ Brand palette, neutrals, and semantic status colours. All values are defined in
   <Swatch name="Soft" varName="--tj-green-soft" />
   <Swatch name="Mist" varName="--tj-green-mist" />
   <Swatch name="Tint" varName="--tj-green-tint" />
+  <Swatch name="Haze" varName="--tj-green-haze" />
   <Swatch name="Wash" varName="--tj-green-wash" />
+</div>
+
+## Warm surfaces
+
+The cream tones of tijorat.plus. Use `bg-ui-surface-warm` (or
+`<Card surface="warm">`) for promos, onboarding and empty-state panels.
+
+<div style={{ display: "grid", gap: 16, gridTemplateColumns: "repeat(auto-fill, minmax(140px, 1fr))", maxWidth: 720, marginTop: 24 }}>
+  <Swatch name="Cream" varName="--tj-cream" />
+  <Swatch name="Cream deep" varName="--tj-cream-deep" />
+  <Swatch name="Sand" varName="--tj-sand" />
+  <Swatch name="Surface warm" varName="--ui-surface-warm" />
 </div>
 
 ## Neutrals (ink)
@@ -37,9 +50,10 @@ Brand palette, neutrals, and semantic status colours. All values are defined in
   <Swatch name="Success" varName="--tj-success" />
   <Swatch name="Warning" varName="--tj-warning" />
   <Swatch name="Error / coral" varName="--tj-coral" />
+  <Swatch name="Error (red)" varName="--tj-error" />
   <Swatch name="Info" varName="--tj-info" />
   <Swatch name="Coral mist" varName="--tj-coral-mist" />
-  <Swatch name="Sand" varName="--tj-sand" />
+  <Swatch name="Coral soft" varName="--tj-coral-soft" />
 </div>
 
 ## Semantic runtime tokens
@@ -57,7 +71,7 @@ dots, borders and charts (3:1 is enough there) — **not** for text.
 |-----|---------|------------|
 | Filled surface carrying white text (buttons, active tab/page/segment) | `bg-brand-solid` · hover `bg-brand-solid-hover` | `bg-brand` (3.4:1 under white text) |
 | Status text and badges | `text-tj-success-ink` · `text-tj-warning-ink` · `text-tj-error-ink` · `text-tj-info-ink` | `text-tj-success` etc. (1.9–3.1:1) |
-| Danger fill under white text | `bg-tj-error-ink` | `bg-tj-error` |
+| Danger fill under white text | `bg-danger-solid` | `bg-tj-error`, `bg-tj-error-ink` (light coral in dark mode) |
 | Captions, placeholders, table headers | `text-ink-3` | — (darkened to pass) |
 
 <div style={{ display: "grid", gap: 16, gridTemplateColumns: "repeat(auto-fill, minmax(140px, 1fr))", maxWidth: 720, marginTop: 24 }}>
@@ -66,4 +80,25 @@ dots, borders and charts (3:1 is enough there) — **not** for text.
   <Swatch name="Warning ink" varName="--ui-warning-ink" />
   <Swatch name="Error ink" varName="--ui-error-ink" />
   <Swatch name="Info ink" varName="--ui-info-ink" />
+  <Swatch name="Danger solid" varName="--ui-danger-solid" />
+  <Swatch name="Focus ring" varName="--ui-focus" />
+</div>
+
+## Data visualisation
+
+Eight chart hues, led by brand green. They stay distinguishable for the common
+colour-vision deficiencies and have their own dark-mode values. AxisChart and
+DonutChart use them by default; elsewhere use `bg-chart-N`, `text-chart-N` or
+`var(--ui-chart-N)`. Never rely on hue alone: charts also include a legend and
+a screen-reader table.
+
+<div style={{ display: "grid", gap: 16, gridTemplateColumns: "repeat(auto-fill, minmax(140px, 1fr))", maxWidth: 720, marginTop: 24 }}>
+  <Swatch name="Chart 1" varName="--ui-chart-1" />
+  <Swatch name="Chart 2" varName="--ui-chart-2" />
+  <Swatch name="Chart 3" varName="--ui-chart-3" />
+  <Swatch name="Chart 4" varName="--ui-chart-4" />
+  <Swatch name="Chart 5" varName="--ui-chart-5" />
+  <Swatch name="Chart 6" varName="--ui-chart-6" />
+  <Swatch name="Chart 7" varName="--ui-chart-7" />
+  <Swatch name="Chart 8" varName="--ui-chart-8" />
 </div>

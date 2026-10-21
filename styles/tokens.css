@@ -214,10 +214,13 @@
   /* Status *text* colours. The base status hues above are for icons, dots and
      borders; text (badges, form errors, danger fills) uses these, which hold
      4.5:1 against surfaces and their own 12–15% tinted backgrounds. */
-  --ui-success-ink: rgb(16, 120, 55);
-  --ui-warning-ink: rgb(150, 97, 6);
-  --ui-error-ink: rgb(196, 52, 34);
-  --ui-info-ink: rgb(23, 89, 234);
+  --ui-success-ink: rgb(14, 110, 50);
+  --ui-warning-ink: rgb(133, 86, 4);
+  --ui-error-ink: rgb(180, 44, 28);
+  --ui-info-ink: rgb(22, 80, 210);
+  /* Fill for destructive actions with white text (danger buttons) — the
+     same in both themes, since the dark-theme error ink is a light coral. */
+  --ui-danger-solid: rgb(196, 52, 34);
 
   /* Data-visualisation palette — brand green first, then hues that stay
      distinguishable for the common colour-vision deficiencies. */
@@ -354,6 +357,7 @@
   --color-tj-warning-ink: var(--ui-warning-ink);
   --color-tj-error-ink: var(--ui-error-ink);
   --color-tj-info-ink: var(--ui-info-ink);
+  --color-danger-solid: var(--ui-danger-solid);
 
   /* Data-visualisation palette */
   --color-chart-1: var(--ui-chart-1);

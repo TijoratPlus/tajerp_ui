@@ -28,7 +28,7 @@ type Story = StoryObj<typeof SegmentedControl>;
 export const Playground: Story = {
   render: (args) => {
     const [value, setValue] = React.useState("RU");
-    return <SegmentedControl {...args} value={value} onChange={setValue} />;
+    return <SegmentedControl {...args} value={value} onValueChange={setValue} />;
   },
 };
 
@@ -38,7 +38,7 @@ export const ThreeOptions: Story = {
     return (
       <SegmentedControl
         value={period}
-        onChange={setPeriod}
+        onValueChange={setPeriod}
         options={[
           { value: "day", label: "День" },
           { value: "week", label: "Неделя" },

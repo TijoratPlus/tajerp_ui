@@ -464,7 +464,7 @@ export const Calendar = React.forwardRef<HTMLDivElement, CalendarProps>(
                                   "relative inline-flex size-control-md items-center justify-center !rounded-lg text-ui-control font-medium tabular-nums transition-colors cursor-pointer",
                                   focusRing,
                                   "hover:bg-mist hover:text-mist-ink",
-                                  outside && "text-ink-4",
+                                  outside && "font-normal text-ink-3",
                                   middle && "text-mist-ink hover:bg-transparent",
                                   isToday &&
                                     "font-bold after:absolute after:bottom-1 after:left-1/2 after:size-1 after:-translate-x-1/2 after:!rounded-full after:bg-current",

@@ -12,7 +12,7 @@ const meta: Meta<typeof NumberField> = {
       },
     },
   },
-  args: { min: 0, max: 100, step: 1 },
+  args: { min: 0, max: 100, step: 1, "aria-label": "Количество" },
   argTypes: { disabled: { control: "boolean" } },
 };
 export default meta;
@@ -37,10 +37,10 @@ export const WithAffixes: Story = {
   render: () => (
     <div style={{ display: "flex", gap: 16 }}>
       <div style={{ width: 160 }}>
-        <NumberField defaultValue={500} step={50} min={0} suffix="c." />
+        <NumberField aria-label="Сумма" defaultValue={500} step={50} min={0} suffix="с" />
       </div>
       <div style={{ width: 140 }}>
-        <NumberField defaultValue={2} min={1} max={10} prefix="×" />
+        <NumberField aria-label="Множитель" defaultValue={2} min={1} max={10} prefix="×" />
       </div>
     </div>
   ),

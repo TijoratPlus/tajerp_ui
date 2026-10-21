@@ -220,6 +220,10 @@ export const DonutChart = React.forwardRef<HTMLElement, DonutChartProps>(
           >
             <div
               aria-hidden="true"
+              // Recharts makes sectors focusable; the plot is decorative (the
+              // legend and sr-only table carry the data), so take it out of
+              // the tab order entirely.
+              ref={(el) => el?.setAttribute("inert", "")}
               data-slot="donut-chart-plot"
               className="relative shrink-0"
               style={{ width: size, height: size }}

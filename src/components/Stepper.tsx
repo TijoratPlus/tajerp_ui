@@ -202,7 +202,7 @@ export const Stepper = React.forwardRef<HTMLElement, StepperProps>(
                   </span>
                 ) : null}
                 {step.optional ? (
-                  <span className="text-ui-caption text-ink-4">
+                  <span className="text-ui-caption text-ink-3">
                     {t.optional}
                   </span>
                 ) : null}

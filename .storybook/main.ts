@@ -26,6 +26,15 @@ const config: StorybookConfig = {
         "@radix-ui/react-avatar",
         "@radix-ui/react-slider",
         "@radix-ui/react-accordion",
+        "@radix-ui/react-alert-dialog",
+        "@radix-ui/react-collapsible",
+        "@radix-ui/react-dropdown-menu",
+        "@radix-ui/react-hover-card",
+        "@radix-ui/react-progress",
+        "@radix-ui/react-radio-group",
+        "@radix-ui/react-scroll-area",
+        "@radix-ui/react-toggle",
+        "@radix-ui/react-toggle-group",
       ],
     };
     return cfg;

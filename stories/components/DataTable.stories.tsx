@@ -7,6 +7,10 @@ import {
   Button,
   DataTable,
   type DataTableColumn,
+  dataTableToCSV,
+  downloadFile,
+  ExportMenu,
+  useFormat,
 } from "../../src";
 
 interface Invoice {
@@ -125,10 +129,10 @@ export const Playground: Story = {
         toolbar={<Button size="sm">+ Накладная</Button>}
         selectionActions={
           <>
-            <button className="rounded-md bg-white/10 px-3 py-1.5 text-[12.5px] font-bold hover:bg-white/20">
+            <button className="!rounded-md bg-on-brand/10 px-3 py-1.5 text-ui-helper font-bold hover:bg-on-brand/20">
               Отметить оплаченными
             </button>
-            <button className="rounded-md bg-white/10 px-3 py-1.5 text-[12.5px] font-bold hover:bg-white/20">
+            <button className="!rounded-md bg-on-brand/10 px-3 py-1.5 text-ui-helper font-bold hover:bg-on-brand/20">
               Экспорт
             </button>
           </>
@@ -173,4 +177,78 @@ export const Empty: Story = {
       emptyDescription="Создайте первую накладную или импортируйте из банка."
     />
   ),
+};
+
+/**
+ * Report-grade table: the document column is pinned while scrolling
+ * sideways, the header sticks inside a 320px scroll area, the footer row sums
+ * all filtered rows, rows expand to show line items, Shift+click selects a
+ * range, and ExportMenu downloads the visible columns as Excel-friendly CSV
+ * (`;` separator, UTF-8 BOM). Try the Density toolbar → Compact.
+ */
+export const ReportFeatures: Story = {
+  render: () => {
+    const { money } = useFormat();
+    const many = Array.from({ length: 24 }, (_, i) => ({
+      ...DATA[i % DATA.length],
+      doc: `НК-${2100 - i}`,
+    }));
+    const cols: DataTableColumn<Invoice>[] = [
+      {
+        key: "doc",
+        header: "№",
+        pin: "left",
+        width: 110,
+        sortable: true,
+        sortAccessor: (r) => r.doc,
+        cell: (r) => <span className="font-mono font-semibold text-ink-2">{r.doc}</span>,
+        footer: () => "Итого",
+      },
+      { key: "date", header: "Дата", width: 120, cell: (r) => r.date, csvValue: (r) => r.date },
+      { key: "party", header: "Контрагент", width: 240, cell: (r) => r.party, csvValue: (r) => r.party },
+      { key: "method", header: "Способ оплаты", width: 200, cell: (r) => r.method, csvValue: (r) => r.method },
+      {
+        key: "status",
+        header: "Статус",
+        width: 140,
+        cell: (r) => <Badge tone={STATUS[r.status].tone}>{STATUS[r.status].label}</Badge>,
+        csvValue: (r) => STATUS[r.status].label,
+      },
+      {
+        key: "amount",
+        header: "Сумма",
+        align: "right",
+        width: 160,
+        sortable: true,
+        sortAccessor: (r) => r.amount,
+        cell: (r) => <b className="text-ink-1">{money(r.amount)}</b>,
+        footer: (rows) => money(rows.reduce((sum, r) => sum + r.amount, 0)),
+      },
+    ];
+    return (
+      <DataTable<Invoice>
+        data={many}
+        columns={cols}
+        rowKey={(r) => r.doc}
+        title="Реестр накладных"
+        searchable
+        getSearchText={(r) => `${r.doc} ${r.party}`}
+        selectable
+        maxHeight={320}
+        renderExpanded={(r) => (
+          <p className="text-ui-body text-ink-2">
+            {r.sub} · оплата: {r.method}
+          </p>
+        )}
+        toolbar={
+          <ExportMenu
+            formats={["csv"]}
+            onExport={() =>
+              downloadFile(dataTableToCSV(many, cols), "nakladnye.csv", "text/csv;charset=utf-8")
+            }
+          />
+        }
+      />
+    );
+  },
 };

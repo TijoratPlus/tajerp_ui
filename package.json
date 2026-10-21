@@ -67,7 +67,7 @@
     "dev": "tsup --watch",
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",
-    "lint:package": "publint && attw --pack . --profile esm-only",
+    "lint:package": "publint && attw --pack . --profile esm-only --entrypoints . ./icons ./charts ./form",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",

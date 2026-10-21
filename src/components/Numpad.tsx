@@ -302,7 +302,7 @@ export const Numpad = React.forwardRef<HTMLDivElement, NumpadProps>(
             aria-live="polite"
             className="flex min-h-14 items-baseline justify-end gap-1.5 !rounded-xl border border-hairline bg-ui-surface-2 px-4 py-2 text-3xl font-bold tabular-nums text-ink-1"
           >
-            <span className={cn("truncate", !shown && "text-ink-4")}>{shown || "0"}</span>
+            <span className={cn("truncate", !shown && "text-ink-3")}>{shown || "0"}</span>
             {displaySuffix ? (
               <span className="text-xl font-semibold text-ink-3">{displaySuffix}</span>
             ) : null}

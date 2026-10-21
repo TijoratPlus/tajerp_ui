@@ -1,0 +1,74 @@
+import { Meta } from "@storybook/blocks";
+
+<Meta title="Get Started/Localization" />
+
+# Localization
+
+Tijorat+ runs in **Russian** (default), **Tajik** and **English**. Every
+string a component shows — close buttons, empty states, pagination, calendar
+months, screen-reader labels — comes from a per-component message namespace in
+all three languages. Switch with the **Language** toolbar above.
+
+```tsx
+import { TajUIProvider } from "tajerp_ui";
+
+<TajUIProvider locale="tg">
+  <App />
+</TajUIProvider>
+```
+
+## Overriding strings
+
+Per app, by namespace (`common`, `dataTable`, `calendar`, `sidebar`,
+`pagination`, `paymentSplit`, …):
+
+```tsx
+<TajUIProvider
+  locale="ru"
+  messages={{
+    common: { close: "Закрыть окно" },
+    dataTable: { empty: "Накладных пока нет" },
+  }}
+/>
+```
+
+Per instance, use the component's `labels` prop:
+
+```tsx
+<DataTable labels={{ searchPlaceholder: "Номер или клиент…" }} … />
+```
+
+## Money, numbers and dates
+
+```tsx
+const { money, number, date, relative, parseNumber } = useFormat();
+
+money(1234.5);           // "1 234,50 с"   (ru / tg)
+money(1234.5);           // "1,234.50 TJS" (en)
+money(10, { currency: "USD" }); // "10,00 $"
+number(1250000, { compact: true }); // "1,3 млн"
+date(new Date(), { day: "numeric", month: "long" });
+relative(Date.now() - 5 * 60_000); // "5 минут назад"
+parseNumber("1 234,50"); // 1234.5 — accepts "," and "."
+```
+
+The pure functions `formatMoney`, `formatNumber`, `formatDate` and
+`parseNumber` are exported too, for reports and CSV export outside React.
+
+Inputs (`NumberField`, `MoneyInput`, `Numpad`, `DatePicker`) accept both
+comma and dot decimals, because Russian and Tajik keyboards type a comma.
+
+## Tajik notes
+
+- Fonts: `styles/fonts-local.css` includes the Cyrillic-ext subset with
+  ӣ ӯ ҳ қ ғ ҷ. Faster One (the logo face) has no Cyrillic, so use it only
+  for Latin display text.
+- Intl data for `tg` is missing from some browsers. Numbers and dates then
+  fall back to Russian formatting, which uses the same conventions. Calendar
+  month and weekday names are built in, so they always render in Tajik.
+- Search in `Command` and `MultiSelect` folds ҳ→х, қ→к, ғ→г, ҷ→ч, ӣ→и, ӯ→у
+  and ё→е, so typing on a Russian keyboard finds Tajik words.
+
+> The Tajik strings were written for this release and should be reviewed by a
+> native speaker. Send corrections as message overrides or as a PR to the
+> component's `defineMessages` block.

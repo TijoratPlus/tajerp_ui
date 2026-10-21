@@ -153,7 +153,12 @@ export const Banners: Story = {
 export const StickyBanner: Story = {
   parameters: { layout: "fullscreen" },
   render: () => (
-    <div style={{ height: 320, overflow: "auto" }}>
+    <div
+      tabIndex={0}
+      role="region"
+      aria-label="Касса"
+      style={{ height: 320, overflow: "auto" }}
+    >
       <Banner tone="warning" sticky icon={<WifiOff />}>
         Нет соединения — продажи сохраняются на устройстве
       </Banner>

@@ -22,9 +22,9 @@
 @import "tailwindcss/theme.css" layer(theme);
 @import "tailwindcss/utilities.css" layer(utilities);
 
-/* Scan the built library bundle for the utility class names it uses. */
-@source "../dist/index.js";
-@source "../dist/charts.js";
+/* Scan the built library bundle (entries + shared chunks) for the utility
+   class names it uses. */
+@source "../dist";
 
 /* Brand tokens + Tailwind @theme registration (--color-brand, radii, …). */
 @import "./tokens.css";
