@@ -131,7 +131,7 @@ const TableHead = React.forwardRef<HTMLTableCellElement, TableHeadProps>(
       data-slot="table-head"
       scope={scope}
       className={cn(
-        "select-none whitespace-nowrap border-b-[1.5px] border-hairline bg-ui-bg px-cell-x py-2.5 text-ui-caption font-bold uppercase tracking-[0.07em] text-ink-3",
+        "select-none whitespace-nowrap border-b-[1.5px] border-hairline bg-ui-bg px-cell-x py-cell-y text-ui-caption font-bold uppercase tracking-[0.07em] text-ink-3",
         sticky && "sticky top-0 z-(--tj-z-sticky)",
         align === "right" && "text-right",
         align === "center" && "text-center",

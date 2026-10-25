@@ -10,4 +10,4 @@ export const closeButtonClass =
 
 /** Floating panel chrome for popovers, menus and hover cards. */
 export const floatingPanelClass =
-  "z-(--tj-z-popover) !rounded-lg border border-hairline bg-ui-surface text-ink-1 shadow-tj-lg outline-none data-[state=closed]:animate-out data-[state=open]:animate-in data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95";
+  "z-(--tj-z-popover) !rounded-lg border border-hairline bg-ui-surface text-ui-body text-ink-1 shadow-tj-lg outline-none data-[state=closed]:animate-out data-[state=open]:animate-in data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95";

@@ -124,3 +124,109 @@ describe("DataTable", () => {
     expect(csv).toContain("S-1;10");
   });
 });
+
+describe("DataTable — group-by, column resize, select all matching", () => {
+  const groups = [
+    { key: "Фаррух", label: "Фаррух", rows: DATA.filter((r) => r.customer === "Фаррух").slice(0, 3) },
+    { key: "Зарина", label: "Зарина", rows: DATA.filter((r) => r.customer === "Зарина").slice(0, 2) },
+  ];
+
+  it("renders collapsible group sections (uncontrolled) and reports toggles", async () => {
+    const onGroupToggle = vi.fn();
+    renderWithUI(
+      <DataTable
+        data={[]}
+        columns={COLUMNS}
+        rowKey={(r) => r.id}
+        groups={groups}
+        onGroupToggle={onGroupToggle}
+        selectable
+      />,
+    );
+    // 2 headers + 5 rows
+    expect(bodyRows()).toHaveLength(7);
+    const header = screen.getByRole("button", { name: /Зарина/ });
+    expect(header).toHaveAttribute("aria-expanded", "true");
+    await userEvent.click(header);
+    expect(onGroupToggle).toHaveBeenCalledWith("Зарина");
+    expect(header).toHaveAttribute("aria-expanded", "false");
+    expect(bodyRows()).toHaveLength(5);
+    // Totals still cover every group.
+    expect(screen.getByText(String([...groups[0]!.rows, ...groups[1]!.rows].reduce((s, r) => s + r.total, 0)))).toBeInTheDocument();
+    await expectNoA11yViolations();
+  });
+
+  it("respects controlled `collapsed` groups", () => {
+    renderWithUI(
+      <DataTable
+        data={[]}
+        columns={COLUMNS}
+        rowKey={(r) => r.id}
+        groups={[{ ...groups[0]!, collapsed: true }, groups[1]!]}
+      />,
+    );
+    expect(screen.queryByText("S-1")).not.toBeInTheDocument();
+    expect(screen.getByText("S-2")).toBeInTheDocument();
+  });
+
+  it("resizes a column with the keyboard and reports the width", async () => {
+    const onColumnResize = vi.fn();
+    const cols = COLUMNS.map((c) => (c.key === "customer" ? { ...c, width: 200 } : c));
+    renderWithUI(
+      <DataTable
+        data={DATA.slice(0, 3)}
+        columns={cols}
+        rowKey={(r) => r.id}
+        resizableColumns
+        onColumnResize={onColumnResize}
+      />,
+    );
+    const handle = screen.getByRole("separator", { name: "Ширина колонки «Клиент»" });
+    expect(handle).toHaveAttribute("aria-valuenow", "200");
+    handle.focus();
+    await userEvent.keyboard("{ArrowRight}");
+    expect(onColumnResize).toHaveBeenLastCalledWith("customer", 216);
+    expect(handle).toHaveAttribute("aria-valuenow", "216");
+    expect(screen.getByRole("columnheader", { name: /Клиент/ })).toHaveStyle({ width: "216px" });
+    await userEvent.keyboard("{Shift>}{ArrowLeft}{/Shift}");
+    expect(onColumnResize).toHaveBeenLastCalledWith("customer", 152);
+    await expectNoA11yViolations();
+  });
+
+  it("offers “select all N” after selecting the whole page", async () => {
+    const onSelectAll = vi.fn();
+    function Harness() {
+      const [keys, setKeys] = React.useState<Set<string>>(new Set());
+      const [all, setAll] = React.useState(false);
+      return (
+        <DataTable
+          data={DATA.slice(0, 5)}
+          columns={COLUMNS}
+          rowKey={(r) => r.id}
+          selectable
+          selectedKeys={keys}
+          onSelectionChange={(k) => {
+            setKeys(k);
+            setAll(false);
+          }}
+          selectAllMatching={{
+            total: 245,
+            selectedAll: all,
+            onSelectAll: () => {
+              onSelectAll();
+              setAll(true);
+            },
+          }}
+        />
+      );
+    }
+    renderWithUI(<Harness />);
+    await userEvent.click(screen.getByRole("checkbox", { name: "Выбрать все" }));
+    expect(screen.getAllByText("5 выбрано").length).toBeGreaterThan(0);
+    await userEvent.click(screen.getByRole("button", { name: "Выбрать все 245" }));
+    expect(onSelectAll).toHaveBeenCalled();
+    expect(screen.getAllByText("245 выбрано").length).toBeGreaterThan(0);
+    expect(screen.queryByRole("button", { name: "Выбрать все 245" })).not.toBeInTheDocument();
+    await expectNoA11yViolations();
+  });
+});

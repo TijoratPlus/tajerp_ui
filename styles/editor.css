@@ -1,0 +1,195 @@
+/* ============================================================
+   Rich-text typography — RichTextEditor and RichTextContent
+   (tajerp_ui/editor). Everything hangs off `.tj-prose`, inside the
+   `components` layer so utility classes passed by apps still win.
+   Colours and sizes come from the design tokens only.
+   ============================================================ */
+
+@layer components {
+  .tj-prose {
+    color: var(--ui-ink-1);
+    font-size: var(--tj-fs-ui-control);
+    line-height: var(--tj-lh-loose);
+    overflow-wrap: anywhere;
+  }
+  .tj-prose:focus,
+  .tj-prose.ProseMirror-focused {
+    outline: none;
+  }
+
+  .tj-prose :where(p, ul, ol, blockquote, pre, table, hr, figure, img) {
+    margin: 0 0 0.6em;
+  }
+  .tj-prose > :last-child {
+    margin-bottom: 0;
+  }
+
+  .tj-prose :where(h1, h2, h3, h4) {
+    margin: 0.9em 0 0.4em;
+    color: var(--ui-ink-1);
+    font-weight: var(--tj-fw-bold);
+    line-height: var(--tj-lh-snug);
+  }
+  .tj-prose > :where(h1, h2, h3, h4):first-child {
+    margin-top: 0;
+  }
+  .tj-prose h1 {
+    font-size: 1.5em;
+  }
+  .tj-prose h2 {
+    font-size: 1.25em;
+  }
+  .tj-prose h3 {
+    font-size: 1.1em;
+  }
+  .tj-prose h4 {
+    font-size: 1em;
+  }
+
+  .tj-prose strong {
+    font-weight: var(--tj-fw-bold);
+  }
+  .tj-prose a {
+    color: var(--ui-brand-ink);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  .tj-prose ul {
+    list-style: disc;
+    padding-left: 1.4em;
+  }
+  .tj-prose ol {
+    list-style: decimal;
+    padding-left: 1.6em;
+  }
+  .tj-prose li > :where(p, ul, ol) {
+    margin: 0;
+  }
+  .tj-prose li::marker {
+    color: var(--ui-ink-3);
+  }
+
+  /* Task lists */
+  .tj-prose ul[data-type="taskList"] {
+    list-style: none;
+    padding-left: 0.1em;
+  }
+  .tj-prose ul[data-type="taskList"] li {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5em;
+  }
+  .tj-prose ul[data-type="taskList"] li > label {
+    flex: none;
+    margin-top: 0.2em;
+    user-select: none;
+  }
+  .tj-prose ul[data-type="taskList"] li > div {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+  .tj-prose ul[data-type="taskList"] input[type="checkbox"] {
+    width: 1em;
+    height: 1em;
+    accent-color: var(--ui-brand-solid);
+    cursor: pointer;
+  }
+  .tj-prose ul[data-type="taskList"] li[data-checked="true"] > div {
+    color: var(--ui-ink-3);
+    text-decoration: line-through;
+  }
+
+  .tj-prose blockquote {
+    border-left: 3px solid var(--ui-border-brand);
+    padding-left: 0.9em;
+    color: var(--ui-ink-2);
+  }
+
+  .tj-prose code {
+    border-radius: var(--tj-radius-xs);
+    background: var(--ui-surface-inset);
+    padding: 0.1em 0.35em;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 0.9em;
+  }
+  .tj-prose pre {
+    overflow-x: auto;
+    border-radius: var(--tj-radius-sm);
+    background: var(--ui-surface-inset);
+    padding: 0.7em 0.9em;
+  }
+  .tj-prose pre code {
+    background: none;
+    padding: 0;
+  }
+
+  .tj-prose hr {
+    border: 0;
+    border-top: 1px solid var(--ui-hairline);
+  }
+
+  .tj-prose img {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    border-radius: var(--tj-radius-sm);
+  }
+  .tj-prose img.ProseMirror-selectednode {
+    outline: 2px solid var(--ui-focus);
+  }
+
+  /* Tables */
+  .tj-prose .tableWrapper {
+    overflow-x: auto;
+    margin: 0 0 0.6em;
+  }
+  .tj-prose table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+  }
+  .tj-prose :where(td, th) {
+    position: relative;
+    min-width: 4em;
+    border: 1px solid var(--ui-hairline);
+    padding: 0.35em 0.6em;
+    vertical-align: top;
+    text-align: left;
+  }
+  .tj-prose th {
+    background: var(--ui-surface-2);
+    font-weight: var(--tj-fw-semi);
+  }
+  .tj-prose :where(td, th) > p {
+    margin: 0;
+  }
+  .tj-prose .selectedCell::after {
+    position: absolute;
+    inset: 0;
+    background: var(--ui-focus);
+    opacity: 0.35;
+    content: "";
+    pointer-events: none;
+  }
+
+  /* Mentions */
+  .tj-prose .tj-mention,
+  .tj-prose [data-type="mention"] {
+    border-radius: var(--tj-radius-pill);
+    background: var(--ui-mist);
+    padding: 0 0.35em;
+    color: var(--ui-mist-ink);
+    font-weight: var(--tj-fw-semi);
+    white-space: nowrap;
+  }
+
+  /* Placeholder (first empty paragraph) */
+  .tj-prose .is-editor-empty:first-child::before {
+    float: left;
+    height: 0;
+    color: var(--ui-ink-3);
+    content: attr(data-placeholder);
+    pointer-events: none;
+  }
+}

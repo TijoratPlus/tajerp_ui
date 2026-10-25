@@ -89,7 +89,7 @@ const DialogContent = React.forwardRef<
           data-slot="dialog-content"
           data-density={density}
           className={cn(
-            "fixed top-1/2 left-1/2 z-(--tj-z-modal) grid w-[calc(100%-2rem)] max-h-[calc(100dvh-2rem)] overflow-y-auto overscroll-contain -translate-x-1/2 -translate-y-1/2 gap-3 !rounded-xl border border-hairline bg-ui-surface p-4 shadow-tj-lg duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95",
+            "fixed top-1/2 left-1/2 z-(--tj-z-modal) flex flex-col w-[calc(100%-2rem)] max-h-[calc(100dvh-2rem)] overflow-y-auto overscroll-contain -translate-x-1/2 -translate-y-1/2 gap-4 !rounded-xl border border-hairline bg-ui-surface p-5 text-ui-body text-ink-1 shadow-tj-lg duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95",
             dialogSizes[size],
             className,
           )}
@@ -97,7 +97,7 @@ const DialogContent = React.forwardRef<
         >
           {children}
           {showCloseButton ? (
-            <DialogPrimitive.Close className={cn(closeButtonClass, "top-2 right-2")}>
+            <DialogPrimitive.Close className={cn(closeButtonClass, "top-3 right-3")}>
               <XIcon className="size-4" aria-hidden />
               <span className="sr-only">{closeLabel ?? t.close}</span>
             </DialogPrimitive.Close>
@@ -114,19 +114,35 @@ const DialogHeader = React.forwardRef<HTMLDivElement, React.ComponentPropsWithou
     <div
       ref={ref}
       data-slot="dialog-header"
-      className={cn("flex flex-col gap-1 px-8 text-center sm:pl-0 sm:text-left", className)}
+      className={cn("flex shrink-0 flex-col gap-1 pr-8 text-left", className)}
       {...props}
     />
   ),
 );
 DialogHeader.displayName = "DialogHeader";
 
+/**
+ * Scrolling middle of a dialog: long forms scroll here while the header and footer stay put.
+ * The negative margin lets the scrollbar sit at the dialog edge and keeps focus rings unclipped.
+ */
+const DialogBody = React.forwardRef<HTMLDivElement, React.ComponentPropsWithoutRef<"div">>(
+  ({ className, ...props }, ref) => (
+    <div
+      ref={ref}
+      data-slot="dialog-body"
+      className={cn("-mx-5 min-h-0 flex-1 overflow-y-auto overscroll-contain px-5 py-0.5", className)}
+      {...props}
+    />
+  ),
+);
+DialogBody.displayName = "DialogBody";
+
 const DialogFooter = React.forwardRef<HTMLDivElement, React.ComponentPropsWithoutRef<"div">>(
   ({ className, ...props }, ref) => (
     <div
       ref={ref}
       data-slot="dialog-footer"
-      className={cn("flex flex-col-reverse gap-1.5 sm:flex-row sm:justify-end", className)}
+      className={cn("flex shrink-0 flex-col-reverse gap-2 sm:flex-row sm:items-center sm:justify-end", className)}
       {...props}
     />
   ),
@@ -140,7 +156,7 @@ const DialogTitle = React.forwardRef<
   <DialogPrimitive.Title
     ref={ref}
     data-slot="dialog-title"
-    className={cn("text-base font-bold leading-snug text-ink-1", className)}
+    className={cn("text-ui-title font-semibold leading-snug text-ink-1", className)}
     {...props}
   />
 ));
@@ -153,7 +169,7 @@ const DialogDescription = React.forwardRef<
   <DialogPrimitive.Description
     ref={ref}
     data-slot="dialog-description"
-    className={cn("text-sm text-ink-3", className)}
+    className={cn("text-ui-label text-ink-3", className)}
     {...props}
   />
 ));
@@ -161,6 +177,7 @@ DialogDescription.displayName = "DialogDescription";
 
 export {
   Dialog,
+  DialogBody,
   DialogClose,
   DialogContent,
   DialogDescription,

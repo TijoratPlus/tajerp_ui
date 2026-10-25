@@ -9,6 +9,7 @@ export default defineConfig({
     "src/icons.ts",
     "src/charts.ts",
     "src/form.ts",
+    "src/editor.ts",
     "src/components/*.tsx",
     "src/lib/*.ts",
     "src/i18n/*.ts",
@@ -21,6 +22,7 @@ export default defineConfig({
       icons: "src/icons.ts",
       charts: "src/charts.ts",
       form: "src/form.ts",
+      editor: "src/editor.ts",
     },
   },
   sourcemap: true,
@@ -46,6 +48,12 @@ export default defineConfig({
     "recharts",
     "react-hook-form",
     "embla-carousel-react",
+    // tiptap/ProseMirror is isolated in ./editor and imported at runtime
+    // from tajerp_ui's own install (one ProseMirror copy for every editor).
+    /^@tiptap\//,
+    // react-grid-layout is isolated in ./charts (GridLayout); its CSS ships
+    // as styles/grid-layout.css.
+    "react-grid-layout",
   ],
   // Components use hooks/context: mark the bundles as client modules for
   // React Server Component frameworks (Next.js app router).

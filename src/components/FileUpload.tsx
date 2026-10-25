@@ -1,9 +1,22 @@
-import { FileImage, FileSpreadsheet, FileText, Upload, X } from "lucide-react";
+import {
+  Camera,
+  FileImage,
+  FileSpreadsheet,
+  FileText,
+  Link2,
+  RefreshCw,
+  SwitchCamera,
+  Upload,
+  X,
+} from "lucide-react";
 import * as React from "react";
 
 import { defineMessages } from "../i18n/messages";
 import { cn } from "../lib/cn";
 import { focusRing } from "../lib/control";
+import { Button } from "./Button";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "./Dialog";
+import { Input } from "./Input";
 import { useFormat, useMessages } from "./TajUIProvider";
 
 export const fileUploadMessages = defineMessages("fileUpload", {
@@ -24,6 +37,23 @@ export const fileUploadMessages = defineMessages("fileUpload", {
     kb: "КБ",
     mb: "МБ",
     gb: "ГБ",
+    camera: "Камера",
+    cameraTitle: "Снимок с камеры",
+    cameraHint: "Наведите камеру и нажмите «Снять».",
+    takePhoto: "Снять",
+    retake: "Переснять",
+    usePhoto: "Использовать",
+    switchCamera: "Переключить камеру",
+    cameraPreview: "Изображение с камеры",
+    photoPreview: "Снимок",
+    cameraDenied: "Нет доступа к камере. Разрешите его в настройках браузера.",
+    cameraUnsupported: "Камера недоступна на этом устройстве.",
+    cameraError: "Не удалось включить камеру.",
+    fromLink: "По ссылке",
+    linkLabel: "Ссылка на файл",
+    linkPlaceholder: "https://…",
+    addLink: "Добавить",
+    invalidLink: "Введите ссылку, начинающуюся с http:// или https://",
   },
   tg: {
     title: "Файлҳоро ба ин ҷо кашед",
@@ -44,6 +74,23 @@ export const fileUploadMessages = defineMessages("fileUpload", {
     kb: "КБ",
     mb: "МБ",
     gb: "ГБ",
+    camera: "Камера",
+    cameraTitle: "Акс аз камера",
+    cameraHint: "Камераро равона кунед ва «Акс гирифтан»-ро пахш кунед.",
+    takePhoto: "Акс гирифтан",
+    retake: "Аз нав гирифтан",
+    usePhoto: "Истифода бурдан",
+    switchCamera: "Иваз кардани камера",
+    cameraPreview: "Тасвир аз камера",
+    photoPreview: "Акс",
+    cameraDenied: "Дастрасӣ ба камера нест. Онро дар танзимоти браузер иҷозат диҳед.",
+    cameraUnsupported: "Дар ин дастгоҳ камера дастрас нест.",
+    cameraError: "Камераро фаъол кардан нашуд.",
+    fromLink: "Бо истинод",
+    linkLabel: "Истинод ба файл",
+    linkPlaceholder: "https://…",
+    addLink: "Илова кардан",
+    invalidLink: "Истиноде ворид кунед, ки бо http:// ё https:// оғоз мешавад",
   },
   en: {
     title: "Drag files here",
@@ -63,6 +110,23 @@ export const fileUploadMessages = defineMessages("fileUpload", {
     kb: "KB",
     mb: "MB",
     gb: "GB",
+    camera: "Camera",
+    cameraTitle: "Take a photo",
+    cameraHint: "Point the camera and press “Capture”.",
+    takePhoto: "Capture",
+    retake: "Retake",
+    usePhoto: "Use photo",
+    switchCamera: "Switch camera",
+    cameraPreview: "Camera preview",
+    photoPreview: "Photo",
+    cameraDenied: "No camera access. Allow it in your browser settings.",
+    cameraUnsupported: "No camera is available on this device.",
+    cameraError: "Could not start the camera.",
+    fromLink: "From link",
+    linkLabel: "File link",
+    linkPlaceholder: "https://…",
+    addLink: "Add",
+    invalidLink: "Enter a link starting with http:// or https://",
   },
 });
 
@@ -105,6 +169,15 @@ export interface FileUploadProps extends Omit<
   description?: React.ReactNode;
   /** Hide the built-in file list (render your own from `value`). */
   hideFileList?: boolean;
+  /**
+   * Offer "Camera": a getUserMedia capture dialog (switch front/back, take,
+   * retake, use) whose photo joins `value` as a JPEG File.
+   */
+  camera?: boolean;
+  /** Offer "From link": a URL field that reports the address via `onLink`. */
+  linkInput?: boolean;
+  /** Called with a valid http(s) URL from the link field. */
+  onLink?: (url: string) => void;
   labels?: Partial<FileUploadMessages>;
 }
 
@@ -189,6 +262,9 @@ export const FileUpload = React.forwardRef<HTMLDivElement, FileUploadProps>(
       title,
       description,
       hideFileList = false,
+      camera = false,
+      linkInput = false,
+      onLink,
       labels,
       id,
       ...props
@@ -310,6 +386,23 @@ export const FileUpload = React.forwardRef<HTMLDivElement, FileUploadProps>(
       addFiles(Array.from(e.dataTransfer?.files ?? []));
     };
 
+    const [cameraOpen, setCameraOpen] = React.useState(false);
+    const [linkOpen, setLinkOpen] = React.useState(false);
+    const [link, setLink] = React.useState("");
+    const [linkError, setLinkError] = React.useState(false);
+    const linkId = `${autoId}-link`;
+    const linkErrorId = `${autoId}-link-error`;
+    const submitLink = () => {
+      const url = link.trim();
+      if (!isHttpUrl(url)) {
+        setLinkError(true);
+        return;
+      }
+      setLinkError(false);
+      setLink("");
+      onLink?.(url);
+    };
+
     const hintParts: string[] = [];
     if (maxSize !== undefined) hintParts.push(t.maxSize(sizeText));
     if (multiple && maxFiles !== undefined)
@@ -386,6 +479,85 @@ export const FileUpload = React.forwardRef<HTMLDivElement, FileUploadProps>(
             </span>
           ) : null}
         </button>
+
+        {camera || linkInput ? (
+          <div data-slot="file-upload-sources" className="flex flex-wrap items-center gap-1.5">
+            {camera ? (
+              <Button
+                variant="subtle"
+                size="sm"
+                disabled={disabled}
+                data-slot="file-upload-camera"
+                iconLeft={<Camera className="size-4" aria-hidden />}
+                onClick={() => setCameraOpen(true)}
+              >
+                {t.camera}
+              </Button>
+            ) : null}
+            {linkInput ? (
+              <Button
+                variant="subtle"
+                size="sm"
+                disabled={disabled}
+                data-slot="file-upload-link-toggle"
+                aria-expanded={linkOpen}
+                aria-controls={linkOpen ? linkId : undefined}
+                iconLeft={<Link2 className="size-4" aria-hidden />}
+                onClick={() => setLinkOpen((o) => !o)}
+              >
+                {t.fromLink}
+              </Button>
+            ) : null}
+          </div>
+        ) : null}
+
+        {linkInput && linkOpen ? (
+          <form
+            id={linkId}
+            data-slot="file-upload-link"
+            className="flex flex-col gap-1"
+            onSubmit={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              submitLink();
+            }}
+          >
+            <div className="flex items-center gap-1.5">
+              <Input
+                type="url"
+                size="sm"
+                inputMode="url"
+                aria-label={t.linkLabel}
+                placeholder={t.linkPlaceholder}
+                value={link}
+                disabled={disabled}
+                aria-invalid={linkError || undefined}
+                aria-describedby={linkError ? linkErrorId : undefined}
+                onChange={(e) => {
+                  setLink(e.target.value);
+                  setLinkError(false);
+                }}
+              />
+              <Button type="submit" size="sm" disabled={disabled || !link.trim()}>
+                {t.addLink}
+              </Button>
+            </div>
+            {linkError ? (
+              <p id={linkErrorId} role="alert" className="text-ui-helper text-tj-error-ink">
+                {t.invalidLink}
+              </p>
+            ) : null}
+          </form>
+        ) : null}
+
+        {camera ? (
+          <CameraCaptureDialog
+            open={cameraOpen}
+            onOpenChange={setCameraOpen}
+            onCapture={(file) => addFiles([file])}
+            t={t}
+          />
+        ) : null}
 
         <div
           id={errorId}
@@ -482,3 +654,198 @@ export const FileUpload = React.forwardRef<HTMLDivElement, FileUploadProps>(
   },
 );
 FileUpload.displayName = "FileUpload";
+
+function isHttpUrl(value: string): boolean {
+  try {
+    const url = new URL(value);
+    return url.protocol === "http:" || url.protocol === "https:";
+  } catch {
+    return false;
+  }
+}
+
+function stopStream(stream: MediaStream | null) {
+  stream?.getTracks().forEach((track) => track.stop());
+}
+
+function photoName(date = new Date()) {
+  const p = (n: number) => String(n).padStart(2, "0");
+  return `photo-${date.getFullYear()}${p(date.getMonth() + 1)}${p(date.getDate())}-${p(date.getHours())}${p(date.getMinutes())}${p(date.getSeconds())}.jpg`;
+}
+
+/** getUserMedia capture: live preview → still → File (JPEG). */
+function CameraCaptureDialog({
+  open,
+  onOpenChange,
+  onCapture,
+  t,
+}: {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  onCapture: (file: File) => void;
+  t: FileUploadMessages;
+}) {
+  const videoRef = React.useRef<HTMLVideoElement>(null);
+  const [facing, setFacing] = React.useState<"environment" | "user">("environment");
+  const [stream, setStream] = React.useState<MediaStream | null>(null);
+  const [error, setError] = React.useState<string | null>(null);
+  const [canSwitch, setCanSwitch] = React.useState(false);
+  const [shot, setShot] = React.useState<{ blob: Blob; url: string } | null>(null);
+  // Messages via a ref: a new `labels` object must not restart the camera.
+  const tRef = React.useRef(t);
+  tRef.current = t;
+
+  // Live stream while the dialog is open and no still is shown.
+  React.useEffect(() => {
+    if (!open || shot) return;
+    const media = typeof navigator !== "undefined" ? navigator.mediaDevices : undefined;
+    if (!media?.getUserMedia) {
+      setError(tRef.current.cameraUnsupported);
+      return;
+    }
+    let cancelled = false;
+    let current: MediaStream | null = null;
+    setError(null);
+    media
+      .getUserMedia({ video: { facingMode: facing }, audio: false })
+      .then((s) => {
+        if (cancelled) {
+          stopStream(s);
+          return;
+        }
+        current = s;
+        setStream(s);
+        media
+          .enumerateDevices?.()
+          .then((devices) => {
+            if (!cancelled) setCanSwitch(devices.filter((d) => d.kind === "videoinput").length > 1);
+          })
+          .catch(() => undefined);
+      })
+      .catch((err: unknown) => {
+        if (cancelled) return;
+        const name = (err as { name?: string } | null)?.name;
+        setError(
+          name === "NotAllowedError" || name === "SecurityError"
+            ? tRef.current.cameraDenied
+            : tRef.current.cameraError,
+        );
+      });
+    return () => {
+      cancelled = true;
+      stopStream(current);
+      setStream(null);
+    };
+  }, [open, shot, facing]);
+
+  React.useEffect(() => {
+    const video = videoRef.current;
+    if (!video || !stream) return;
+    video.srcObject = stream;
+    const p = video.play?.();
+    if (p && typeof p.catch === "function") p.catch(() => undefined);
+  }, [stream]);
+
+  // Free the still's object URL when it is replaced or the dialog unmounts.
+  React.useEffect(() => () => {
+    if (shot) URL.revokeObjectURL(shot.url);
+  }, [shot]);
+
+  const close = (next: boolean) => {
+    if (!next) {
+      setShot(null);
+      setError(null);
+    }
+    onOpenChange(next);
+  };
+
+  const take = () => {
+    const video = videoRef.current;
+    if (!video || !video.videoWidth) return;
+    const canvas = document.createElement("canvas");
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+    canvas.toBlob(
+      (blob) => {
+        if (blob) setShot({ blob, url: URL.createObjectURL(blob) });
+      },
+      "image/jpeg",
+      0.9,
+    );
+  };
+
+  const use = () => {
+    if (!shot) return;
+    onCapture(new File([shot.blob], photoName(), { type: "image/jpeg", lastModified: Date.now() }));
+    close(false);
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={close}>
+      <DialogContent size="lg" data-slot="file-upload-camera-dialog">
+        <DialogHeader>
+          <DialogTitle>{t.cameraTitle}</DialogTitle>
+          <DialogDescription>{t.cameraHint}</DialogDescription>
+        </DialogHeader>
+        <div className="relative flex aspect-video w-full items-center justify-center overflow-hidden !rounded-lg bg-ui-surface-inset">
+          {error ? (
+            <p role="alert" className="px-4 text-center text-ui-body text-tj-error-ink">
+              {error}
+            </p>
+          ) : shot ? (
+            <img src={shot.url} alt={t.photoPreview} className="size-full object-contain" />
+          ) : (
+            <video
+              ref={videoRef}
+              aria-label={t.cameraPreview}
+              playsInline
+              muted
+              className={cn("size-full object-contain", facing === "user" && "-scale-x-100")}
+            />
+          )}
+        </div>
+        <DialogFooter>
+          {shot ? (
+            <>
+              <Button
+                variant="subtle"
+                size="md"
+                iconLeft={<RefreshCw className="size-4" aria-hidden />}
+                onClick={() => setShot(null)}
+              >
+                {t.retake}
+              </Button>
+              <Button size="md" onClick={use}>
+                {t.usePhoto}
+              </Button>
+            </>
+          ) : (
+            <>
+              {canSwitch ? (
+                <Button
+                  variant="subtle"
+                  size="md"
+                  iconLeft={<SwitchCamera className="size-4" aria-hidden />}
+                  onClick={() => setFacing((f) => (f === "user" ? "environment" : "user"))}
+                >
+                  {t.switchCamera}
+                </Button>
+              ) : null}
+              <Button
+                size="md"
+                disabled={!stream || !!error}
+                iconLeft={<Camera className="size-4" aria-hidden />}
+                onClick={take}
+              >
+                {t.takePhoto}
+              </Button>
+            </>
+          )}
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}

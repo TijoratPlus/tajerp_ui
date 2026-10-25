@@ -141,7 +141,7 @@ const CardTitle = React.forwardRef<
     ref={ref}
     data-slot="card-title"
     className={cn(
-      "font-semibold text-ink-1 text-lg leading-snug tracking-tight",
+      "font-semibold text-ink-1 text-ui-title leading-snug",
       className,
     )}
     {...props}
@@ -156,7 +156,7 @@ const CardDescription = React.forwardRef<
   <div
     ref={ref}
     data-slot="card-description"
-    className={cn("text-ink-3 text-sm", className)}
+    className={cn("text-ui-label text-ink-3", className)}
     {...props}
   />
 ));

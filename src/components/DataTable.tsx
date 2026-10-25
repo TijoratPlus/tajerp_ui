@@ -90,6 +90,10 @@ const dataTableMessages = defineMessages("dataTable", {
     empty: "Нет данных",
     expandRow: "Показать подробности",
     collapseRow: "Скрыть подробности",
+    resizeColumn: (name: string) => `Ширина колонки «${name}»`,
+    selectAllMatching: (n: number) => `Выбрать все ${n}`,
+    allMatchingSelected: (n: number) => `Выбраны все ${n}`,
+    groupRows: (n: number) => `Строк: ${n}`,
   },
   tg: {
     search: "Ҷустуҷӯ",
@@ -109,6 +113,10 @@ const dataTableMessages = defineMessages("dataTable", {
     empty: "Маълумот нест",
     expandRow: "Нишон додани тафсилот",
     collapseRow: "Пинҳон кардани тафсилот",
+    resizeColumn: (name: string) => `Паҳнои сутуни «${name}»`,
+    selectAllMatching: (n: number) => `Ҳамаи ${n}-ро интихоб кардан`,
+    allMatchingSelected: (n: number) => `Ҳамаи ${n} интихоб шуд`,
+    groupRows: (n: number) => `Сатрҳо: ${n}`,
   },
   en: {
     search: "Search",
@@ -128,6 +136,10 @@ const dataTableMessages = defineMessages("dataTable", {
     empty: "No data",
     expandRow: "Show details",
     collapseRow: "Hide details",
+    resizeColumn: (name: string) => `Width of column “${name}”`,
+    selectAllMatching: (n: number) => `Select all ${n}`,
+    allMatchingSelected: (n: number) => `All ${n} selected`,
+    groupRows: (n: number) => `${n} rows`,
   },
 });
 
@@ -141,6 +153,26 @@ export type DataTableLabels = Partial<(typeof dataTableMessages.locales)["ru"]> 
 export interface DataTableAutoPagination {
   pageSize?: number;
   pageSizeOptions?: number[];
+}
+
+/** One section of a grouped table (`groups` prop). */
+export interface DataTableGroup<T> {
+  key: string;
+  label: React.ReactNode;
+  /** Row count shown in the header; defaults to `rows.length`. */
+  count?: number;
+  rows: T[];
+  /** Controlled collapsed state; omit to let the table track it. */
+  collapsed?: boolean;
+}
+
+/** "Select all N matching rows" banner (server-side lists). */
+export interface DataTableSelectAllMatching {
+  /** Total rows matching the current filters. */
+  total: number;
+  onSelectAll: () => void;
+  /** Every matching row is selected (not just the visible ones). */
+  selectedAll: boolean;
 }
 
 export interface DataTableProps<T> {
@@ -166,6 +198,11 @@ export interface DataTableProps<T> {
   selectedKeys?: Set<string>;
   onSelectionChange?: (keys: Set<string>) => void;
   selectionActions?: React.ReactNode;
+  /**
+   * After selecting the whole page, offer "Select all N" for every row that
+   * matches the filters; the selection bar then counts `total`.
+   */
+  selectAllMatching?: DataTableSelectAllMatching;
 
   /* Sorting */
   defaultSort?: SortState;
@@ -179,6 +216,20 @@ export interface DataTableProps<T> {
   renderExpanded?: (row: T) => React.ReactNode;
   expandedKeys?: Set<string>;
   onExpandedChange?: (keys: Set<string>) => void;
+
+  /* Grouping */
+  /**
+   * Group-by mode: rows render under collapsible section headers instead of
+   * `data` (search and sort still apply within each group; pagination does not).
+   */
+  groups?: DataTableGroup<T>[];
+  onGroupToggle?: (key: string) => void;
+
+  /* Column resizing */
+  /** Drag (or arrow-key) handles on header edges. */
+  resizableColumns?: boolean;
+  /** Fires when a resize ends, with the new width in px. */
+  onColumnResize?: (key: string, width: number) => void;
 
   /* Pagination — choose one */
   pagination?: DataTablePagination;
@@ -272,6 +323,7 @@ export function DataTable<T>({
   selectedKeys,
   onSelectionChange,
   selectionActions,
+  selectAllMatching,
   defaultSort,
   sort: sortProp,
   onSortChange,
@@ -279,6 +331,10 @@ export function DataTable<T>({
   renderExpanded,
   expandedKeys,
   onExpandedChange,
+  groups,
+  onGroupToggle,
+  resizableColumns = false,
+  onColumnResize,
   pagination,
   autoPagination,
   loading = false,
@@ -346,8 +402,8 @@ export function DataTable<T>({
     setAutoPage(1);
   }, [sort?.key, sort?.dir, query]);
 
-  const processed = React.useMemo(() => {
-    let out = data;
+  const processRows = React.useCallback((input: T[]) => {
+    let out = input;
     if (searchable && !onSearch && getSearchText && query.trim()) {
       const q = query.trim().toLowerCase();
       out = out.filter((r) => getSearchText(r).toLowerCase().includes(q));
@@ -361,15 +417,47 @@ export function DataTable<T>({
       }
     }
     return out;
-  }, [data, searchable, onSearch, getSearchText, query, sort, manualSorting, columnByKey]);
+  }, [searchable, onSearch, getSearchText, query, sort, manualSorting, columnByKey]);
 
-  // Internal pagination slices the processed rows.
+  // Group-by mode: each group's rows are searched/sorted on their own.
+  const [internalCollapsed, setInternalCollapsed] = React.useState<Set<string>>(
+    () => new Set(),
+  );
+  const isGroupCollapsed = (g: DataTableGroup<T>) =>
+    g.collapsed ?? internalCollapsed.has(g.key);
+  const grouped = React.useMemo(
+    () => groups?.map((group) => ({ group, rows: processRows(group.rows) })),
+    [groups, processRows],
+  );
+  const toggleGroup = (g: DataTableGroup<T>) => {
+    if (g.collapsed === undefined) {
+      const next = new Set(internalCollapsed);
+      if (next.has(g.key)) next.delete(g.key);
+      else next.add(g.key);
+      setInternalCollapsed(next);
+    }
+    onGroupToggle?.(g.key);
+  };
+
+  const processed = React.useMemo(
+    () => (grouped ? grouped.flatMap((x) => x.rows) : processRows(data)),
+    [grouped, processRows, data],
+  );
+
+  // Internal pagination slices the processed rows (not in group-by mode).
+  const paged = !!autoPagination && !grouped;
   const total = processed.length;
-  const pageCount = autoPagination ? Math.max(1, Math.ceil(total / autoSize)) : 1;
+  const pageCount = paged ? Math.max(1, Math.ceil(total / autoSize)) : 1;
   const safePage = Math.min(autoPage, pageCount);
-  const rows = autoPagination
-    ? processed.slice((safePage - 1) * autoSize, safePage * autoSize)
-    : processed;
+  const rows = grouped
+    ? grouped.flatMap((x) => (isGroupCollapsed(x.group) ? [] : x.rows))
+    : paged
+      ? processed.slice((safePage - 1) * autoSize, safePage * autoSize)
+      : processed;
+
+  // Column widths set by dragging a header edge (resizableColumns).
+  const [widths, setWidths] = React.useState<Record<string, number>>({});
+  const widthOf = (col: DataTableColumn<T>) => widths[col.key] ?? col.width;
 
   const allSelected = rows.length > 0 && rows.every((r) => selection.has(rowKey(r)));
   const someSelected = rows.some((r) => selection.has(rowKey(r)));
@@ -433,15 +521,37 @@ export function DataTable<T>({
     for (const c of columns) {
       if (c.pin !== "left") break;
       out[c.key] = left;
-      left += typeof c.width === "number" ? c.width : 0;
+      const w = widths[c.key] ?? c.width;
+      left += typeof w === "number" ? w : 0;
     }
     return out;
-  }, [columns, selectable, expandable]);
+  }, [columns, selectable, expandable, widths]);
   const anyPinned = Object.keys(pinOffsets).length > 0;
+
+  // Fixed layout with a width on every column: the table is at least as wide as their sum
+  // (so it scrolls instead of squeezing) and the last column takes any spare width (so it
+  // never ends short of the container or clips its own content).
+  const lastKey = columns[columns.length - 1]?.key;
+  const fixedMinWidth = React.useMemo(() => {
+    if (!resizableColumns || !columns.length) return undefined;
+    const parts: string[] = [];
+    if (selectable) parts.push(`${SELECT_COL_WIDTH}px`);
+    if (renderExpanded) parts.push(`${EXPAND_COL_WIDTH}px`);
+    for (const col of columns) {
+      const w = widths[col.key] ?? col.width;
+      if (w == null) return undefined;
+      const css = typeof w === "number" ? `${w}px` : w;
+      // The flexible last column only reserves a small floor, so a table a few pixels wider
+      // than its container fits instead of scrolling.
+      parts.push(col.key === lastKey ? `min(${css}, 5rem)` : css);
+    }
+    return `calc(${parts.join(" + ")})`;
+  }, [resizableColumns, columns, widths, selectable, renderExpanded, lastKey]);
 
   const cellStyle = (col: DataTableColumn<T>): React.CSSProperties | undefined => {
     const style: React.CSSProperties = {};
-    if (col.width != null) style.width = col.width;
+    const w = widthOf(col);
+    if (w != null && !(fixedMinWidth && col.key === lastKey)) style.width = w;
     if (pinOffsets[col.key] != null) style.left = pinOffsets[col.key];
     return Object.keys(style).length ? style : undefined;
   };
@@ -454,7 +564,7 @@ export function DataTable<T>({
   // Footer pagination model (presentational `pagination` wins over auto).
   const footerPager = pagination
     ? pagination
-    : autoPagination
+    : paged
       ? {
           page: safePage,
           pageCount,
@@ -462,9 +572,9 @@ export function DataTable<T>({
           rangeStart: total === 0 ? 0 : (safePage - 1) * autoSize + 1,
           rangeEnd: Math.min(safePage * autoSize, total),
           pageSize: autoSize,
-          pageSizeOptions: autoPagination.pageSizeOptions,
+          pageSizeOptions: autoPagination!.pageSizeOptions,
           onPageChange: setAutoPage,
-          onPageSizeChange: autoPagination.pageSizeOptions
+          onPageSizeChange: autoPagination!.pageSizeOptions
             ? (s: number) => {
                 setAutoSize(s);
                 setAutoPage(1);
@@ -473,161 +583,7 @@ export function DataTable<T>({
         }
       : undefined;
 
-  const Wrapper = bordered ? TableContainer : PlainWrapper;
-  const isEmpty = !loading && processed.length === 0;
-
-  return (
-    <Wrapper
-      className={className}
-      aria-busy={loading || undefined}
-      data-density={density}
-      data-slot="data-table"
-    >
-      {showToolbar ? (
-        <div className="flex flex-wrap items-center gap-2 border-b-[1.5px] border-hairline px-4 py-3">
-          {(title || caption) && (
-            <TitleTag className="text-ui-title font-bold text-ink-1">
-              {title}
-              {caption ? (
-                <span className="ml-2 text-ui-label font-medium text-ink-3">{caption}</span>
-              ) : null}
-            </TitleTag>
-          )}
-          <div className="flex-1" />
-          {searchable ? (
-            <SearchField
-              size="sm"
-              aria-label={t.search}
-              value={query}
-              onValueChange={(v) => {
-                setQuery(v);
-                onSearch?.(v);
-              }}
-              placeholder={searchPlaceholder ?? t.searchPlaceholder}
-              className="w-full sm:w-[260px]"
-            />
-          ) : null}
-          {toolbar}
-        </div>
-      ) : null}
-
-      {/* Always mounted, so screen readers announce selection changes. */}
-      {selectable ? (
-        <span role="status" className="sr-only">
-          {selectedCount > 0 ? selectedText(selectedCount) : null}
-        </span>
-      ) : null}
-      {selectable && selectedCount > 0 ? (
-        <div className="flex flex-wrap items-center gap-2.5 bg-brand-deep px-4 py-2.5 text-on-brand">
-          <b className="text-ui-label font-bold">{selectedText(selectedCount)}</b>
-          {selectionActions}
-        </div>
-      ) : null}
-
-      <Table maxHeight={maxHeight}>
-        <TableHeader>
-          <TableRow className="hover:bg-transparent">
-            {selectable ? (
-              <TableHead
-                sticky={maxHeight != null}
-                className={cn("pr-0", leadPin && "left-0 sticky z-(--tj-z-sticky)")}
-                style={{ width: SELECT_COL_WIDTH }}
-              >
-                <Checkbox
-                  checked={allSelected}
-                  indeterminate={!allSelected && someSelected}
-                  onCheckedChange={toggleAll}
-                  disabled={loading || rows.length === 0}
-                  aria-label={t.selectAll}
-                />
-              </TableHead>
-            ) : null}
-            {expandable ? (
-              <TableHead
-                sticky={maxHeight != null}
-                style={{ width: EXPAND_COL_WIDTH }}
-                className="pr-0"
-              >
-                <span className="sr-only">{t.expandRow}</span>
-              </TableHead>
-            ) : null}
-            {columns.map((col) => {
-              const dir = sort?.key === col.key ? sort.dir : undefined;
-              const inner = (
-                <>
-                  {col.header}
-                  {col.sortable ? <SortIcon dir={dir} /> : null}
-                </>
-              );
-              return (
-                <TableHead
-                  key={col.key}
-                  align={col.align}
-                  sticky={maxHeight != null}
-                  aria-sort={
-                    col.sortable
-                      ? dir === "asc"
-                        ? "ascending"
-                        : dir === "desc"
-                          ? "descending"
-                          : "none"
-                      : undefined
-                  }
-                  style={cellStyle(col)}
-                  className={cn(pinClass(col, true), col.headClassName)}
-                >
-                  {col.sortable ? (
-                    <button
-                      type="button"
-                      onClick={() => onHeaderSort(col)}
-                      className={cn(
-                        "-mx-1 inline-flex items-center gap-1.5 !rounded-sm px-1 uppercase tracking-[inherit] outline-none transition-colors cursor-pointer hover:text-ink-1 focus-visible:ring-2 focus-visible:ring-focus",
-                        col.align === "right" && "flex-row-reverse",
-                      )}
-                    >
-                      {inner}
-                    </button>
-                  ) : (
-                    <span
-                      className={cn(
-                        "inline-flex items-center gap-1.5",
-                        col.align === "right" && "flex-row-reverse",
-                      )}
-                    >
-                      {inner}
-                    </span>
-                  )}
-                </TableHead>
-              );
-            })}
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {loading ? (
-            Array.from({ length: skeletonRows }).map((_, i) => (
-              <TableRow key={`sk${i}`} aria-hidden className="hover:bg-transparent">
-                {Array.from({ length: colSpan }).map((__, j) => (
-                  <TableCell key={j}>
-                    <div
-                      className={cn(
-                        "h-3 !rounded bg-ui-surface-2 motion-safe:animate-pulse",
-                        j < leadCols ? "w-[18px]" : j === leadCols ? "w-3/4" : "w-1/2",
-                      )}
-                    />
-                  </TableCell>
-                ))}
-              </TableRow>
-            ))
-          ) : isEmpty ? (
-            <TableRow className="hover:bg-transparent">
-              <TableCell colSpan={colSpan} className="p-0">
-                {emptyState ?? (
-                  <EmptyState title={emptyTitle ?? t.empty} description={emptyDescription} />
-                )}
-              </TableCell>
-            </TableRow>
-          ) : (
-            rows.map((row, index) => {
+  const renderRow = (row: T, index: number) => {
               const k = rowKey(row);
               const isSel = selection.has(k);
               const isOpen = expandable && expanded.has(k);
@@ -719,7 +675,241 @@ export function DataTable<T>({
                   ) : null}
                 </React.Fragment>
               );
-            })
+  };
+
+  const renderGroups = () => {
+    let offset = 0;
+    return grouped!.map(({ group, rows: groupRows }) => {
+      const collapsed = isGroupCollapsed(group);
+      const start = offset;
+      if (!collapsed) offset += groupRows.length;
+      const count = group.count ?? groupRows.length;
+      return (
+        <React.Fragment key={`group:${group.key}`}>
+          <TableRow data-slot="data-table-group" className="bg-ui-bg hover:bg-ui-bg">
+            <TableCell colSpan={colSpan} className="py-1.5">
+              <button
+                type="button"
+                aria-expanded={!collapsed}
+                onClick={() => toggleGroup(group)}
+                className="inline-flex cursor-pointer items-center gap-1.5 !rounded-sm px-1 text-ui-label font-semibold text-ink-1 outline-none focus-visible:ring-2 focus-visible:ring-focus"
+              >
+                <ChevronRight
+                  aria-hidden
+                  className={cn("size-4 transition-transform duration-150", !collapsed && "rotate-90")}
+                />
+                {group.label}
+                <span className="text-ui-caption font-medium text-ink-3" aria-label={t.groupRows(count)}>
+                  {count}
+                </span>
+              </button>
+            </TableCell>
+          </TableRow>
+          {collapsed ? null : groupRows.map((row, i) => renderRow(row, start + i))}
+        </React.Fragment>
+      );
+    });
+  };
+
+  const Wrapper = bordered ? TableContainer : PlainWrapper;
+  const isEmpty = !loading && processed.length === 0;
+
+  return (
+    <Wrapper
+      className={className}
+      aria-busy={loading || undefined}
+      data-density={density}
+      data-slot="data-table"
+    >
+      {showToolbar ? (
+        <div className="flex flex-wrap items-center gap-2 border-b-[1.5px] border-hairline px-4 py-3">
+          {(title || caption) && (
+            <TitleTag className="text-ui-title font-bold text-ink-1">
+              {title}
+              {caption ? (
+                <span className="ml-2 text-ui-label font-medium text-ink-3">{caption}</span>
+              ) : null}
+            </TitleTag>
+          )}
+          <div className="flex-1" />
+          {searchable ? (
+            <SearchField
+              size="sm"
+              aria-label={t.search}
+              value={query}
+              onValueChange={(v) => {
+                setQuery(v);
+                onSearch?.(v);
+              }}
+              placeholder={searchPlaceholder ?? t.searchPlaceholder}
+              className="w-full sm:w-[260px]"
+            />
+          ) : null}
+          {toolbar}
+        </div>
+      ) : null}
+
+      {/* Always mounted, so screen readers announce selection changes. */}
+      {selectable ? (
+        <span role="status" className="sr-only">
+          {selectedCount > 0
+            ? selectAllMatching?.selectedAll
+              ? t.allMatchingSelected(selectAllMatching.total)
+              : selectedText(selectedCount)
+            : null}
+        </span>
+      ) : null}
+      {selectable && selectedCount > 0 ? (
+        <div
+          data-slot="data-table-selection-bar"
+          className="flex flex-wrap items-center gap-2.5 bg-brand-deep px-4 py-2.5 text-on-brand"
+        >
+          <b className="text-ui-label font-bold">
+            {selectedText(selectAllMatching?.selectedAll ? selectAllMatching.total : selectedCount)}
+          </b>
+          {selectAllMatching && !selectAllMatching.selectedAll && allSelected &&
+          selectAllMatching.total > selectedCount ? (
+            <>
+              <span aria-hidden>·</span>
+              <button
+                type="button"
+                data-slot="data-table-select-all-matching"
+                onClick={selectAllMatching.onSelectAll}
+                className="cursor-pointer !rounded-sm text-ui-label font-semibold underline underline-offset-4 outline-none focus-visible:ring-2 focus-visible:ring-on-brand"
+              >
+                {t.selectAllMatching(selectAllMatching.total)}
+              </button>
+            </>
+          ) : null}
+          {selectionActions}
+        </div>
+      ) : null}
+
+      <Table
+        maxHeight={maxHeight}
+        style={resizableColumns ? { tableLayout: "fixed", minWidth: fixedMinWidth } : undefined}
+      >
+        <TableHeader>
+          <TableRow className="hover:bg-transparent">
+            {selectable ? (
+              <TableHead
+                sticky={maxHeight != null}
+                className={cn("pr-0", leadPin && "left-0 sticky z-(--tj-z-sticky)")}
+                style={{ width: SELECT_COL_WIDTH }}
+              >
+                <Checkbox
+                  checked={allSelected}
+                  indeterminate={!allSelected && someSelected}
+                  onCheckedChange={toggleAll}
+                  disabled={loading || rows.length === 0}
+                  aria-label={t.selectAll}
+                />
+              </TableHead>
+            ) : null}
+            {expandable ? (
+              <TableHead
+                sticky={maxHeight != null}
+                style={{ width: EXPAND_COL_WIDTH }}
+                className="pr-0"
+              >
+                <span className="sr-only">{t.expandRow}</span>
+              </TableHead>
+            ) : null}
+            {columns.map((col) => {
+              const dir = sort?.key === col.key ? sort.dir : undefined;
+              const inner = (
+                <>
+                  {col.header}
+                  {col.sortable ? <SortIcon dir={dir} /> : null}
+                </>
+              );
+              return (
+                <TableHead
+                  key={col.key}
+                  align={col.align}
+                  sticky={maxHeight != null}
+                  aria-sort={
+                    col.sortable
+                      ? dir === "asc"
+                        ? "ascending"
+                        : dir === "desc"
+                          ? "descending"
+                          : "none"
+                      : undefined
+                  }
+                  style={cellStyle(col)}
+                  className={cn(
+                    pinClass(col, true),
+                    resizableColumns && pinOffsets[col.key] == null && "relative",
+                    col.headClassName,
+                  )}
+                >
+                  {col.sortable ? (
+                    <button
+                      type="button"
+                      onClick={() => onHeaderSort(col)}
+                      className={cn(
+                        "-mx-1 inline-flex items-center gap-1.5 !rounded-sm px-1 uppercase tracking-[inherit] outline-none transition-colors cursor-pointer hover:text-ink-1 focus-visible:ring-2 focus-visible:ring-focus",
+                        col.align === "right" && "flex-row-reverse",
+                      )}
+                    >
+                      {inner}
+                    </button>
+                  ) : (
+                    <span
+                      className={cn(
+                        "inline-flex items-center gap-1.5",
+                        col.align === "right" && "flex-row-reverse",
+                      )}
+                    >
+                      {inner}
+                    </span>
+                  )}
+                  {resizableColumns ? (
+                    <ColumnResizeHandle
+                      label={t.resizeColumn(
+                        typeof col.header === "string" ? col.header : (col.csvHeader ?? col.key),
+                      )}
+                      width={widthOf(col)}
+                      onResize={(w) => setWidths((prev) => ({ ...prev, [col.key]: w }))}
+                      onResizeEnd={(w) => onColumnResize?.(col.key, w)}
+                    />
+                  ) : null}
+                </TableHead>
+              );
+            })}
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {loading ? (
+            Array.from({ length: skeletonRows }).map((_, i) => (
+              <TableRow key={`sk${i}`} aria-hidden className="hover:bg-transparent">
+                {Array.from({ length: colSpan }).map((__, j) => (
+                  <TableCell key={j}>
+                    <div
+                      className={cn(
+                        "h-3 !rounded bg-ui-surface-2 motion-safe:animate-pulse",
+                        j < leadCols ? "w-[18px]" : j === leadCols ? "w-3/4" : "w-1/2",
+                      )}
+                    />
+                  </TableCell>
+                ))}
+              </TableRow>
+            ))
+          ) : isEmpty ? (
+            <TableRow className="hover:bg-transparent">
+              <TableCell colSpan={colSpan} className="p-0">
+                {emptyState ?? (
+                  <EmptyState title={emptyTitle ?? t.empty} description={emptyDescription} />
+                )}
+              </TableCell>
+            </TableRow>
+          ) : (
+            grouped ? (
+              renderGroups()
+            ) : (
+              rows.map(renderRow)
+            )
           )}
         </TableBody>
         {hasFooterRow && !loading && !isEmpty ? (
@@ -760,6 +950,80 @@ export function DataTable<T>({
 
       {footer}
     </Wrapper>
+  );
+}
+
+const MIN_COL_WIDTH = 48;
+const MAX_COL_WIDTH = 1200;
+
+function ColumnResizeHandle({
+  label,
+  width,
+  onResize,
+  onResizeEnd,
+}: {
+  label: string;
+  width: string | number | undefined;
+  onResize: (width: number) => void;
+  onResizeEnd: (width: number) => void;
+}) {
+  const ref = React.useRef<HTMLSpanElement>(null);
+  const start = React.useRef<{ x: number; width: number } | null>(null);
+  const last = React.useRef<number>(typeof width === "number" ? width : 0);
+  // Auto-width columns: report the rendered width to assistive tech.
+  const [measured, setMeasured] = React.useState<number>(MIN_COL_WIDTH);
+  React.useLayoutEffect(() => {
+    if (typeof width === "number") return;
+    const w = ref.current?.parentElement?.getBoundingClientRect().width;
+    if (w) setMeasured(Math.round(w));
+  }, [width]);
+  const clamp = (n: number) => Math.round(Math.min(MAX_COL_WIDTH, Math.max(MIN_COL_WIDTH, n)));
+  const current = (el: HTMLElement) =>
+    typeof width === "number"
+      ? width
+      : el.parentElement?.getBoundingClientRect().width || 160;
+
+  return (
+    <span
+      role="separator"
+      aria-orientation="vertical"
+      aria-label={label}
+      ref={ref}
+      aria-valuenow={typeof width === "number" ? Math.round(width) : measured}
+      aria-valuemin={MIN_COL_WIDTH}
+      aria-valuemax={MAX_COL_WIDTH}
+      tabIndex={0}
+      data-slot="data-table-resize-handle"
+      onClick={(e) => e.stopPropagation()}
+      onPointerDown={(e) => {
+        if (e.button !== 0) return;
+        e.preventDefault();
+        e.stopPropagation();
+        e.currentTarget.setPointerCapture?.(e.pointerId);
+        start.current = { x: e.clientX, width: current(e.currentTarget) };
+      }}
+      onPointerMove={(e) => {
+        if (!start.current) return;
+        last.current = clamp(start.current.width + e.clientX - start.current.x);
+        onResize(last.current);
+      }}
+      onPointerUp={(e) => {
+        if (!start.current) return;
+        e.currentTarget.releasePointerCapture?.(e.pointerId);
+        start.current = null;
+        onResizeEnd(last.current);
+      }}
+      onKeyDown={(e) => {
+        if (e.key !== "ArrowLeft" && e.key !== "ArrowRight") return;
+        e.preventDefault();
+        const step = e.shiftKey ? 64 : 16;
+        const next = clamp(current(e.currentTarget) + (e.key === "ArrowRight" ? step : -step));
+        last.current = next;
+        onResize(next);
+        onResizeEnd(next);
+      }}
+      className="absolute top-0 right-0 z-[1] h-full w-2 cursor-col-resize touch-none select-none outline-none hover:bg-brand/30 focus-visible:bg-brand"
+    />
   );
 }
 

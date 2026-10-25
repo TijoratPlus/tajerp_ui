@@ -13,3 +13,5 @@ export type {
   DonutChartLabels,
   DonutDatum,
 } from "./components/DonutChart";
+export { GridLayout } from "./components/GridLayout";
+export type { GridItem, GridLayoutProps } from "./components/GridLayout";

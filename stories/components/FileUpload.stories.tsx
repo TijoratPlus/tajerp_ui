@@ -118,3 +118,43 @@ export const Tajik: Story = {
     </TajUIProvider>
   ),
 };
+
+/** Camera capture (getUserMedia) and "From link" sources next to the drop zone. */
+export const CameraAndLink: Story = {
+  render: () => {
+    const [files, setFiles] = React.useState<File[]>([]);
+    const [links, setLinks] = React.useState<string[]>([]);
+    return (
+      <div className="flex max-w-lg flex-col gap-2">
+        <Label htmlFor="deal-docs">Документы по сделке</Label>
+        <FileUpload
+          id="deal-docs"
+          multiple
+          camera
+          linkInput
+          accept="image/*,.pdf"
+          value={files}
+          onValueChange={setFiles}
+          onLink={(url) => setLinks((l) => [...l, url])}
+        />
+        {links.length > 0 ? (
+          <ul className="text-ui-helper text-ink-3">
+            {links.map((l) => (
+              <li key={l}>{l}</li>
+            ))}
+          </ul>
+        ) : null}
+      </div>
+    );
+  },
+};
+
+export const CameraTajik: Story = {
+  render: () => (
+    <TajUIProvider locale="tg">
+      <div style={{ maxWidth: 520 }}>
+        <FileUpload camera linkInput accept="image/*" title="Акси шартномаро илова кунед" />
+      </div>
+    </TajUIProvider>
+  ),
+};

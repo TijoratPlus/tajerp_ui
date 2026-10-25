@@ -49,7 +49,8 @@ export const StateView = React.forwardRef<HTMLDivElement, StateViewProps>(
         <div
           aria-hidden
           className={cn(
-            "mb-3 flex size-12 items-center justify-center !rounded-full bg-mist text-mist-ink [&>svg]:size-6",
+            "mb-3 flex items-center justify-center !rounded-full bg-mist text-mist-ink",
+            compact ? "size-10 [&>svg]:size-5" : "size-12 [&>svg]:size-6",
             mediaClassName,
           )}
         >
@@ -57,10 +58,10 @@ export const StateView = React.forwardRef<HTMLDivElement, StateViewProps>(
         </div>
       ) : null}
       {title ? (
-        <p className={cn("text-ui-title font-bold text-ink-1", titleClassName)}>{title}</p>
+        <p className={cn("text-ui-title font-semibold text-ink-1", titleClassName)}>{title}</p>
       ) : null}
       {description ? (
-        <p className="mt-1 max-w-md text-sm text-ink-3">{description}</p>
+        <p className="mt-1 max-w-md text-ui-label text-ink-3">{description}</p>
       ) : null}
       {actions ? (
         <div className="mt-4 flex flex-wrap items-center justify-center gap-2">{actions}</div>

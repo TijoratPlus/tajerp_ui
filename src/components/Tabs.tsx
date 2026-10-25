@@ -112,7 +112,8 @@ export const Tabs = React.forwardRef<HTMLDivElement, TabsProps>(
           className={cn(
             "flex shrink-0 items-center gap-1",
             variant === "underline"
-              ? "border-b border-hairline px-3 sm:px-4"
+              ? // Many tabs scroll sideways instead of wrapping; the bar itself stays hidden.
+                "overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden border-b border-hairline px-3 sm:px-4"
               : "w-fit !rounded-lg bg-ui-surface-2 p-1",
             listClassName,
           )}
@@ -135,11 +136,11 @@ export const Tabs = React.forwardRef<HTMLDivElement, TabsProps>(
                 onClick={() => select(i)}
                 onKeyDown={(e) => roving.onKeyDown(e, i)}
                 className={cn(
-                  "inline-flex min-h-control-sm items-center gap-1.5 text-ui-body font-semibold transition-colors duration-150 outline-none cursor-pointer",
+                  "inline-flex min-h-control-sm shrink-0 items-center gap-1.5 whitespace-nowrap text-ui-body font-semibold transition-colors duration-150 outline-none cursor-pointer",
                   "disabled:cursor-not-allowed disabled:opacity-50",
                   variant === "underline"
                     ? cn(
-                        "-mb-px border-b-2 px-3 py-2.5 focus-visible:!rounded-t-md focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-focus",
+                        "-mb-px border-b-2 px-3 py-2 focus-visible:!rounded-t-md focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-focus",
                         on
                           ? "border-brand text-ink-1"
                           : "border-transparent text-ink-3 hover:text-ink-1",

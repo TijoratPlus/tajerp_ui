@@ -1,4 +1,4 @@
-import { screen } from "@testing-library/react";
+import { screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import * as React from "react";
 import { describe, expect, it, vi } from "vitest";
@@ -174,5 +174,89 @@ describe("FileUpload", () => {
     expect(
       screen.getByRole("button", { name: "Нест кардани файли «ҳисобот.xlsx»" }),
     ).toBeInTheDocument();
+  });
+});
+
+describe("FileUpload — camera and link sources", () => {
+  it("captures a photo from the camera into the value list", async () => {
+    const stop = vi.fn();
+    const stream = { getTracks: () => [{ stop }] } as unknown as MediaStream;
+    const getUserMedia = vi.fn().mockResolvedValue(stream);
+    Object.defineProperty(navigator, "mediaDevices", {
+      configurable: true,
+      value: {
+        getUserMedia,
+        enumerateDevices: vi.fn().mockResolvedValue([
+          { kind: "videoinput" },
+          { kind: "videoinput" },
+        ]),
+      },
+    });
+    const restore = [
+      vi.spyOn(HTMLVideoElement.prototype, "videoWidth", "get").mockReturnValue(640),
+      vi.spyOn(HTMLVideoElement.prototype, "videoHeight", "get").mockReturnValue(480),
+      vi.spyOn(HTMLMediaElement.prototype, "play").mockResolvedValue(undefined),
+    ];
+    HTMLCanvasElement.prototype.getContext = (() => ({ drawImage() {} })) as never;
+    HTMLCanvasElement.prototype.toBlob = function toBlob(cb: BlobCallback) {
+      cb(new Blob(["jpeg"], { type: "image/jpeg" }));
+    };
+    URL.createObjectURL = vi.fn(() => "blob:photo");
+    URL.revokeObjectURL = vi.fn();
+
+    const onValueChange = vi.fn();
+    renderWithUI(<FileUpload camera accept="image/*" onValueChange={onValueChange} />);
+    const user = userEvent.setup();
+    await user.click(screen.getByRole("button", { name: "Камера" }));
+    const dialog = await screen.findByRole("dialog", { name: "Снимок с камеры" });
+    expect(getUserMedia).toHaveBeenCalledWith({ video: { facingMode: "environment" }, audio: false });
+
+    await user.click(await within(dialog).findByRole("button", { name: "Переключить камеру" }));
+    expect(getUserMedia).toHaveBeenLastCalledWith({ video: { facingMode: "user" }, audio: false });
+    expect(stop).toHaveBeenCalled();
+
+    await user.click(await within(dialog).findByRole("button", { name: "Снять" }));
+    expect(within(dialog).getByRole("img", { name: "Снимок" })).toBeInTheDocument();
+    await user.click(within(dialog).getByRole("button", { name: "Переснять" }));
+    await user.click(await within(dialog).findByRole("button", { name: "Снять" }));
+    await user.click(within(dialog).getByRole("button", { name: "Использовать" }));
+
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+    const files = onValueChange.mock.calls[0]![0] as File[];
+    expect(files).toHaveLength(1);
+    expect(files[0]!.type).toBe("image/jpeg");
+    expect(files[0]!.name).toMatch(/^photo-\d{8}-\d{6}\.jpg$/);
+    restore.forEach((r) => r.mockRestore());
+  });
+
+  it("explains a denied camera permission", async () => {
+    Object.defineProperty(navigator, "mediaDevices", {
+      configurable: true,
+      value: {
+        getUserMedia: vi.fn().mockRejectedValue(Object.assign(new Error("denied"), { name: "NotAllowedError" })),
+      },
+    });
+    renderWithUI(<FileUpload camera />);
+    await userEvent.click(screen.getByRole("button", { name: "Камера" }));
+    expect(await screen.findByText(/Нет доступа к камере/)).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Снять" })).toBeDisabled();
+  });
+
+  it("validates and reports a link", async () => {
+    const onLink = vi.fn();
+    renderWithUI(<FileUpload linkInput onLink={onLink} />);
+    const user = userEvent.setup();
+    const toggle = screen.getByRole("button", { name: "По ссылке" });
+    await user.click(toggle);
+    expect(toggle).toHaveAttribute("aria-expanded", "true");
+    const field = screen.getByRole("textbox", { name: "Ссылка на файл" });
+    await user.type(field, "ftp://x{Enter}");
+    expect(onLink).not.toHaveBeenCalled();
+    expect(field).toHaveAttribute("aria-invalid", "true");
+    await user.clear(field);
+    await user.type(field, "https://tijorat.plus/price.pdf{Enter}");
+    expect(onLink).toHaveBeenCalledWith("https://tijorat.plus/price.pdf");
+    expect(field).toHaveValue("");
+    await expectNoA11yViolations();
   });
 });

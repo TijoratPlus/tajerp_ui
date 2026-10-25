@@ -55,6 +55,8 @@ export const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
         ref={ref}
         className={cn(
           "w-full appearance-none pr-9 pl-3 font-medium cursor-pointer",
+          // An unset value shows the placeholder option: muted, like an Input placeholder.
+          "has-[option[value='']:checked]:text-ink-3 [&>option]:text-ink-1",
           controlFrame,
           controlSize[size],
           variant === "subtle" && "border-transparent",

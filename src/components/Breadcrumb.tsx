@@ -73,7 +73,7 @@ export const Breadcrumb = React.forwardRef<HTMLElement, BreadcrumbProps>(
         className={cn("flex", className)}
         {...props}
       >
-        <ol className="flex flex-wrap items-center gap-1.5 text-ui-label font-medium">
+        <ol className="flex min-w-0 flex-nowrap items-center gap-1.5 text-ui-label font-medium">
           {visible.map((item, i) => {
             const isLast = i === visible.length - 1;
 
@@ -89,20 +89,21 @@ export const Breadcrumb = React.forwardRef<HTMLElement, BreadcrumbProps>(
               );
             }
 
+            // The current page truncates with an ellipsis; earlier crumbs keep their width.
             const content = (
-              <span className="inline-flex items-center gap-1.5">
+              <span className={cn("inline-flex items-center gap-1.5", isLast && "min-w-0 max-w-full")}>
                 {item.icon}
-                {item.label}
+                {isLast ? <span className="truncate">{item.label}</span> : item.label}
               </span>
             );
 
             return (
               <React.Fragment key={i}>
-                <li className="flex items-center">
+                <li className={cn("flex items-center", isLast ? "min-w-0" : "shrink-0")}>
                   {isLast || !item.href ? (
                     <span
                       aria-current={isLast ? "page" : undefined}
-                      className={isLast ? "text-ink-1" : "text-ink-3"}
+                      className={isLast ? "flex min-w-0 text-ink-1" : "text-ink-3"}
                     >
                       {content}
                     </span>

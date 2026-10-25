@@ -74,7 +74,7 @@ const AlertDialogContent = React.forwardRef<
       data-slot="alert-dialog-content"
       data-density={density}
       className={cn(
-        "fixed top-1/2 left-1/2 z-(--tj-z-modal) grid w-[calc(100%-2rem)] max-h-[calc(100dvh-2rem)] overflow-y-auto overscroll-contain -translate-x-1/2 -translate-y-1/2 gap-4 !rounded-xl border border-hairline bg-ui-surface p-5 text-ink-1 shadow-tj-lg duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95",
+        "fixed top-1/2 left-1/2 z-(--tj-z-modal) grid w-[calc(100%-2rem)] max-h-[calc(100dvh-2rem)] overflow-y-auto overscroll-contain -translate-x-1/2 -translate-y-1/2 gap-4 !rounded-xl border border-hairline bg-ui-surface p-5 text-ui-body text-ink-1 shadow-tj-lg duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95",
         size === "sm" ? "max-w-sm" : "max-w-lg",
         className,
       )}
@@ -118,7 +118,7 @@ const AlertDialogTitle = React.forwardRef<
   <AlertDialogPrimitive.Title
     ref={ref}
     data-slot="alert-dialog-title"
-    className={cn("text-base font-bold leading-snug text-ink-1", className)}
+    className={cn("text-ui-title font-semibold leading-snug text-ink-1", className)}
     {...props}
   />
 ));

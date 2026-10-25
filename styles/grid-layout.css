@@ -1,0 +1,110 @@
+/* ============================================================
+   GridLayout (tajerp_ui/charts) — the react-grid-layout and
+   react-resizable rules the component needs, restyled with
+   Tijorat+ tokens. Imported by styles/index.css, so apps need
+   no extra CSS import.
+   ============================================================ */
+
+.react-grid-layout {
+  position: relative;
+  transition: height 200ms ease;
+}
+.react-grid-item {
+  transition: all 200ms ease;
+  transition-property: left, top, width, height;
+}
+.react-grid-item img {
+  pointer-events: none;
+  user-select: none;
+}
+.react-grid-item.cssTransforms {
+  transition-property: transform, width, height;
+}
+.react-grid-item.resizing {
+  transition: none;
+  z-index: 1;
+  will-change: width, height;
+}
+.react-grid-item.react-draggable-dragging {
+  transition: none;
+  z-index: 3;
+  will-change: transform;
+}
+.react-grid-item.dropping {
+  visibility: hidden;
+}
+.react-grid-item.react-grid-placeholder {
+  background: var(--ui-brand);
+  border-radius: var(--tj-radius-lg);
+  opacity: 0.15;
+  transition-duration: 100ms;
+  z-index: 2;
+  user-select: none;
+}
+.react-grid-item.react-grid-placeholder.placeholder-resizing {
+  transition: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .react-grid-layout,
+  .react-grid-item {
+    transition: none;
+  }
+}
+
+.tj-grid-layout[data-editable] .react-grid-item:not(.static) {
+  cursor: grab;
+}
+.tj-grid-layout[data-editable] .react-grid-item.react-draggable-dragging {
+  cursor: grabbing;
+}
+
+.react-resizable {
+  position: relative;
+}
+.react-grid-item > .react-resizable-handle {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  opacity: 0;
+  transition: opacity 150ms ease;
+}
+.react-grid-item:hover > .react-resizable-handle,
+.react-grid-item:focus-within > .react-resizable-handle {
+  opacity: 1;
+}
+.react-grid-item > .react-resizable-handle::after {
+  content: "";
+  position: absolute;
+  right: 4px;
+  bottom: 4px;
+  width: 6px;
+  height: 6px;
+  border-right: 2px solid var(--ui-ink-3);
+  border-bottom: 2px solid var(--ui-ink-3);
+}
+.react-resizable-hide > .react-resizable-handle {
+  display: none;
+}
+.react-grid-item > .react-resizable-handle.react-resizable-handle-se {
+  bottom: 0;
+  right: 0;
+  cursor: se-resize;
+}
+.react-grid-item > .react-resizable-handle.react-resizable-handle-sw {
+  bottom: 0;
+  left: 0;
+  cursor: sw-resize;
+  transform: rotate(90deg);
+}
+.react-grid-item > .react-resizable-handle.react-resizable-handle-ne {
+  top: 0;
+  right: 0;
+  cursor: ne-resize;
+  transform: rotate(270deg);
+}
+.react-grid-item > .react-resizable-handle.react-resizable-handle-nw {
+  top: 0;
+  left: 0;
+  cursor: nw-resize;
+  transform: rotate(180deg);
+}

@@ -30,6 +30,10 @@
 @import "./tokens.css";
 /* frappe-ui-react colour remaps — harmless plain vars on the classic desk. */
 @import "./frappe-theme.css";
+/* Dashboard grid for GridLayout (tajerp_ui/charts, react-grid-layout). */
+@import "./grid-layout.css";
+/* Rich-text typography for tajerp_ui/editor (scoped to .tj-prose). */
+@import "./editor.css";
 
 /* ------------------------------------------------------------
    Minimal scoped reset — only what tajerp_ui components require,

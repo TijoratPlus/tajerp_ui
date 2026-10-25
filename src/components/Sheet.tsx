@@ -98,7 +98,7 @@ const SheetContent = React.forwardRef<
           data-density={density}
           data-side={side}
           className={cn(
-            "fixed z-(--tj-z-modal) pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)] flex flex-col gap-3 overflow-y-auto overscroll-contain bg-ui-bg shadow-tj-lg transition data-[state=closed]:animate-out data-[state=open]:animate-in data-[state=closed]:duration-200 data-[state=open]:duration-300",
+            "fixed z-(--tj-z-modal) pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)] flex flex-col gap-3 overflow-y-auto overscroll-contain bg-ui-bg text-ui-body text-ink-1 shadow-tj-lg transition data-[state=closed]:animate-out data-[state=open]:animate-in data-[state=closed]:duration-200 data-[state=open]:duration-300",
             side === "right" &&
               "data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right inset-y-0 right-0 h-full w-3/4 border-l border-hairline",
             side === "left" &&
@@ -133,7 +133,7 @@ const SheetHeader = React.forwardRef<HTMLDivElement, React.ComponentPropsWithout
     <div
       ref={ref}
       data-slot="sheet-header"
-      className={cn("flex flex-col gap-1 p-3 pr-12", className)}
+      className={cn("flex flex-col gap-1 px-4 pt-4 pb-1 pr-12", className)}
       {...props}
     />
   ),
@@ -145,7 +145,7 @@ const SheetFooter = React.forwardRef<HTMLDivElement, React.ComponentPropsWithout
     <div
       ref={ref}
       data-slot="sheet-footer"
-      className={cn("flex flex-col gap-1.5 mt-auto p-3", className)}
+      className={cn("flex flex-col gap-2 mt-auto p-4", className)}
       {...props}
     />
   ),
@@ -159,7 +159,7 @@ const SheetTitle = React.forwardRef<
   <SheetPrimitive.Title
     ref={ref}
     data-slot="sheet-title"
-    className={cn("text-base font-semibold text-ink-1", className)}
+    className={cn("text-ui-title font-semibold text-ink-1", className)}
     {...props}
   />
 ));
@@ -172,7 +172,7 @@ const SheetDescription = React.forwardRef<
   <SheetPrimitive.Description
     ref={ref}
     data-slot="sheet-description"
-    className={cn("text-ink-3 text-sm", className)}
+    className={cn("text-ui-label text-ink-3", className)}
     {...props}
   />
 ));

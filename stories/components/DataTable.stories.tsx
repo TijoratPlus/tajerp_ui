@@ -252,3 +252,45 @@ export const ReportFeatures: Story = {
     );
   },
 };
+
+/** CRM list view: group-by status, resizable columns, "select all N". */
+export const GroupedCRMList: Story = {
+  render: () => {
+    const [collapsed, setCollapsed] = React.useState<Set<string>>(new Set(["draft"]));
+    const [keys, setKeys] = React.useState<Set<string>>(new Set());
+    const [all, setAll] = React.useState(false);
+    const groups = (Object.keys(STATUS) as Invoice["status"][]).map((status) => ({
+      key: status,
+      label: <Badge tone={STATUS[status].tone}>{STATUS[status].label}</Badge>,
+      rows: DATA.filter((r) => r.status === status),
+      collapsed: collapsed.has(status),
+    }));
+    return (
+      <DataTable<Invoice>
+        data={DATA}
+        columns={columns}
+        rowKey={(r) => r.doc}
+        title="Накладные по статусу"
+        groups={groups}
+        onGroupToggle={(k) =>
+          setCollapsed((prev) => {
+            const next = new Set(prev);
+            if (next.has(k)) next.delete(k);
+            else next.add(k);
+            return next;
+          })
+        }
+        resizableColumns
+        onColumnResize={(key, width) => console.info("resize", key, width)}
+        selectable
+        selectedKeys={keys}
+        onSelectionChange={(k) => {
+          setKeys(k);
+          setAll(false);
+        }}
+        selectAllMatching={{ total: 245, selectedAll: all, onSelectAll: () => setAll(true) }}
+        selectionActions={<Button size="sm" variant="outline">Назначить</Button>}
+      />
+    );
+  },
+};

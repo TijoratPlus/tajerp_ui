@@ -124,6 +124,7 @@ export {
 export type { DialogContentProps } from "./components/Dialog";
 export {
   Dialog,
+  DialogBody,
   DialogClose,
   DialogContent,
   DialogDescription,
@@ -218,6 +219,8 @@ export { DataTable, dataTableToCSV } from "./components/DataTable";
 export type {
   DataTableAutoPagination,
   DataTableColumn,
+  DataTableGroup,
+  DataTableSelectAllMatching,
   DataTableLabels,
   DataTablePagination,
   DataTableProps,
@@ -711,3 +714,129 @@ export type {
   FileRejectionCode,
   FileUploadMessages,
 } from "./components/FileUpload";
+
+// ── CRM building blocks ─────────────────────────────────────────────
+export {
+  EmojiPicker,
+  EmojiPickerPanel,
+  IconPicker,
+  emojiPickerMessages,
+  searchEmoji,
+} from "./components/EmojiPicker";
+export type {
+  EmojiPickerLabels,
+  EmojiPickerPanelProps,
+  EmojiPickerProps,
+  IconPickerProps,
+} from "./components/EmojiPicker";
+export {
+  SortableList,
+  DragHandle,
+  arrayMove,
+  sortableMessages,
+  useSortableSensors,
+} from "./components/Sortable";
+export type {
+  DragHandleProps,
+  SortableHandleProps,
+  SortableLabels,
+  SortableListProps,
+} from "./components/Sortable";
+export { KanbanBoard, kanbanBoardMessages } from "./components/KanbanBoard";
+export type {
+  KanbanBoardLabels,
+  KanbanBoardProps,
+  KanbanColumn,
+  KanbanMove,
+} from "./components/KanbanBoard";
+export {
+  FilterBuilder,
+  FilterPopover,
+  TIMESPAN_OPTIONS,
+  countFilterRules,
+  defaultFilterValue,
+  defaultOperators,
+  filterBuilderMessages,
+  isFilterGroup,
+  newFilterId,
+} from "./components/FilterBuilder";
+export type {
+  FilterBuilderLabels,
+  FilterBuilderProps,
+  FilterField,
+  FilterFieldType,
+  FilterGroup,
+  FilterOperator,
+  FilterPopoverProps,
+  FilterRule,
+  FilterValueInputArgs,
+  TimespanValue,
+} from "./components/FilterBuilder";
+export {
+  SortBuilder,
+  SortPopover,
+  sortBuilderMessages,
+} from "./components/SortBuilder";
+export type {
+  SortBuilderLabels,
+  SortBuilderProps,
+  SortPopoverProps,
+  SortRule,
+} from "./components/SortBuilder";
+export { AvatarGroup, avatarGroupMessages } from "./components/AvatarGroup";
+export type {
+  AvatarGroupItem,
+  AvatarGroupLabels,
+  AvatarGroupProps,
+} from "./components/AvatarGroup";
+export {
+  ResizablePanel,
+  resizablePanelMessages,
+} from "./components/ResizablePanel";
+export type {
+  ResizablePanelLabels,
+  ResizablePanelProps,
+} from "./components/ResizablePanel";
+export {
+  AudioPlayer,
+  audioPlayerMessages,
+  formatPlaybackTime,
+} from "./components/AudioPlayer";
+export type {
+  AudioPlayerLabels,
+  AudioPlayerProps,
+} from "./components/AudioPlayer";
+export { ChipInput, chipInputMessages } from "./components/ChipInput";
+export type {
+  ChipInputLabels,
+  ChipInputProps,
+  ChipSuggestion,
+} from "./components/ChipInput";
+
+// ── Scheduling: time, date-time, duration and the event calendar ────
+export { TimePicker, timePickerMessages } from "./components/TimePicker";
+export type { TimePickerLabels, TimePickerProps } from "./components/TimePicker";
+export {
+  DateTimePicker,
+  dateTimePickerMessages,
+  formatDateTimeInput,
+  parseDateTimeInput,
+} from "./components/DateTimePicker";
+export type {
+  DateTimePickerLabels,
+  DateTimePickerProps,
+} from "./components/DateTimePicker";
+export { DurationInput, durationInputMessages } from "./components/DurationInput";
+export type {
+  DurationInputLabels,
+  DurationInputProps,
+} from "./components/DurationInput";
+export { EventCalendar, eventCalendarMessages } from "./components/EventCalendar";
+export type {
+  CalendarEvent,
+  CalendarEventRange,
+  CalendarView,
+  EventCalendarLabels,
+  EventCalendarProps,
+} from "./components/EventCalendar";
+export { formatTimeOfDay, parseTimeInput } from "./lib/time";

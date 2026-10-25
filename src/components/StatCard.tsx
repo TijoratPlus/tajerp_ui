@@ -301,6 +301,8 @@ export interface StatCardProps extends Omit<
   /** Extra content under the value (a progress bar, a target). */
   footer?: React.ReactNode;
   loading?: boolean;
+  /** Extra classes for the value, e.g. a smaller size for text values. */
+  valueClassName?: string;
   /** Makes the whole card a link to the detailed report. */
   href?: string;
   /** Makes the whole card a button (ignored when `href` is set). */
@@ -330,6 +332,7 @@ export const StatCard = React.forwardRef<HTMLElement, StatCardProps>(
       sparklineTone,
       footer,
       loading = false,
+      valueClassName,
       href,
       onClick,
       labels,
@@ -434,7 +437,7 @@ export const StatCard = React.forwardRef<HTMLElement, StatCardProps>(
                 must never truncate); delta and sparkline share the row below. */}
             <span
               data-slot="stat-card-value"
-              className="font-bold leading-tight tracking-tight text-ink-1 tabular-nums break-words text-(length:--tj-fs-lg)"
+              className={cn("font-bold leading-tight tracking-tight text-ink-1 tabular-nums break-words text-(length:--tj-fs-md)", valueClassName)}
             >
               {display}
             </span>

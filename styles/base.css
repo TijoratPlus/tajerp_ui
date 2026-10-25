@@ -114,6 +114,9 @@
   }
   body {
     @apply bg-background text-foreground;
+    /* Unsized text used to fall back to the browser's 16px next to 13.5px controls. */
+    font-size: var(--tj-fs-ui-body);
+    line-height: var(--tj-lh-body);
     font-feature-settings:
       "rlig" 1,
       "calt" 1;
