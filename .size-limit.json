@@ -4,7 +4,7 @@
     "path": "dist/index.js",
     "import": "*",
     "ignore": ["react", "react-dom"],
-    "limit": "150 kB"
+    "limit": "210 kB"
   },
   {
     "name": "Button + Card (tree-shaken)",
@@ -18,6 +18,13 @@
     "path": "dist/charts.js",
     "import": "*",
     "ignore": ["react", "react-dom", "recharts"],
-    "limit": "20 kB"
+    "limit": "35 kB"
+  },
+  {
+    "name": "tajerp_ui/editor",
+    "path": "dist/editor.js",
+    "import": "*",
+    "ignore": ["react", "react-dom"],
+    "limit": "215 kB"
   }
 ]

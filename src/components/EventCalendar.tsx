@@ -984,7 +984,8 @@ export const EventCalendar = React.forwardRef<HTMLDivElement, EventCalendarProps
                         {...eventButtonProps(e, "month")}
                         aria-label={accessibleName(e)}
                         className={cn(
-                          "flex min-h-5 w-full items-center gap-1 truncate !rounded-sm px-1 text-left text-ui-caption cursor-pointer touch-none",
+                          // 24px tall: the WCAG 2.5.8 minimum target size for stacked chips.
+                          "flex min-h-6 w-full items-center gap-1 truncate !rounded-sm px-1 text-left text-ui-caption cursor-pointer touch-none",
                           focusRing,
                           bar ? cn(eventChrome, "font-bold") : "text-ink-1 hover:bg-mist",
                           drag?.event === e && drag.moved && "opacity-80",
