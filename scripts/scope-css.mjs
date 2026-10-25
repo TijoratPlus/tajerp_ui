@@ -48,6 +48,10 @@ function matchBrace(s, open) {
   let str = null;
   for (let i = open; i < s.length; i++) {
     const c = s[i];
+    if (c === "\\") {
+      i++; // escaped character, e.g. `\'` in `.content-\[\'\'\]`
+      continue;
+    }
     if (str) {
       if (c === str && s[i - 1] !== "\\") str = null;
       continue;
@@ -70,6 +74,11 @@ function splitTopLevel(s, sep) {
   let buf = "";
   for (let i = 0; i < s.length; i++) {
     const c = s[i];
+    if (c === "\\") {
+      buf += c + (s[i + 1] ?? "");
+      i++;
+      continue;
+    }
     if (str) {
       buf += c;
       if (c === str && s[i - 1] !== "\\") str = null;
@@ -105,6 +114,10 @@ function scopeRules(block) {
     let kind = null;
     for (; j < n; j++) {
       const c = block[j];
+      if (c === "\\") {
+        j++;
+        continue;
+      }
       if (str) {
         if (c === str && block[j - 1] !== "\\") str = null;
         continue;

@@ -1,6 +1,14 @@
 import { ChevronDown } from "lucide-react";
 import * as React from "react";
 
+import {
+  controlDisabled,
+  controlFocus,
+  controlFrame,
+  controlInvalid,
+  controlSize,
+  type ControlSize,
+} from "../lib/control";
 import { cn } from "../lib/cn";
 
 export interface SelectOption {
@@ -18,6 +26,10 @@ export type SelectProps = Omit<
   /** Shown as a disabled first option when the value is empty. */
   placeholder?: string;
   variant?: "default" | "subtle";
+  /** Control height (density-aware). Defaults to "md". */
+  size?: ControlSize;
+  /** Classes for the wrapper (the `className` goes to the <select>). */
+  wrapperClassName?: string;
 };
 
 /** Styled native <select>. Pass `options` or <option> children. */
@@ -29,20 +41,26 @@ export const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
       options,
       placeholder,
       variant = "default",
+      size = "md",
+      wrapperClassName,
       ...props
     },
     ref,
   ) => (
-    <div className="inline-flex relative items-center w-full">
+    <div
+      data-slot="select"
+      className={cn("inline-flex relative items-center w-full", wrapperClassName)}
+    >
       <select
         ref={ref}
         className={cn(
-          "pr-9 pl-3 border !rounded-lg outline-none w-full h-9 font-medium text-[14px] text-ink-1 transition-colors duration-150 appearance-none cursor-pointer",
-          variant === "subtle"
-            ? "border-transparent bg-ui-surface-2"
-            : "border-hairline bg-ui-surface-2",
-          "focus-visible:border-brand focus-visible:ring-2 focus-visible:ring-brand/30",
-          "disabled:cursor-not-allowed disabled:opacity-60",
+          "w-full appearance-none pr-9 pl-3 font-medium cursor-pointer",
+          controlFrame,
+          controlSize[size],
+          variant === "subtle" && "border-transparent",
+          controlFocus,
+          controlInvalid,
+          controlDisabled,
           className,
         )}
         {...props}
@@ -64,7 +82,10 @@ export const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
             })
           : children}
       </select>
-      <ChevronDown className="right-3 absolute size-4 text-ink-3 pointer-events-none" />
+      <ChevronDown
+        aria-hidden
+        className="right-3 absolute size-4 text-ink-3 pointer-events-none"
+      />
     </div>
   ),
 );

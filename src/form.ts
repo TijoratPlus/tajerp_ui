@@ -16,3 +16,4 @@ export {
   FormMessage,
   useFormField,
 } from "./components/Form";
+export type { FormLabelProps } from "./components/Form";

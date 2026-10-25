@@ -5,6 +5,26 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import * as React from "react";
 
 import { cn } from "../lib/cn";
+import { defineMessages } from "../i18n/messages";
+import { useMessages } from "./TajUIProvider";
+
+const carouselMessages = defineMessages("carousel", {
+  ru: {
+    previous: "Предыдущий слайд",
+    next: "Следующий слайд",
+    goTo: (n: number) => `Перейти к слайду ${n}`,
+  },
+  tg: {
+    previous: "Слайди қаблӣ",
+    next: "Слайди навбатӣ",
+    goTo: (n: number) => `Ба слайди ${n} гузаштан`,
+  },
+  en: {
+    previous: "Previous slide",
+    next: "Next slide",
+    goTo: (n: number) => `Go to slide ${n}`,
+  },
+});
 import { Button, type ButtonProps } from "./Button";
 
 type CarouselApi = UseEmblaCarouselType[1];
@@ -193,6 +213,7 @@ CarouselItem.displayName = "CarouselItem";
 export const CarouselPrevious = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant = "subtle", size = "icon", ...props }, ref) => {
     const { orientation, scrollPrev, canScrollPrev } = useCarousel();
+    const t = useMessages(carouselMessages);
     return (
       <Button
         ref={ref}
@@ -200,7 +221,7 @@ export const CarouselPrevious = React.forwardRef<HTMLButtonElement, ButtonProps>
         size={size}
         disabled={!canScrollPrev}
         onClick={scrollPrev}
-        aria-label="Previous slide"
+        aria-label={t.previous}
         className={cn(
           "absolute !rounded-full",
           orientation === "horizontal"
@@ -210,7 +231,7 @@ export const CarouselPrevious = React.forwardRef<HTMLButtonElement, ButtonProps>
         )}
         {...props}
       >
-        <ChevronLeft className="size-4" />
+        <ChevronLeft className="size-4" aria-hidden />
       </Button>
     );
   },
@@ -220,6 +241,7 @@ CarouselPrevious.displayName = "CarouselPrevious";
 export const CarouselNext = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant = "subtle", size = "icon", ...props }, ref) => {
     const { orientation, scrollNext, canScrollNext } = useCarousel();
+    const t = useMessages(carouselMessages);
     return (
       <Button
         ref={ref}
@@ -227,7 +249,7 @@ export const CarouselNext = React.forwardRef<HTMLButtonElement, ButtonProps>(
         size={size}
         disabled={!canScrollNext}
         onClick={scrollNext}
-        aria-label="Next slide"
+        aria-label={t.next}
         className={cn(
           "absolute !rounded-full",
           orientation === "horizontal"
@@ -237,7 +259,7 @@ export const CarouselNext = React.forwardRef<HTMLButtonElement, ButtonProps>(
         )}
         {...props}
       >
-        <ChevronRight className="size-4" />
+        <ChevronRight className="size-4" aria-hidden />
       </Button>
     );
   },
@@ -247,10 +269,11 @@ CarouselNext.displayName = "CarouselNext";
 /** Clickable dot indicators bound to the carousel's scroll snaps. */
 export function CarouselDots({ className }: { className?: string }) {
   const { scrollSnaps, selectedIndex, scrollTo } = useCarousel();
+  const t = useMessages(carouselMessages);
   if (scrollSnaps.length <= 1) return null;
   return (
     <div
-      className={cn("flex items-center justify-center gap-2", className)}
+      className={cn("flex items-center justify-center gap-4", className)}
       data-slot="carousel-dots"
     >
       {scrollSnaps.map((_, index) => (
@@ -258,10 +281,11 @@ export function CarouselDots({ className }: { className?: string }) {
           key={index}
           type="button"
           onClick={() => scrollTo(index)}
-          aria-label={`Go to slide ${index + 1}`}
+          aria-label={t.goTo(index + 1)}
           aria-current={selectedIndex === index}
           className={cn(
-            "h-2 !rounded-full transition-all duration-200 cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-brand/40",
+            // 8px visual dot, 24px pointer target.
+            "relative h-2 !rounded-full transition-[width,background-color] duration-200 cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-focus after:absolute after:-inset-2",
             selectedIndex === index
               ? "w-6 bg-brand"
               : "w-2 bg-hairline hover:bg-ink-4",

@@ -13,6 +13,7 @@ const meta: Meta<typeof Select> = {
     },
   },
   args: {
+    "aria-label": "Категория",
     placeholder: "Выберите…",
     options: ["Напитки", "Выпечка", "Молочное", "Бакалея"],
   },
@@ -44,6 +45,7 @@ export const WithLabel: Story = {
 
 export const FromOptions: Story = {
   args: {
+    "aria-label": "Статус оплаты",
     options: [
       { label: "Оплачено", value: "paid" },
       { label: "Ожидает", value: "pending" },

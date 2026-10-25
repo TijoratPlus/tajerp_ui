@@ -3,13 +3,19 @@ import * as React from "react";
 
 import { cn } from "../lib/cn";
 
-export type SliderProps = React.ComponentProps<typeof SliderPrimitive.Root>;
+export type SliderProps = React.ComponentPropsWithoutRef<typeof SliderPrimitive.Root> & {
+  /**
+   * Accessible names per thumb, e.g. ["Цена от", "Цена до"] for a range.
+   * Defaults to the slider's own `aria-label` on every thumb.
+   */
+  thumbLabels?: string[];
+};
 
 /** Range slider (one or more thumbs) styled with the brand palette. */
 export const Slider = React.forwardRef<
   React.ComponentRef<typeof SliderPrimitive.Root>,
   SliderProps
->(({ className, value, defaultValue, min = 0, max = 100, ...props }, ref) => {
+>(({ className, value, defaultValue, min = 0, max = 100, thumbLabels, ...props }, ref) => {
   const thumbCount = Array.isArray(value)
     ? value.length
     : Array.isArray(defaultValue)
@@ -47,9 +53,13 @@ export const Slider = React.forwardRef<
         <SliderPrimitive.Thumb
           key={i}
           data-slot="slider-thumb"
+          aria-label={thumbLabels?.[i] ?? props["aria-label"]}
+          aria-labelledby={thumbLabels?.[i] ? undefined : props["aria-labelledby"]}
           className={cn(
-            "block size-4 cursor-grab !rounded-full border-2 border-brand bg-ui-surface shadow-tj-sm outline-none transition-colors active:cursor-grabbing",
-            "hover:bg-mist focus-visible:ring-2 focus-visible:ring-brand/40",
+            "relative block size-4 cursor-grab !rounded-full border-2 border-brand bg-ui-surface shadow-tj-sm outline-none transition-colors active:cursor-grabbing",
+            // 16px visual thumb, 28px pointer target.
+            "after:absolute after:-inset-1.5 after:!rounded-full",
+            "hover:bg-mist focus-visible:ring-2 focus-visible:ring-focus",
             "data-[disabled]:cursor-not-allowed",
           )}
         />

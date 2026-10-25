@@ -3,39 +3,41 @@ import * as React from "react";
 
 import { cn } from "../lib/cn";
 import { Button } from "./Button";
+import { StateView } from "./StateView";
 
 export interface ErrorStateProps {
-  title: string;
-  description?: string;
+  title: React.ReactNode;
+  description?: React.ReactNode;
   actionLabel?: string;
   onAction?: () => void;
+  /** Custom actions (replaces actionLabel/onAction). */
+  actions?: React.ReactNode;
+  compact?: boolean;
   className?: string;
 }
 
-export const ErrorState: React.FC<ErrorStateProps> = ({
-  title,
-  description,
-  actionLabel,
-  onAction,
-  className,
-}) => (
-  <div
-    className={cn(
-      "flex flex-col justify-center items-center bg-tj-error/5 py-8 border border-tj-error/30 !rounded-lg text-center",
-      className,
-    )}
-  >
-    <div className="bg-tj-error/10 mb-3 p-2.5 !rounded-full">
-      <AlertCircle className="w-6 h-6 text-tj-error" />
-    </div>
-    <p className="font-medium text-tj-error text-[15px]">{title}</p>
-    {description ? (
-      <p className="mt-1 max-w-lg text-ink-3 text-sm">{description}</p>
-    ) : null}
-    {actionLabel && onAction ? (
-      <Button className="mt-4" onClick={onAction} variant="outline" size="sm">
-        {actionLabel}
-      </Button>
-    ) : null}
-  </div>
+export const ErrorState = React.forwardRef<HTMLDivElement, ErrorStateProps>(
+  ({ title, description, actionLabel, onAction, actions, compact, className }, ref) => (
+    <StateView
+      ref={ref}
+      role="alert"
+      data-slot="error-state"
+      media={<AlertCircle />}
+      mediaClassName="bg-tj-error/10 text-tj-error-ink"
+      title={title}
+      titleClassName="font-semibold text-tj-error-ink"
+      description={description}
+      compact={compact ?? true}
+      className={cn("!rounded-lg border border-tj-error/30 bg-tj-error/5", className)}
+      actions={
+        actions ??
+        (actionLabel && onAction ? (
+          <Button onClick={onAction} variant="outline" size="sm">
+            {actionLabel}
+          </Button>
+        ) : undefined)
+      }
+    />
+  ),
 );
+ErrorState.displayName = "ErrorState";

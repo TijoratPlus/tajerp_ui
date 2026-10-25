@@ -1,5 +1,7 @@
 import * as React from "react";
 
+import { cn } from "./cn";
+
 /**
  * Minimal `asChild` Slot — merges the component's props/className/handlers onto
  * its single child element (à la Radix Slot) without pulling in an extra
@@ -34,9 +36,11 @@ function mergeSlotProps(
         ...(childPropValue as object),
       };
     } else if (propName === "className") {
-      overrideProps[propName] = [slotPropValue, childPropValue]
-        .filter(Boolean)
-        .join(" ");
+      // cn() so a child's utility overrides the slot's conflicting one.
+      overrideProps[propName] = cn(
+        slotPropValue as string | undefined,
+        childPropValue as string | undefined,
+      );
     }
   }
   return { ...slotProps, ...overrideProps };

@@ -1,17 +1,17 @@
 import { cva, type VariantProps } from "class-variance-authority";
-import { Loader2 } from "lucide-react";
 import * as React from "react";
 
 import { cn } from "../lib/cn";
 import { Slot } from "../lib/Slot";
+import { Spinner } from "./Spinner";
 
 const buttonVariants = cva(
-  "inline-flex justify-center items-center gap-1.5 disabled:opacity-60 outline-none focus-visible:ring-2 focus-visible:ring-brand/50 font-bold whitespace-nowrap active:scale-[0.97] transition-[transform,background,box-shadow,color] duration-150 ease-tj-out cursor-pointer disabled:pointer-events-none select-none",
+  "inline-flex justify-center items-center gap-1.5 disabled:opacity-60 outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-1 focus-visible:ring-offset-ui-surface font-bold whitespace-nowrap motion-safe:active:scale-[0.97] transition-[transform,background,box-shadow,color] duration-150 ease-tj-out cursor-pointer disabled:pointer-events-none select-none [&_svg]:shrink-0",
   {
     variants: {
       variant: {
         solid:
-          "bg-brand text-on-brand shadow-tj-brand hover:bg-brand-ink disabled:bg-brand-disabled disabled:shadow-none !rounded-lg",
+          "bg-brand-solid text-on-brand shadow-tj-brand hover:bg-brand-solid-hover disabled:bg-brand-disabled disabled:shadow-none !rounded-lg",
         outline:
           "border-[1.5px] border-brand/40 bg-transparent text-brand-ink hover:bg-mist !rounded-lg",
         ghost:
@@ -19,14 +19,19 @@ const buttonVariants = cva(
         subtle:
           "bg-ui-surface-2 border border-hairline text-ink-2 hover:text-ink-1 !rounded-lg",
         danger:
-          "bg-tj-error text-white hover:opacity-90 shadow-tj-sm !rounded-lg",
+          "bg-danger-solid text-on-brand hover:opacity-90 focus-visible:ring-tj-error/50 shadow-tj-sm !rounded-lg",
         link: "bg-transparent text-brand-ink underline-offset-4 hover:underline shadow-none px-0 h-auto active:scale-100 !rounded-none",
       },
+      // Heights follow the density tokens (--tj-control-*).
       size: {
-        sm: "h-8 px-3 text-[13px] !rounded-lg",
-        md: "h-9 px-4 text-[14px] !rounded-xl",
-        lg: "h-10 px-4 text-[15px] !rounded-xl",
-        icon: "h-9 w-9 !rounded-xl p-0",
+        sm: "h-control-sm px-3 text-ui-label !rounded-lg",
+        md: "h-control-md px-4 text-ui-control !rounded-xl",
+        lg: "h-control-lg px-4 text-ui-title !rounded-xl",
+        /** Primary POS actions (Pay, Checkout) — 48px+ in every density. */
+        xl: "min-h-12 h-[calc(var(--tj-control-lg)+8px)] px-5 text-base !rounded-xl",
+        icon: "size-control-md !rounded-xl p-0",
+        "icon-sm": "size-control-sm !rounded-lg p-0",
+        "icon-lg": "size-control-lg !rounded-xl p-0",
       },
       radius: {
         none: "!rounded-none",
@@ -82,6 +87,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       return (
         <Slot
           ref={ref as React.Ref<HTMLElement>}
+          data-slot="button"
           className={classes}
           {...props}
         >
@@ -94,11 +100,13 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       <button
         ref={ref}
         type={type}
+        data-slot="button"
         disabled={disabled || loading}
+        aria-busy={loading || undefined}
         className={classes}
         {...props}
       >
-        {loading ? <Loader2 className="size-4 animate-spin" /> : iconLeft}
+        {loading ? <Spinner className="size-4 text-current" /> : iconLeft}
         {children}
         {iconRight}
       </button>

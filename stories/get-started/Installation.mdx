@@ -10,52 +10,82 @@ Install from [npm](https://www.npmjs.com/package/tajerp_ui):
 npm install tajerp_ui
 ```
 
-**Peer dependencies:** React 18 or 19 (`react` + `react-dom`). Radix, lucide, and
-other runtime deps install transitively — consumers should **not** install Radix
+**Peer dependencies:** React 18 or 19 (`react` + `react-dom`), plus
+`react-hook-form` ≥ 7 only if you use `tajerp_ui/form`. Radix, lucide and the
+other runtime dependencies install transitively. Do **not** install Radix
 separately.
-
-For local library development, you can still `npm link` or use a `file:` path;
-the published package already includes a prebuilt `dist/`.
 
 ## Tailwind v4 wiring
 
-Import the design tokens and fonts once in your app entry, then tell Tailwind to
-scan the library for utility classes:
+Components are styled with Tailwind utilities, so the app needs Tailwind v4.
+Import the theme once in your CSS entry and point Tailwind at the library:
 
 ```css
 /* app.css */
-@import "tajerp_ui/styles/fonts.css";
+@import "tajerp_ui/styles/fonts-local.css"; /* self-hosted Inter, works offline */
 @import "tailwindcss";
-@import "tajerp_ui/styles/index.css";
-
 @source "../node_modules/tajerp_ui/dist";
+@import "tajerp_ui/styles/index.css";
 ```
 
-`styles/index.css` pulls in `tokens.css` and `base.css` — the `@theme inline`
-block registers semantic utilities (`bg-brand`, `text-ink-1`, `shadow-tj-md`, …).
+- `styles/index.css` pulls in `tokens.css` (the brand tokens and the
+  `@theme inline` utilities), `frappe-theme.css` (the frappe-ui-react remaps)
+  and `base.css` (shadcn token names and resets). It must go through Tailwind;
+  importing it from a TSX file without a Tailwind build does nothing useful.
+- `fonts-local.css` bundles Inter with the Cyrillic-ext subset, which covers
+  the Tajik letters ӣ ӯ ҳ қ ғ ҷ. `fonts.css` loads the same font from Google
+  Fonts instead.
+- No Tailwind build (Frappe desk)? Load the prebuilt, scoped
+  `tajerp_ui/styles/compiled.css`. See **Theming → Frappe desk**.
+
+## App root
+
+```tsx
+import { TajUIProvider, Toaster, ConfirmHost, TooltipProvider } from "tajerp_ui";
+
+export function Root() {
+  return (
+    <TajUIProvider locale="ru" /* "tg" | "en" */>
+      <TooltipProvider>
+        <App />
+      </TooltipProvider>
+      <Toaster />
+      <ConfirmHost />
+    </TajUIProvider>
+  );
+}
+```
+
+`TajUIProvider` is optional. Without it, components use Russian strings,
+format money in somoni and portal into `<body>`.
 
 ## Using components
 
 ```tsx
-import { Button, Input, Label } from "tajerp_ui";
-import "tajerp_ui/styles/index.css"; // if not wired via Tailwind @import
+import { Button, Label, MoneyInput } from "tajerp_ui";
 
-export function CheckoutForm() {
+export function CashForm() {
+  const [amount, setAmount] = React.useState<number>();
   return (
     <div>
-      <Label htmlFor="amount">Сумма</Label>
-      <Input id="amount" placeholder="0" />
-      <Button>Оплатить</Button>
+      <Label htmlFor="amount">Получено от клиента</Label>
+      <MoneyInput id="amount" value={amount} onValueChange={setAmount} />
+      <Button size="md">Оплатить</Button>
     </div>
   );
 }
 ```
 
-## Icons & charts
+## Entry points
 
 ```tsx
-import { Search, Plus } from "tajerp_ui/icons";
-import { AxisChart } from "tajerp_ui/charts";
+import { Search, Plus } from "tajerp_ui/icons";            // lucide icon set
+import { AxisChart, DonutChart } from "tajerp_ui/charts";  // recharts
+import { Form, FormField } from "tajerp_ui/form";          // react-hook-form
 ```
 
-See **Get Started → Theming** for light/dark mode setup.
+Each component is its own module in `dist/`, so bundlers tree-shake per
+component: importing `Button` does not pull in `DataTable`.
+
+Next: **Get Started → Theming** (dark mode, density, brand overrides) and
+**Get Started → Localization** (ru / tg / en, somoni).

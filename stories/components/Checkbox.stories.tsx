@@ -23,7 +23,9 @@ export default meta;
 
 type Story = StoryObj<typeof Checkbox>;
 
-export const Playground: Story = { args: { defaultChecked: true } };
+export const Playground: Story = {
+  args: { defaultChecked: true, "aria-label": "Учитывать НДС" },
+};
 
 export const States: Story = {
   render: () => (
@@ -37,7 +39,7 @@ export const States: Story = {
       <label className="flex items-center gap-2 text-sm text-ink-2">
         <Checkbox indeterminate /> Частично
       </label>
-      <label className="flex items-center gap-2 text-sm text-ink-4">
+      <label className="flex items-center gap-2 text-sm text-ink-3">
         <Checkbox disabled /> Отключено
       </label>
     </div>

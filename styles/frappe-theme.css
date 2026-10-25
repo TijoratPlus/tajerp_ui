@@ -3,19 +3,23 @@
    Remaps frappe-ui-react's --color-* tokens onto the Tijorat+
    green palette (light + dark). Import AFTER
    "@rtcamp/frappe-ui-react/theme" so these win.
+
+   Values that match a brand token reference it (var(--tj-green), …) so
+   overriding the palette in tokens.css carries through. The remaining hex
+   values are frappe-ui-specific shades with no brand-token equivalent.
    ============================================================ */
 
 @layer base {
   :root {
     /* Brand */
     --color-surface-menu-bar: #eef9f4;
-    --color-surface-selected: #1d9f6e;
+    --color-surface-selected: var(--tj-green);
     --color-surface-green-1: #eef9f4;
     --color-surface-green-2: #d9f2e5;
-    --color-surface-green-3: #1d9f6e;
+    --color-surface-green-3: var(--tj-green);
     --color-outline-green-1: #b8e4d0;
     --color-outline-green-2: #86cdb0;
-    --color-ink-green-2: #1d9f6e;
+    --color-ink-green-2: var(--tj-green);
     --color-ink-green-3: #13774f;
 
     /* Neutrals */
@@ -37,21 +41,22 @@
 
     /* Keep links/buttons aligned with brand */
     --color-surface-blue-2: #d9f2e5;
-    --color-surface-blue-3: #1d9f6e;
-    --color-ink-blue-2: #1d9f6e;
+    --color-surface-blue-3: var(--tj-green);
+    --color-ink-blue-2: var(--tj-green);
     --color-ink-blue-3: #13774f;
-    --color-ink-blue-link: #1d9f6e;
+    --color-ink-blue-link: var(--tj-green);
 
     /* POS component tokens */
-    --pos-brand-disabled: #b3d4c9;
-    --pos-brand-shadow: 0 4px 12px rgba(29, 159, 110, 0.35);
-    --pos-brand-shadow-lg: 0 4px 16px rgba(29, 159, 110, 0.45);
-    --pos-error: #e05c4b;
+    --pos-brand-disabled: var(--ui-brand-disabled);
+    --pos-brand-shadow: 0 4px 12px color-mix(in srgb, var(--tj-green) 35%, transparent);
+    --pos-brand-shadow-lg: 0 4px 16px color-mix(in srgb, var(--tj-green) 45%, transparent);
+    --pos-error: var(--tj-coral);
     --pos-error-bg: #fef2f2;
     --pos-error-bg-active: #fee2e2;
     --pos-amber: #d4900d;
   }
 
+  [data-theme="dark"],
   .dark {
     /* Brand */
     --color-surface-menu-bar: #0f1f18;

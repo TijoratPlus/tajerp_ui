@@ -7,20 +7,22 @@ const cardVariants = cva("text-ink-1", {
   variants: {
     // Semantic presets — a quick way to get a complete look.
     variant: {
-      default: "border-hairline bg-ui-surface shadow-none",
+      default: "border-hairline bg-ui-surface shadow-tj-card",
       elevated: "border-hairline bg-ui-surface shadow-tj-sm",
       strong: "border-hairline bg-ui-surface shadow-tj-md",
       muted: "border-hairline bg-ui-surface-2 shadow-none",
       warning: "border-tj-warning/40 bg-ui-surface shadow-tj-md",
       interactive:
-        "border-hairline bg-ui-surface shadow-none transition-all duration-200 ease-tj-out hover:-translate-y-0.5 hover:border-brand/40 hover:shadow-tj-md",
+        "border-hairline bg-ui-surface shadow-none transition-[translate,border-color,box-shadow] duration-200 ease-tj-out motion-safe:hover:-translate-y-0.5 hover:border-brand/40 hover:shadow-tj-md focus-within:border-brand/40",
     },
     // Composable axes — override individual properties of the preset.
-    tone: {
+    surface: {
       surface: "bg-ui-surface",
       "surface-2": "bg-ui-surface-2",
       inset: "bg-ui-surface-inset",
       mist: "bg-mist text-mist-ink",
+      /** Warm cream surface from the tijorat.plus brand (promos, onboarding). */
+      warm: "bg-ui-surface-warm",
     },
     elevation: {
       none: "shadow-none",
@@ -52,10 +54,10 @@ const cardVariants = cva("text-ink-1", {
     },
   },
   // Axes are declared after `variant`, so an explicitly-set axis wins over the
-  // preset via tailwind-merge. Defaults reconstruct the original Card look.
+  // preset via tailwind-merge. `elevation` has no default on purpose: a
+  // default would override every preset's own shadow (strong/warning → md).
   defaultVariants: {
     variant: "default",
-    elevation: "sm",
     radius: "lg",
     padding: "none",
     border: true,
@@ -66,6 +68,8 @@ export type CardProps = React.HTMLAttributes<HTMLElement> &
   VariantProps<typeof cardVariants> & {
     /** Element to render. Defaults to `div`. */
     as?: React.ElementType;
+    /** @deprecated Renamed to `surface` (`tone` now means a status colour). */
+    tone?: VariantProps<typeof cardVariants>["surface"];
   };
 
 const Card = React.forwardRef<HTMLElement, CardProps>(
@@ -73,6 +77,7 @@ const Card = React.forwardRef<HTMLElement, CardProps>(
     {
       className,
       variant,
+      surface,
       tone,
       elevation,
       radius,
@@ -89,7 +94,14 @@ const Card = React.forwardRef<HTMLElement, CardProps>(
         ref={ref}
         data-slot="card"
         className={cn(
-          cardVariants({ variant, tone, elevation, radius, padding, border }),
+          cardVariants({
+            variant,
+            surface: surface ?? tone,
+            elevation,
+            radius,
+            padding,
+            border,
+          }),
           className,
         )}
         {...props}
@@ -113,6 +125,7 @@ const CardHeader = React.forwardRef<HTMLDivElement, CardHeaderProps>(
   ({ className, padding, ...props }, ref) => (
     <div
       ref={ref}
+      data-slot="card-header"
       className={cn(cardHeaderVariants({ padding }), className)}
       {...props}
     />
@@ -126,6 +139,7 @@ const CardTitle = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <div
     ref={ref}
+    data-slot="card-title"
     className={cn(
       "font-semibold text-ink-1 text-lg leading-snug tracking-tight",
       className,
@@ -139,7 +153,12 @@ const CardDescription = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement>
 >(({ className, ...props }, ref) => (
-  <div ref={ref} className={cn("text-ink-3 text-sm", className)} {...props} />
+  <div
+    ref={ref}
+    data-slot="card-description"
+    className={cn("text-ink-3 text-sm", className)}
+    {...props}
+  />
 ));
 CardDescription.displayName = "CardDescription";
 
@@ -161,6 +180,7 @@ const CardContent = React.forwardRef<HTMLDivElement, CardContentProps>(
   ({ className, padding, ...props }, ref) => (
     <div
       ref={ref}
+      data-slot="card-content"
       className={cn(cardContentVariants({ padding }), className)}
       {...props}
     />
@@ -186,6 +206,7 @@ const CardFooter = React.forwardRef<HTMLDivElement, CardFooterProps>(
   ({ className, padding, ...props }, ref) => (
     <div
       ref={ref}
+      data-slot="card-footer"
       className={cn(cardFooterVariants({ padding }), className)}
       {...props}
     />
@@ -195,6 +216,9 @@ CardFooter.displayName = "CardFooter";
 
 export {
   Card,
+  cardContentVariants,
+  cardFooterVariants,
+  cardHeaderVariants,
   CardContent,
   CardDescription,
   CardFooter,

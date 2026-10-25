@@ -1,0 +1,5 @@
+{
+  "plugins": ["prettier-plugin-tailwindcss"],
+  "tailwindStylesheet": "./.storybook/preview.css",
+  "tailwindFunctions": ["cn", "cva"]
+}

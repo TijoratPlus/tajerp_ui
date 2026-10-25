@@ -4,59 +4,114 @@ import { Meta } from "@storybook/blocks";
 
 # Theming
 
-tajerp_ui uses **semantic runtime tokens** (`--ui-*`) that flip automatically
-under dark mode. Components never hard-code light colours — they read `--ui-bg`,
-`--ui-ink-1`, `--ui-brand`, etc.
+tajerp_ui uses **semantic runtime tokens** (`--ui-*`) that switch automatically
+in dark mode. Components never hard-code colours. They read `--ui-bg`,
+`--ui-ink-1`, `--ui-brand` and the other semantic tokens.
 
 ## Light / dark mode
 
-Set the theme on any wrapping element:
+Set the theme on the `<html>` element:
 
 ```html
-<!-- Light (default) -->
-<body>
-
-<!-- Dark -->
-<body data-theme="dark">
-<!-- or -->
-<body class="dark">
+<html data-theme="dark">   <!-- or <html class="dark"> -->
 ```
 
-Both `[data-theme="dark"]` and `.dark` are supported. Use the **Theme** toolbar
-in this Storybook to preview either mode on every story.
+Both `[data-theme="dark"]` and `.dark` work, so the next-themes class strategy
+and the Frappe desk's own `data-theme` attribute both work as-is.
+
+> Put the theme on `<html>`, not on an inner wrapper. Dialog, Sheet, Popover,
+> Tooltip and DropdownMenu portal into `<body>`, so a theme set on an app
+> wrapper would not reach them.
+
+Use the **Theme** toolbar in this Storybook to preview either mode.
+
+## Density
+
+`data-density` resizes every control at once: buttons, inputs, selects, table
+rows and calendar days.
+
+| Value | Control heights | Use for |
+|-------|-----------------|---------|
+| `compact` | 28 / 32 / 36 px | dense reports, back office |
+| `comfortable` (default) | 32 / 36 / 40 px | everyday screens |
+| `touch` | 40 / 44 / 52 px | POS on tablets and phones (44 px+ targets) |
+
+```html
+<html data-density="touch">
+<!-- or only for a region -->
+<section data-density="compact">…</section>
+```
 
 ## Token model
 
-Raw brand palette lives under `--tj-*` (greens, ink, status). Components consume
-the semantic layer:
+The raw brand palette lives under `--tj-*` (greens, ink, status, cream).
+Components use the semantic layer:
 
 | Token | Purpose |
 |-------|---------|
 | `--ui-bg` | Page background |
-| `--ui-surface` | Card / panel background |
-| `--ui-ink-1` … `--ui-ink-4` | Text hierarchy |
-| `--ui-brand` | Primary brand green |
-| `--ui-hairline` | Borders & dividers |
-| `--ui-success/warning/error/info` | Status colours |
+| `--ui-surface`, `--ui-surface-2`, `--ui-surface-inset`, `--ui-surface-warm` | Panels, fields, insets, warm brand surface |
+| `--ui-ink-1` … `--ui-ink-4` | Text hierarchy (`ink-4` is for disabled text only) |
+| `--ui-brand`, `--ui-brand-solid` | Brand green; `solid` carries white text at 4.5:1 |
+| `--ui-hairline` | Borders and dividers |
+| `--ui-success/warning/error/info` and `*-ink` | Status hues; `*-ink` for text |
+| `--ui-danger-solid` | Destructive fills with white text |
+| `--ui-focus` | Focus ring |
+| `--ui-overlay` | Modal scrim |
+| `--ui-chart-1` … `--ui-chart-8` | Data-visualisation palette |
+| `--tj-z-*` | Layering: sticky, dropdown, overlay, modal, popover, tooltip, toast |
 
 ## Overriding brand tokens
 
-Override raw tokens **before** importing the library styles:
+Imports must come first in a CSS file, so override the tokens **after** the
+library import. Overrides on `:root` win because they come later:
 
 ```css
+@import "tailwindcss";
+@import "tajerp_ui/styles/index.css";
+
 :root {
-  --tj-green: rgb(29, 159, 110); /* your brand green */
+  --tj-green: rgb(29, 159, 110);   /* brand green */
   --tj-green-ink: rgb(21, 107, 74);
 }
-@import "tajerp_ui/styles/index.css";
 ```
 
-Semantic `--ui-*` tokens derive from `--tj-*`, so a single override propagates
-everywhere. For app-specific surfaces, override `--ui-bg` or `--ui-surface`
-directly in dark/light selectors.
+`--ui-brand`, `--ui-brand-solid`, `--ui-border-brand`, `--ui-focus` and the
+brand shadow are all derived from `--tj-green` with `color-mix()`, so one
+override covers all of them. To change an app-specific surface, override
+`--ui-bg` or `--ui-surface` in both the light (`:root`) and dark
+(`[data-theme="dark"], .dark`) selectors.
+
+### Frappe desk (compiled stylesheet)
+
+Pages bundled by Frappe's esbuild have no Tailwind build. They load
+`tajerp_ui/styles/compiled.css`, where every utility is scoped under
+`.tj-react-root`. Wrap the page in that class and mount
+`<TajUIProvider scopedPortal>` so overlays portal into a scoped host too.
+Without it, a Dialog opened from the page would render unstyled under
+`<body>`:
+
+```tsx
+<div className="tj-react-root">
+  <TajUIProvider scopedPortal>
+    <App />
+  </TajUIProvider>
+</div>
+```
+
+If the desk's Bootstrap modals sit above your overlays, raise `--tj-z-modal`,
+`--tj-z-popover` and the other `--tj-z-*` tokens.
 
 ## Tailwind utilities
 
-The `@theme inline` block in `tokens.css` exposes utilities like `bg-brand`,
-`text-ink-2`, `rounded-lg`, `shadow-tj-md`. They track the same CSS variables
-and respect dark mode without extra config.
+The `@theme inline` block in `tokens.css` exposes token utilities such as:
+
+- colours: `bg-brand-solid`, `text-ink-2`, `bg-ui-surface-warm`, `ring-focus`,
+  `bg-chart-3`;
+- type: `text-ui-body` (the component type scale);
+- density-aware sizes: `h-control-md`;
+- shadow: `shadow-tj-md`.
+
+They use the same CSS variables, so they follow dark mode and density with no
+extra config. `cn()` from tajerp_ui knows these utilities, so
+`cn("text-ui-body", "text-ink-1")` keeps both.

@@ -31,7 +31,7 @@ export const Playground: Story = {
       </div>
     );
   },
-  args: { checked: true },
+  args: { checked: true, "aria-label": "Тёмная тема" },
 };
 
 export const States: Story = {
@@ -43,7 +43,7 @@ export const States: Story = {
       <label style={{ display: "inline-flex", gap: 8, alignItems: "center", color: "var(--ui-ink-2)" }}>
         <Switch defaultChecked /> Вкл
       </label>
-      <label style={{ display: "inline-flex", gap: 8, alignItems: "center", color: "var(--ui-ink-4)" }}>
+      <label style={{ display: "inline-flex", gap: 8, alignItems: "center", color: "var(--ui-ink-3)" }}>
         <Switch disabled /> Отключено
       </label>
     </div>

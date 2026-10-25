@@ -1,0 +1,36 @@
+import { Meta } from "@storybook/blocks";
+import { Button, Input, NumberField, Select, SearchField } from "../../src";
+
+<Meta title="Foundations/Density" />
+
+# Density
+
+One attribute resizes every control: buttons, inputs, selects, number
+fields, table rows, calendar days and menu items. Set it on `<html>` or on any
+region:
+
+```html
+<html data-density="touch">        <!-- POS on a tablet -->
+<section data-density="compact">   <!-- a dense report inside a normal page -->
+```
+
+| Density | sm / md / lg control | Table cell padding | Use for |
+|---------|----------------------|--------------------|---------|
+| `compact` | 28 / 32 / 36 px | 6 × 10 px | reports, accounting, wide tables |
+| `comfortable` | 32 / 36 / 40 px | 10 × 12 px | default |
+| `touch` | 40 / 44 / 52 px | 14 × 14 px | POS, warehouse handhelds (WCAG 2.5.5 target size) |
+
+The values are CSS variables (`--tj-control-sm|md|lg`, `--tj-cell-px|py`)
+exposed as Tailwind utilities (`h-control-md`, `size-control-sm`,
+`px-cell-x`, `py-cell-y`), so custom components follow density too.
+
+{["compact", "comfortable", "touch"].map((d) => (
+  <div key={d} data-density={d} style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "center", margin: "16px 0" }}>
+    <code style={{ width: 110 }}>{d}</code>
+    <Button size="md">Оплатить</Button>
+    <div style={{ width: 200 }}><Input aria-label={`Имя (${d})`} placeholder="Имя клиента" /></div>
+    <div style={{ width: 160 }}><Select aria-label={`Склад (${d})`} options={["Душанбе", "Худжанд"]} /></div>
+    <div style={{ width: 150 }}><NumberField aria-label={`Количество (${d})`} defaultValue={2} min={0} /></div>
+    <div style={{ width: 200 }}><SearchField aria-label={`Поиск (${d})`} /></div>
+  </div>
+))}

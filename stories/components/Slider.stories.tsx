@@ -22,7 +22,7 @@ export const Playground: Story = {
     const [value, setValue] = React.useState([40]);
     return (
       <div style={{ maxWidth: 320 }}>
-        <Slider value={value} onValueChange={setValue} max={100} step={1} />
+        <Slider aria-label="Скидка, %" value={value} onValueChange={setValue} max={100} step={1} />
         <p style={{ marginTop: 12, color: "var(--ui-ink-3)", fontSize: 13 }}>
           {value[0]}%
         </p>
@@ -36,7 +36,7 @@ export const Range: Story = {
     const [value, setValue] = React.useState([20, 80]);
     return (
       <div style={{ maxWidth: 320 }}>
-        <Slider value={value} onValueChange={setValue} max={100} step={5} />
+        <Slider thumbLabels={["Цена от", "Цена до"]} value={value} onValueChange={setValue} max={100} step={5} />
         <p style={{ marginTop: 12, color: "var(--ui-ink-3)", fontSize: 13 }}>
           {value[0]} – {value[1]}
         </p>
@@ -48,7 +48,7 @@ export const Range: Story = {
 export const Disabled: Story = {
   render: () => (
     <div style={{ maxWidth: 320 }}>
-      <Slider defaultValue={[50]} disabled />
+      <Slider aria-label="Громкость" defaultValue={[50]} disabled />
     </div>
   ),
 };

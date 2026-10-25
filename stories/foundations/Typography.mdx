@@ -7,9 +7,37 @@ import { Meta } from "@storybook/blocks";
 **Sans:** Inter (`--tj-font-sans`) — body, UI, tables.
 **Display:** Faster One (`--tj-font-display`) — logo and hero headings only.
 
-Import fonts via `tajerp_ui/styles/fonts.css` or the Google Fonts links in your HTML shell.
+Load fonts with `tajerp_ui/styles/fonts-local.css` (self-hosted, works
+offline, includes Cyrillic-ext for Tajik: ӣ ӯ ҳ қ ғ ҷ) or
+`tajerp_ui/styles/fonts.css` (Google Fonts). Faster One has no Cyrillic glyphs,
+so use it only for Latin display text.
 
-## Type scale
+## UI scale (inside components)
+
+Components use a role-based scale with Tailwind utilities. Use these instead of
+arbitrary sizes such as `text-[13px]`, so the whole product stays on one
+scale. `cn()` knows these utilities and merges them correctly.
+
+| Utility | Size | Role |
+|---------|------|------|
+| `text-ui-micro` | 10px | compact uppercase badges |
+| `text-ui-caption` | 11px | table heads, meta, counters |
+| `text-ui-helper` | 12.5px | helper and error text, toast descriptions |
+| `text-ui-label` | 13px | labels, small buttons, breadcrumbs |
+| `text-ui-body` | 13.5px | table cells, menu items, tabs |
+| `text-ui-control` | 14px | inputs and default buttons |
+| `text-ui-title` | 15px | card and section titles |
+
+<div style={{ display: "grid", gap: 10, color: "var(--ui-ink-1)", marginTop: 16 }}>
+  <div className="text-ui-title font-bold">Продажи за неделю — text-ui-title</div>
+  <div className="text-ui-control">Ҷустуҷӯи мол — text-ui-control</div>
+  <div className="text-ui-body">Душанбе, Рудаки 45 · 1 234,50 с — text-ui-body</div>
+  <div className="text-ui-label font-semibold text-ink-2">Телефон — text-ui-label</div>
+  <div className="text-ui-helper text-ink-3">Для SMS-чеков — text-ui-helper</div>
+  <div className="text-ui-caption font-bold uppercase tracking-wider text-ink-3">Сумма — text-ui-caption</div>
+</div>
+
+## Marketing scale (hero and landing)
 
 <div style={{ display: "grid", gap: 16, color: "var(--ui-ink-1)", marginTop: 24 }}>
   <div style={{ fontSize: "var(--tj-fs-4xl)", fontWeight: 700, letterSpacing: "-0.02em", lineHeight: "var(--tj-lh-tight)" }}>
@@ -27,7 +55,7 @@ Import fonts via `tajerp_ui/styles/fonts.css` or the Google Fonts links in your 
   <div style={{ fontSize: "var(--tj-fs-sm)", color: "var(--ui-ink-3)" }}>
     Подпись / мета — sm / 13px
   </div>
-  <div style={{ fontSize: "var(--tj-fs-xs)", color: "var(--ui-ink-4)", textTransform: "uppercase", letterSpacing: "0.06em", fontWeight: 600 }}>
+  <div style={{ fontSize: "var(--tj-fs-xs)", color: "var(--ui-ink-3)", textTransform: "uppercase", letterSpacing: "0.06em", fontWeight: 600 }}>
     Label caps — xs / 11px
   </div>
 </div>
