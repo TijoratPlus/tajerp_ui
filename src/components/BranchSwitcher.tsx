@@ -402,7 +402,7 @@ export const BranchSwitcher = React.forwardRef<
                 }}
                 onKeyDown={onKeyDown}
                 data-slot="branch-switcher-search"
-                className="h-control-md w-full min-w-0 bg-transparent text-ui-control text-ink-1 outline-none placeholder:text-ink-3"
+                className="h-control-md w-full min-w-0 bg-transparent text-ui-control text-ink-1 outline-none placeholder:text-ink-4"
               />
             </div>
           ) : null}

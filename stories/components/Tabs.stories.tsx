@@ -1,5 +1,18 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { BarChart3, LayoutDashboard, Target } from "lucide-react";
+import {
+  Activity,
+  BarChart3,
+  CalendarDays,
+  CheckSquare,
+  FileText,
+  LayoutDashboard,
+  Mail,
+  MessageSquare,
+  Paperclip,
+  Phone,
+  StickyNote,
+  Target,
+} from "lucide-react";
 import * as React from "react";
 import { Card, CardContent, Tabs } from "../../src";
 
@@ -9,7 +22,8 @@ const meta: Meta<typeof Tabs> = {
   parameters: {
     docs: {
       description: {
-        component: "Tabbed content switcher. Pass a `tabs` array with label, optional icon, and content panel.",
+        component:
+          "Tabbed content switcher. Pass a `tabs` array with label, optional icon, and content panel. When many tabs share a narrow strip, `overflow=\"menu\"` moves the ones that do not fit into a trailing «Ещё» menu (the active tab always stays visible); the default `overflow=\"scroll\"` scrolls the strip sideways.",
       },
     },
   },
@@ -66,4 +80,48 @@ export const Controlled: Story = {
       </div>
     );
   },
+};
+
+const leadTabs = [
+  { id: "conv", label: "Переписка", icon: <MessageSquare className="size-4" />, badge: 2 },
+  { id: "activity", label: "Активность", icon: <Activity className="size-4" /> },
+  { id: "notes", label: "Заметки", icon: <StickyNote className="size-4" /> },
+  { id: "tasks", label: "Задачи", icon: <CheckSquare className="size-4" /> },
+  { id: "files", label: "Файлы", icon: <Paperclip className="size-4" /> },
+  { id: "emails", label: "Письма", icon: <Mail className="size-4" /> },
+  { id: "calls", label: "Звонки", icon: <Phone className="size-4" /> },
+  { id: "events", label: "События", icon: <CalendarDays className="size-4" /> },
+  { id: "data", label: "Данные", icon: <FileText className="size-4" /> },
+].map((t) => ({ ...t, content: <Panel>{t.label}: содержимое вкладки.</Panel> }));
+
+/** Lead/deal page: nine tabs in a 560px column; the rest go into «Ещё». */
+export const OverflowMenu: Story = {
+  name: "Overflow menu",
+  render: () => (
+    <div style={{ maxWidth: 560 }}>
+      <Tabs aria-label="Лид" overflow="menu" tabs={leadTabs} />
+    </div>
+  ),
+};
+
+export const OverflowMenuPills: Story = {
+  name: "Overflow menu (pills, Tajik)",
+  render: () => (
+    <div style={{ maxWidth: 420 }}>
+      <Tabs
+        aria-label="Ҳисобот"
+        variant="pills"
+        overflow="menu"
+        labels={{ more: "Боз" }}
+        tabs={[
+          { label: "Имрӯз", content: <Panel>Фурӯши имрӯза.</Panel> },
+          { label: "Ҳафта", content: <Panel>Фурӯши ҳафта.</Panel> },
+          { label: "Моҳ", content: <Panel>Фурӯши моҳ.</Panel> },
+          { label: "Семоҳа", content: <Panel>Фурӯши семоҳа.</Panel> },
+          { label: "Сол", content: <Panel>Фурӯши сол.</Panel> },
+          { label: "Ҳамаи давраҳо", content: <Panel>Ҳамаи фурӯш.</Panel> },
+        ]}
+      />
+    </div>
+  ),
 };

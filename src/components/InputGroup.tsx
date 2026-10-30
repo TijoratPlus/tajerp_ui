@@ -77,7 +77,7 @@ export const InputGroupInput = React.forwardRef<
     data-slot="input-group-input"
     className={cn(
       "h-full w-full min-w-0 flex-1 bg-transparent px-3 font-medium text-ink-1 outline-none",
-      "placeholder:font-normal placeholder:text-ink-3 disabled:cursor-not-allowed",
+      "placeholder:font-normal placeholder:text-ink-4 disabled:cursor-not-allowed",
       "[&::-webkit-search-cancel-button]:appearance-none",
       className,
     )}

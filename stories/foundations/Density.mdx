@@ -16,15 +16,19 @@ region:
 
 | Density | sm / md / lg control | Table cell padding | Use for |
 |---------|----------------------|--------------------|---------|
-| `compact` | 28 / 32 / 36 px | 6 × 10 px | reports, accounting, wide tables |
-| `comfortable` | 32 / 36 / 40 px | 10 × 12 px | default |
+| `comfortable` | 32 / 36 / 40 px | 10 × 12 px | **default** (the `:root` values, and `TajUIProvider` without `density`) |
+| `compact` | 30 / 34 / 38 px | 6 × 10 px | reports, accounting, wide tables |
 | `touch` | 40 / 44 / 52 px | 14 × 14 px | POS, warehouse handhelds (WCAG 2.5.5 target size) |
+
+Comfortable is the default since 0.5.0. Compact grew by 2px (it was
+28 / 32 / 36) so that the 15px body text keeps breathing room; pass
+`<TajUIProvider density="compact">` where a dense layout is still wanted.
 
 The values are CSS variables (`--tj-control-sm|md|lg`, `--tj-cell-px|py`)
 exposed as Tailwind utilities (`h-control-md`, `size-control-sm`,
 `px-cell-x`, `py-cell-y`), so custom components follow density too.
 
-{["compact", "comfortable", "touch"].map((d) => (
+{["comfortable", "compact", "touch"].map((d) => (
   <div key={d} data-density={d} style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "center", margin: "16px 0" }}>
     <code style={{ width: 110 }}>{d}</code>
     <Button size="md">Оплатить</Button>

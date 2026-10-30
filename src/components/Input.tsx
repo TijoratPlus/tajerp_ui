@@ -31,7 +31,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
         "flex w-full px-3 font-medium",
         controlFrame,
         controlSize[size],
-        "placeholder:text-ink-3 placeholder:font-normal",
+        "placeholder:text-ink-4 placeholder:font-normal",
         controlFocus,
         controlInvalid,
         controlDisabled,

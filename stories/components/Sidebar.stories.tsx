@@ -45,7 +45,7 @@ const meta: Meta<typeof Sidebar> = {
     docs: {
       description: {
         component:
-          "App navigation rail with nested items, badges, collapse, and header/footer slots.",
+          "App navigation rail with nested items, badges, collapse, and header/footer slots. `tone=\"dark\"` (default) is the forest-green rail; `tone=\"light\"` is a calm surface rail with a neutral active row, for airy apps such as the CRM.",
       },
     },
   },
@@ -129,4 +129,38 @@ export const Collapsed: Story = {
       />
     </div>
   ),
+};
+
+/** Calm surface rail (CRM): neutral active row, brand green stays on primary actions. */
+export const LightTone: Story = {
+  name: "Light tone",
+  render: () => {
+    const [active, setActive] = React.useState("customers");
+    return (
+      <div style={{ height: 560, display: "flex", background: "var(--ui-surface)" }}>
+        <Sidebar
+          tone="light"
+          className="w-60 border-r border-hairline"
+          items={items}
+          activeId={active}
+          onSelect={(id) => setActive(id)}
+          header={<strong className="px-1 text-ui-title text-ink-1">Tijorat+ CRM</strong>}
+          footer={
+            <div className="flex w-full items-center gap-2.5">
+              <Avatar size="sm">
+                <AvatarFallback>МР</AvatarFallback>
+              </Avatar>
+              <div className="min-w-0 flex-1">
+                <div className="truncate text-ui-label font-semibold text-ink-1">Мадина Раҳимова</div>
+                <div className="truncate text-ui-caption text-ink-3">Менеджер</div>
+              </div>
+            </div>
+          }
+        />
+        <div className="p-6 text-ui-body text-ink-2">
+          Активный пункт: <strong>{active}</strong>
+        </div>
+      </div>
+    );
+  },
 };

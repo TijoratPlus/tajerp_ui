@@ -18,7 +18,7 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
       className={cn(
         "flex w-full min-h-16 px-3 py-2 font-medium text-ui-control",
         controlFrame,
-        "placeholder:text-ink-3 placeholder:font-normal",
+        "placeholder:text-ink-4 placeholder:font-normal",
         controlFocus,
         controlInvalid,
         controlDisabled,

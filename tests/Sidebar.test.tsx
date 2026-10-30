@@ -46,4 +46,15 @@ describe("Sidebar", () => {
     await userEvent.click(screen.getByRole("button", { name: "Печондани меню" }));
     expect(screen.getByRole("button", { name: "Кушодани меню" })).toBeInTheDocument();
   });
+
+  it("defaults to the dark rail and switches to the light tone", () => {
+    const { rerender } = renderWithUI(<Sidebar items={ITEMS} activeId="pos" />);
+    const nav = screen.getByRole("navigation");
+    expect(nav).toHaveAttribute("data-rail", "dark");
+    const active = screen.getByRole("link", { name: "Касса" });
+    expect(active).toHaveClass("bg-rail-active", "text-rail-active-ink", "shadow-tj-sm");
+    rerender(<Sidebar items={ITEMS} activeId="pos" tone="light" />);
+    expect(nav).toHaveAttribute("data-rail", "light");
+    expect(screen.getByRole("link", { name: "Касса" })).not.toHaveClass("shadow-tj-sm");
+  });
 });

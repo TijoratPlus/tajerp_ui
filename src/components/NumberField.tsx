@@ -198,7 +198,7 @@ export const NumberField = React.forwardRef<HTMLInputElement, NumberFieldProps>(
             className={cn(
               "w-full min-w-0 bg-transparent text-center font-medium tabular-nums text-ink-1 outline-none",
               controlText[size],
-              "placeholder:font-normal placeholder:text-ink-3",
+              "placeholder:font-normal placeholder:text-ink-4",
             )}
             {...props}
           />

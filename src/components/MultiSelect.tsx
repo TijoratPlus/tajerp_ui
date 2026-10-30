@@ -556,7 +556,7 @@ export const MultiSelect = React.forwardRef<HTMLInputElement, MultiSelectProps>(
                 onKeyDown={handleKeyDown}
                 className={cn(
                   "h-6 min-w-16 flex-1 bg-transparent px-1 font-medium text-ink-1 outline-none",
-                  "placeholder:font-normal placeholder:text-ink-3 disabled:cursor-not-allowed",
+                  "placeholder:font-normal placeholder:text-ink-4 disabled:cursor-not-allowed",
                   inputClassName,
                 )}
                 {...inputProps}

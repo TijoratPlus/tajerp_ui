@@ -1,24 +1,31 @@
-import {
-  Check,
-  CheckCheck,
-  CircleAlert,
-  Clock,
-  MessageCircle,
-  MessageSquareText,
-  RotateCw,
-  Send,
-  Smartphone,
-} from "lucide-react";
+import { Check, CheckCheck, CircleAlert, Clock, FileText, RotateCw } from "lucide-react";
 import * as React from "react";
 
 import { defineMessages } from "../i18n/messages";
-import { focusRing } from "../lib/control";
+import { CHANNEL_ICONS, CHANNEL_LABELS, parseChatTime, type ChatChannel } from "../lib/channels";
 import { cn } from "../lib/cn";
+import { focusRing } from "../lib/control";
 import { useFormat, useMessages } from "./TajUIProvider";
 
+export type { ChatChannel } from "../lib/channels";
 export type ChatRole = "user" | "assistant" | "system";
-export type ChatMessageStatus = "sending" | "sent" | "read" | "error";
-export type ChatChannel = "telegram" | "whatsapp" | "sms" | "app";
+/**
+ * Delivery state. Outgoing: `sending → sent → delivered → read`, or `error`.
+ * `received` marks an incoming message (announced to screen readers only).
+ */
+export type ChatMessageStatus = "sending" | "sent" | "delivered" | "read" | "received" | "error";
+/** Position of a bubble in a run of messages from one author (see ChatThread). */
+export type ChatGroupPosition = "single" | "first" | "middle" | "last";
+
+/** Attachment shown inside the bubble, above the text. */
+export interface ChatBubbleMedia {
+  kind: "image" | "video" | "audio" | "file";
+  src: string;
+  /** File name; also the image's alt text. */
+  name?: string;
+  /** Open a preview (lightbox, viewer). Images become a button, files call it instead of downloading. */
+  onOpen?: () => void;
+}
 
 export type ChatBubbleMessages = {
   you: string;
@@ -26,14 +33,21 @@ export type ChatBubbleMessages = {
   system: string;
   sending: string;
   sent: string;
+  delivered: string;
   read: string;
+  received: string;
   error: string;
   retry: string;
   channelTelegram: string;
   channelWhatsapp: string;
   channelSms: string;
   channelApp: string;
+  channelInstagram: string;
+  channelMessenger: string;
   via: string;
+  image: string;
+  openImage: string;
+  file: string;
 };
 
 export const chatBubbleMessages = defineMessages<ChatBubbleMessages>("chatBubble", {
@@ -43,14 +57,21 @@ export const chatBubbleMessages = defineMessages<ChatBubbleMessages>("chatBubble
     system: "Система",
     sending: "Отправляется…",
     sent: "Отправлено",
+    delivered: "Доставлено",
     read: "Прочитано",
+    received: "Получено",
     error: "Не отправлено",
     retry: "Повторить",
-    channelTelegram: "Telegram",
-    channelWhatsapp: "WhatsApp",
-    channelSms: "SMS",
-    channelApp: "Приложение",
+    channelTelegram: CHANNEL_LABELS.ru.telegram,
+    channelWhatsapp: CHANNEL_LABELS.ru.whatsapp,
+    channelSms: CHANNEL_LABELS.ru.sms,
+    channelApp: CHANNEL_LABELS.ru.app,
+    channelInstagram: CHANNEL_LABELS.ru.instagram,
+    channelMessenger: CHANNEL_LABELS.ru.messenger,
     via: "Канал:",
+    image: "Изображение",
+    openImage: "Открыть изображение",
+    file: "Файл",
   },
   tg: {
     you: "Шумо",
@@ -58,14 +79,21 @@ export const chatBubbleMessages = defineMessages<ChatBubbleMessages>("chatBubble
     system: "Низом",
     sending: "Фиристода мешавад…",
     sent: "Фиристода шуд",
+    delivered: "Расонида шуд",
     read: "Хонда шуд",
+    received: "Қабул шуд",
     error: "Фиристода нашуд",
     retry: "Аз нав фиристодан",
-    channelTelegram: "Telegram",
-    channelWhatsapp: "WhatsApp",
-    channelSms: "SMS",
-    channelApp: "Барнома",
+    channelTelegram: CHANNEL_LABELS.tg.telegram,
+    channelWhatsapp: CHANNEL_LABELS.tg.whatsapp,
+    channelSms: CHANNEL_LABELS.tg.sms,
+    channelApp: CHANNEL_LABELS.tg.app,
+    channelInstagram: CHANNEL_LABELS.tg.instagram,
+    channelMessenger: CHANNEL_LABELS.tg.messenger,
     via: "Канал:",
+    image: "Тасвир",
+    openImage: "Кушодани тасвир",
+    file: "Файл",
   },
   en: {
     you: "You",
@@ -73,29 +101,34 @@ export const chatBubbleMessages = defineMessages<ChatBubbleMessages>("chatBubble
     system: "System",
     sending: "Sending…",
     sent: "Sent",
+    delivered: "Delivered",
     read: "Read",
+    received: "Received",
     error: "Not sent",
     retry: "Retry",
-    channelTelegram: "Telegram",
-    channelWhatsapp: "WhatsApp",
-    channelSms: "SMS",
-    channelApp: "App",
+    channelTelegram: CHANNEL_LABELS.en.telegram,
+    channelWhatsapp: CHANNEL_LABELS.en.whatsapp,
+    channelSms: CHANNEL_LABELS.en.sms,
+    channelApp: CHANNEL_LABELS.en.app,
+    channelInstagram: CHANNEL_LABELS.en.instagram,
+    channelMessenger: CHANNEL_LABELS.en.messenger,
     via: "Channel:",
+    image: "Image",
+    openImage: "Open image",
+    file: "File",
   },
 });
 
-const CHANNEL_META: Record<
-  ChatChannel,
-  { icon: React.ComponentType<{ className?: string }>; label: keyof ChatBubbleMessages }
-> = {
-  telegram: { icon: Send, label: "channelTelegram" },
-  whatsapp: { icon: MessageCircle, label: "channelWhatsapp" },
-  sms: { icon: MessageSquareText, label: "channelSms" },
-  app: { icon: Smartphone, label: "channelApp" },
+const CHANNEL_LABEL_KEY: Record<ChatChannel, keyof ChatBubbleMessages> = {
+  telegram: "channelTelegram",
+  whatsapp: "channelWhatsapp",
+  sms: "channelSms",
+  app: "channelApp",
+  instagram: "channelInstagram",
+  messenger: "channelMessenger",
 };
 
-export interface ChatBubbleProps
-  extends Omit<React.HTMLAttributes<HTMLElement>, "role"> {
+export interface ChatBubbleProps extends Omit<React.HTMLAttributes<HTMLElement>, "role"> {
   role?: ChatRole;
   /** Display name. Defaults to "Вы" / "TijoratAI" / "Система" by role. */
   author?: string;
@@ -103,34 +136,160 @@ export interface ChatBubbleProps
   avatar?: React.ReactNode;
   /** Send time. Dates are printed as HH:mm; a non-date string is shown as is. */
   time?: Date | number | string;
-  /** Delivery state of outgoing messages. */
+  /** Delivery state (see `ChatMessageStatus`). */
   status?: ChatMessageStatus;
   /** Called by the retry button shown when `status="error"`. */
   onRetry?: () => void;
   /** Channel the message came through or went out on. */
   channel?: ChatChannel;
-  /** Max bubble width (any CSS length). Defaults to 85%. */
+  /** Image, video, voice note or file shown above the text. */
+  media?: ChatBubbleMedia;
+  /**
+   * Position in a run of messages from one author. `first`/`middle` hide the
+   * meta line and avatar (space is kept so bubbles line up) and tighten the
+   * corners that touch the neighbouring bubble. Defaults to `single`.
+   */
+  grouped?: ChatGroupPosition;
+  /** Fill of outgoing (`role="user"`) bubbles: brand green or a neutral mist. */
+  tone?: "brand" | "neutral";
+  /** Max bubble width (any CSS length). Defaults to `min(75%, 640px)`. */
   maxWidth?: string | number;
   /** Let rich content (an ApprovalCard, a table) use the full max width. */
   fullWidth?: boolean;
   labels?: Partial<ChatBubbleMessages>;
 }
 
-function parseTime(time: Date | number | string) {
-  if (time instanceof Date) return time;
-  if (typeof time === "number") return new Date(time);
-  // Only treat ISO-ish strings as dates; "14:05" or "вчера" are shown as is.
-  if (/^\d{4}-\d{2}-\d{2}/.test(time)) {
-    const d = new Date(time);
-    if (!Number.isNaN(d.getTime())) return d;
+/**
+ * Corner radii per side and group position: corners that touch a neighbour in
+ * the run are tightened, and the tail (smallest corner) sits on the last one.
+ */
+const BUBBLE_RADIUS: Record<"in" | "out", Record<ChatGroupPosition, string>> = {
+  in: {
+    single: "!rounded-2xl !rounded-bl-sm",
+    first: "!rounded-2xl !rounded-bl-md",
+    middle: "!rounded-2xl !rounded-tl-md !rounded-bl-md",
+    last: "!rounded-2xl !rounded-tl-md !rounded-bl-sm",
+  },
+  out: {
+    single: "!rounded-2xl !rounded-br-sm",
+    first: "!rounded-2xl !rounded-br-md",
+    middle: "!rounded-2xl !rounded-tr-md !rounded-br-md",
+    last: "!rounded-2xl !rounded-tr-md !rounded-br-sm",
+  },
+};
+
+function MediaBlock({
+  media,
+  t,
+  hasText,
+}: {
+  media: ChatBubbleMedia;
+  t: ChatBubbleMessages;
+  hasText: boolean;
+}) {
+  const frame = cn(
+    "block max-w-full overflow-hidden !rounded-xl bg-ui-surface-inset",
+    hasText && "mb-2",
+  );
+  if (media.kind === "image") {
+    const img = (
+      <img
+        src={media.src}
+        alt={media.name ?? t.image}
+        loading="lazy"
+        className="block max-h-80 w-auto max-w-full object-contain"
+      />
+    );
+    return media.onOpen ? (
+      <button
+        type="button"
+        data-slot="chat-bubble-media"
+        data-kind="image"
+        onClick={media.onOpen}
+        aria-label={media.name ? `${t.openImage}: ${media.name}` : t.openImage}
+        className={cn(frame, "cursor-zoom-in", focusRing)}
+      >
+        {img}
+      </button>
+    ) : (
+      <div data-slot="chat-bubble-media" data-kind="image" className={frame}>
+        {img}
+      </div>
+    );
   }
-  return null;
+  if (media.kind === "video") {
+    return (
+      <div data-slot="chat-bubble-media" data-kind="video" className={frame}>
+        <video src={media.src} controls preload="metadata" className="block max-h-80 max-w-full">
+          <track kind="captions" />
+        </video>
+      </div>
+    );
+  }
+  if (media.kind === "audio") {
+    return (
+      <div
+        data-slot="chat-bubble-media"
+        data-kind="audio"
+        className={cn("block w-72 max-w-full", hasText && "mb-2")}
+      >
+        <audio src={media.src} controls preload="metadata" className="block w-full">
+          <track kind="captions" />
+        </audio>
+      </div>
+    );
+  }
+  const fileName = media.name ?? t.file;
+  const fileClass = cn(
+    "flex min-h-11 max-w-full items-center gap-2.5 !rounded-xl border border-hairline bg-ui-surface px-3 py-2 text-left text-ink-1 no-underline hover:bg-ui-surface-2",
+    focusRing,
+    hasText && "mb-2",
+  );
+  const fileBody = (
+    <>
+      <FileText aria-hidden className="size-5 shrink-0 text-ink-3" />
+      <span className="min-w-0 truncate font-medium">{fileName}</span>
+    </>
+  );
+  return media.onOpen ? (
+    <button
+      type="button"
+      data-slot="chat-bubble-media"
+      data-kind="file"
+      onClick={media.onOpen}
+      className={cn(fileClass, "cursor-pointer")}
+    >
+      {fileBody}
+    </button>
+  ) : (
+    <a
+      data-slot="chat-bubble-media"
+      data-kind="file"
+      href={media.src}
+      target="_blank"
+      rel="noreferrer noopener"
+      download={media.name}
+      className={fileClass}
+    >
+      {fileBody}
+    </a>
+  );
 }
+
+const STATUS_ICON: Partial<Record<ChatMessageStatus, React.ReactNode>> = {
+  sending: <Clock aria-hidden className="size-3.5" />,
+  sent: <Check aria-hidden className="size-3.5" />,
+  delivered: <CheckCheck aria-hidden className="size-3.5" />,
+  read: <CheckCheck aria-hidden className="size-3.5 text-brand-ink" />,
+  error: <CircleAlert aria-hidden className="size-3.5" />,
+};
 
 /**
  * One message in a TijoratAI or customer conversation (in-app, Telegram,
- * WhatsApp, SMS). User messages align right, assistant messages left, system
- * notices centre. Children can be text or rich nodes such as an ApprovalCard.
+ * WhatsApp, Instagram, Messenger, SMS). User (outgoing) messages align right,
+ * assistant/customer messages left, system notices centre. Children are the
+ * text body; `media` adds an attachment. Inside a ChatThread, pass the
+ * `grouped` position it hands to `renderItem`.
  */
 export const ChatBubble = React.forwardRef<HTMLElement, ChatBubbleProps>(
   (
@@ -142,7 +301,10 @@ export const ChatBubble = React.forwardRef<HTMLElement, ChatBubbleProps>(
       status,
       onRetry,
       channel,
-      maxWidth = "85%",
+      media,
+      grouped = "single",
+      tone = "brand",
+      maxWidth = "min(75%, 640px)",
       fullWidth = false,
       labels,
       className,
@@ -155,9 +317,8 @@ export const ChatBubble = React.forwardRef<HTMLElement, ChatBubbleProps>(
     const t = useMessages(chatBubbleMessages, labels);
     const fmt = useFormat();
 
-    const name =
-      author ?? (role === "user" ? t.you : role === "system" ? t.system : t.assistant);
-    const date = time !== undefined ? parseTime(time) : null;
+    const name = author ?? (role === "user" ? t.you : role === "system" ? t.system : t.assistant);
+    const date = time !== undefined ? parseChatTime(time) : null;
     const timeText =
       time === undefined
         ? undefined
@@ -177,7 +338,7 @@ export const ChatBubble = React.forwardRef<HTMLElement, ChatBubbleProps>(
           style={style}
           {...props}
         >
-          <div className="max-w-full !rounded-pill bg-ui-surface-2 px-3 py-1 text-center text-ink-3 text-ui-helper">
+          <div className="max-w-full !rounded-pill bg-ui-surface-2 px-3 py-1 text-center text-ui-helper text-ink-3">
             {children}
             {timeText && (
               <>
@@ -191,19 +352,13 @@ export const ChatBubble = React.forwardRef<HTMLElement, ChatBubbleProps>(
     }
 
     const isUser = role === "user";
-    const ch = channel ? CHANNEL_META[channel] : null;
-    const ChannelIcon = ch?.icon;
-
-    const statusIcon =
-      status === "sending" ? (
-        <Clock aria-hidden className="size-3.5" />
-      ) : status === "sent" ? (
-        <Check aria-hidden className="size-3.5" />
-      ) : status === "read" ? (
-        <CheckCheck aria-hidden className="size-3.5 text-brand-ink" />
-      ) : status === "error" ? (
-        <CircleAlert aria-hidden className="size-3.5" />
-      ) : null;
+    const ChannelIcon = channel ? CHANNEL_ICONS[channel] : null;
+    // Runs of messages show the meta line once, under the last bubble. An
+    // error always shows it, so the retry stays reachable.
+    const showMeta = grouped === "single" || grouped === "last" || status === "error";
+    const showAvatar = grouped === "single" || grouped === "last";
+    const hasText = children !== undefined && children !== null && children !== false && children !== "";
+    const mediaOnly = !!media && !hasText;
 
     return (
       <article
@@ -211,6 +366,7 @@ export const ChatBubble = React.forwardRef<HTMLElement, ChatBubbleProps>(
         data-slot="chat-bubble"
         data-role={role}
         data-status={status}
+        data-grouped={grouped}
         aria-label={ariaLabel}
         className={cn(
           "flex w-full items-end gap-2",
@@ -221,7 +377,11 @@ export const ChatBubble = React.forwardRef<HTMLElement, ChatBubbleProps>(
         {...props}
       >
         {avatar && (
-          <div data-slot="chat-bubble-avatar" className="shrink-0 self-end">
+          <div
+            data-slot="chat-bubble-avatar"
+            className={cn("shrink-0 self-end", !showAvatar && "invisible")}
+            aria-hidden={!showAvatar || undefined}
+          >
             {avatar}
           </div>
         )}
@@ -233,66 +393,83 @@ export const ChatBubble = React.forwardRef<HTMLElement, ChatBubbleProps>(
           <div
             data-slot="chat-bubble-content"
             className={cn(
-              "max-w-full px-3.5 py-2.5 text-ui-body leading-relaxed break-words whitespace-pre-wrap",
+              "max-w-full text-ui-body leading-normal break-words whitespace-pre-wrap",
               fullWidth && "w-full",
-              isUser
-                ? "bg-brand-solid text-on-brand !rounded-2xl !rounded-br-sm"
-                : "border border-hairline bg-ui-surface-2 text-ink-1 !rounded-2xl !rounded-bl-sm",
+              BUBBLE_RADIUS[isUser ? "out" : "in"][grouped],
+              // A bare attachment (no text) is shown without a bubble around it.
+              mediaOnly
+                ? "text-ink-1"
+                : cn(
+                    "px-3.5 py-2.5",
+                    isUser
+                      ? tone === "neutral"
+                        ? "bg-mist text-ink-1"
+                        : "bg-brand-solid text-on-brand"
+                      : "border border-hairline bg-ui-surface-2 text-ink-1",
+                  ),
               status === "error" && "ring-1 ring-tj-error",
             )}
           >
+            {media && <MediaBlock media={media} t={t} hasText={hasText} />}
             {children}
           </div>
-          <div
-            data-slot="chat-bubble-meta"
-            className={cn(
-              "flex flex-wrap items-center gap-x-1.5 gap-y-0.5 px-1 text-ink-3 text-ui-caption",
-              isUser && "flex-row-reverse",
-            )}
-          >
-            <span className="font-bold text-ink-2">{name}</span>
-            {timeText && <time dateTime={date?.toISOString()}>{timeText}</time>}
-            {ch && ChannelIcon && (
-              <span
-                data-slot="chat-bubble-channel"
-                data-channel={channel}
-                className="inline-flex items-center gap-1 !rounded-pill border border-hairline bg-ui-surface px-1.5 py-px font-medium text-ink-2"
-              >
-                <ChannelIcon aria-hidden className="size-3" />
-                <span className="sr-only">{t.via} </span>
-                {t[ch.label] as string}
+          {showMeta ? (
+            <div
+              data-slot="chat-bubble-meta"
+              className={cn(
+                "flex flex-wrap items-center gap-x-1.5 gap-y-0.5 px-1 text-ui-caption text-ink-3",
+                isUser && "flex-row-reverse",
+              )}
+            >
+              <span className="font-semibold text-ink-2">{name}</span>
+              {timeText && <time dateTime={date?.toISOString()}>{timeText}</time>}
+              {channel && ChannelIcon && (
+                <span
+                  data-slot="chat-bubble-channel"
+                  data-channel={channel}
+                  className="inline-flex items-center gap-1 font-medium text-ink-2"
+                >
+                  <ChannelIcon aria-hidden className="size-3.5" />
+                  <span className="sr-only">{t.via} </span>
+                  {t[CHANNEL_LABEL_KEY[channel]] as string}
+                </span>
+              )}
+              {status && (
+                <span
+                  data-slot="chat-bubble-status"
+                  data-status={status}
+                  className={cn(
+                    "inline-flex items-center gap-1",
+                    status === "error" && "font-semibold text-tj-error-ink",
+                  )}
+                >
+                  {STATUS_ICON[status]}
+                  {status === "error" ? t.error : <span className="sr-only">{t[status]}</span>}
+                </span>
+              )}
+              {status === "error" && onRetry && (
+                <button
+                  type="button"
+                  onClick={onRetry}
+                  className={cn(
+                    "inline-flex min-h-6 cursor-pointer items-center gap-1 !rounded-md px-1.5 font-semibold text-brand-ink hover:bg-mist",
+                    focusRing,
+                  )}
+                >
+                  <RotateCw aria-hidden className="size-3" />
+                  {t.retry}
+                </button>
+              )}
+            </div>
+          ) : (
+            // The meta line is hidden in a run; keep the time and status for screen readers.
+            (timeText || status) && (
+              <span className="sr-only">
+                {timeText}
+                {status ? ` ${t[status] as string}` : ""}
               </span>
-            )}
-            {status && (
-              <span
-                data-slot="chat-bubble-status"
-                className={cn(
-                  "inline-flex items-center gap-1",
-                  status === "error" && "font-bold text-tj-error-ink",
-                )}
-              >
-                {statusIcon}
-                {status === "error" ? (
-                  t.error
-                ) : (
-                  <span className="sr-only">{t[status]}</span>
-                )}
-              </span>
-            )}
-            {status === "error" && onRetry && (
-              <button
-                type="button"
-                onClick={onRetry}
-                className={cn(
-                  "inline-flex min-h-6 items-center gap-1 !rounded-md px-1.5 font-bold text-brand-ink hover:bg-mist cursor-pointer",
-                  focusRing,
-                )}
-              >
-                <RotateCw aria-hidden className="size-3" />
-                {t.retry}
-              </button>
-            )}
-          </div>
+            )
+          )}
         </div>
       </article>
     );

@@ -405,7 +405,7 @@ export const CommandInput = React.forwardRef<HTMLInputElement, CommandInputProps
           }}
           className={cn(
             "h-control-lg w-full min-w-0 flex-1 bg-transparent text-ui-control font-medium text-ink-1 outline-none",
-            "placeholder:font-normal placeholder:text-ink-3 disabled:cursor-not-allowed disabled:opacity-60",
+            "placeholder:font-normal placeholder:text-ink-4 disabled:cursor-not-allowed disabled:opacity-60",
             className,
           )}
           {...props}

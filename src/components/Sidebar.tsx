@@ -77,6 +77,12 @@ export interface SidebarProps
   renderLink?: (props: SidebarLinkProps) => React.ReactNode;
   /** Override UI strings (defaults follow the TajUIProvider locale). */
   labels?: SidebarLabels;
+  /**
+   * Rail colours. `"dark"` (default) is the forest-green rail with a brand
+   * active row; `"light"` is a calm surface rail with a neutral active row
+   * (sets `data-rail="light"`, see the rail tokens in tokens.css).
+   */
+  tone?: "dark" | "light";
 }
 
 /** Collect the ids of every ancestor group that contains `activeId`. */
@@ -124,6 +130,7 @@ export const Sidebar = React.forwardRef<HTMLElement, SidebarProps>(
       onSelect,
       renderLink,
       labels,
+      tone = "dark",
       className,
       "aria-label": ariaLabel,
       ...props
@@ -196,7 +203,10 @@ export const Sidebar = React.forwardRef<HTMLElement, SidebarProps>(
       const rowBase =
         "group flex w-full min-h-control-sm items-center gap-2.5 !rounded-lg px-2.5 py-1.5 text-ui-body font-medium outline-none transition-colors duration-150 focus-visible:ring-2 focus-visible:ring-rail-ink/40 cursor-pointer disabled:pointer-events-none disabled:opacity-40";
       const rowState = isActive
-        ? "bg-brand-solid text-on-brand shadow-tj-sm"
+        ? cn(
+            "bg-rail-active text-rail-active-ink",
+            tone === "dark" ? "shadow-tj-sm" : "font-semibold",
+          )
         : containsActive
           ? "text-rail-ink hover:bg-rail-hover"
           : "text-rail-ink-muted hover:bg-rail-hover hover:text-rail-ink";
@@ -352,6 +362,7 @@ export const Sidebar = React.forwardRef<HTMLElement, SidebarProps>(
       <nav
         ref={ref}
         data-slot="sidebar"
+        data-rail={tone}
         data-collapsed={isCollapsed || undefined}
         aria-label={ariaLabel ?? t.navigation}
         className={cn(

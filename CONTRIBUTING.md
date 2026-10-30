@@ -39,9 +39,16 @@ make check            # typecheck + lint + test + build (the CI gate)
   - Never use hex, `text-white`, `bg-black/…` or Tailwind palette colours (`gray-500`).
   - For text on a coloured fill, use the `*-ink` / `on-brand` pairs; they hold
     4.5:1 contrast.
-- **Text size:** use the `text-ui-*` role scale only: `micro` 10, `caption` 11,
-  `helper` 12.5, `label` 13, `body` 13.5, `control` 14, `title` 15. Never use
-  `text-[13px]`.
+- **Text size:** use the `text-ui-*` role scale only: `micro` 11, `caption`
+  12.5, `helper` 13, `label` 14, `body` 15, `control` 15, `title` 17,
+  `heading` 20, `display` 24. Never use `text-[13px]`.
+- **Text colour:** `text-ink-3` for meta text (timestamps, captions), and
+  `text-ink-4` only for placeholders, disabled text and decorative separators.
+- **Weight:** `font-semibold` for titles, tabs and buttons; `font-bold` only for
+  the primary (`solid`) button and counters.
+- **Surfaces:** cards are flat (hairline edge, no shadow). Separate sections
+  with whitespace before reaching for borders; brand green is for primary
+  actions, not for decoration or selected rows.
 - **Control height:** use `h-control-sm|md|lg` / `size-control-*`, which follow
   `data-density` (`compact` / `comfortable` / `touch`). Fields take a
   `size?: "sm" | "md" | "lg"` prop that defaults to `"md"`.

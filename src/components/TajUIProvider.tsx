@@ -50,6 +50,11 @@ export interface TajUIProviderProps {
    * Control density for this subtree *and* its portaled overlays (Dialog,
    * Sheet, Popover, DropdownMenu, AlertDialog). Setting `data-density` on a
    * wrapper alone does not reach overlays, which render under <body>.
+   *
+   * Defaults to `"comfortable"` (32/36/40px controls): unset, the provider
+   * adds no attribute and every control uses the `:root` values, or the
+   * nearest ancestor's `data-density`. Pass `"compact"` (30/34/38px) for
+   * dense reports and wide tables, `"touch"` for POS tablets.
    */
   density?: Density;
   /**

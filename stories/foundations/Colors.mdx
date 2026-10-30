@@ -36,12 +36,50 @@ The cream tones of tijorat.plus. Use `bg-ui-surface-warm` (or
 
 ## Neutrals (ink)
 
+Four text inks. `ink-1` and `ink-2` are for content (7:1+), `ink-3` for meta
+text such as timestamps and captions (6:1+ on the background and surfaces in
+both themes), `ink-4` for placeholders and disabled text (3:1+). A unit test
+(`tests/tokens.test.ts`) recomputes these ratios from `tokens.css`.
+
 <div style={{ display: "grid", gap: 16, gridTemplateColumns: "repeat(auto-fill, minmax(140px, 1fr))", maxWidth: 720, marginTop: 24 }}>
-  <Swatch name="Ink 1" varName="--tj-ink-1" />
-  <Swatch name="Ink 2" varName="--tj-ink-2" />
-  <Swatch name="Ink 3" varName="--tj-ink-3" />
-  <Swatch name="Ink 4" varName="--tj-ink-4" />
+  <Swatch name="Ink 1" varName="--ui-ink-1" />
+  <Swatch name="Ink 2" varName="--ui-ink-2" />
+  <Swatch name="Ink 3" varName="--ui-ink-3" />
+  <Swatch name="Ink 4" varName="--ui-ink-4" />
   <Swatch name="White" varName="--tj-white" />
+</div>
+
+## Surfaces and lines
+
+Calm, flat surfaces: the page sits on `--ui-bg` (a near-white wash), cards on
+`--ui-surface` with a hairline edge and **no shadow** (`--ui-card-shadow:
+none`). Prefer whitespace to separate sections; reach for a line only where
+whitespace is not enough. `--ui-hairline-strong` frames inputs and the
+composer so they stay visible on the wash.
+
+<div style={{ display: "grid", gap: 16, gridTemplateColumns: "repeat(auto-fill, minmax(140px, 1fr))", maxWidth: 720, marginTop: 24 }}>
+  <Swatch name="Background" varName="--ui-bg" />
+  <Swatch name="Surface" varName="--ui-surface" />
+  <Swatch name="Surface 2" varName="--ui-surface-2" />
+  <Swatch name="Inset" varName="--ui-surface-inset" />
+  <Swatch name="Hairline" varName="--ui-hairline" />
+  <Swatch name="Hairline strong" varName="--ui-hairline-strong" />
+</div>
+
+## Navigation rail
+
+`Sidebar` reads the `--ui-rail-*` tokens. The default dark rail is forest green
+with a brand active row. `tone="light"` sets `data-rail="light"`, which maps
+the rail to the surface colours with a neutral active row — brand green stays
+on primary actions. The light rail follows the theme it is rendered in.
+
+<div style={{ display: "grid", gap: 16, gridTemplateColumns: "repeat(auto-fill, minmax(140px, 1fr))", maxWidth: 720, marginTop: 24 }}>
+  <Swatch name="Rail (dark)" varName="--ui-rail-bg" />
+  <Swatch name="Rail active (dark)" varName="--ui-rail-active" />
+</div>
+<div data-rail="light" style={{ display: "grid", gap: 16, gridTemplateColumns: "repeat(auto-fill, minmax(140px, 1fr))", maxWidth: 720, marginTop: 16 }}>
+  <Swatch name="Rail (light)" varName="--ui-rail-bg" />
+  <Swatch name="Rail active (light)" varName="--ui-rail-active" />
 </div>
 
 ## Status & accent
@@ -72,7 +110,8 @@ dots, borders and charts (3:1 is enough there) — **not** for text.
 | Filled surface carrying white text (buttons, active tab/page/segment) | `bg-brand-solid` · hover `bg-brand-solid-hover` | `bg-brand` (3.4:1 under white text) |
 | Status text and badges | `text-tj-success-ink` · `text-tj-warning-ink` · `text-tj-error-ink` · `text-tj-info-ink` | `text-tj-success` etc. (1.9–3.1:1) |
 | Danger fill under white text | `bg-danger-solid` | `bg-tj-error`, `bg-tj-error-ink` (light coral in dark mode) |
-| Captions, placeholders, table headers | `text-ink-3` | — (darkened to pass) |
+| Captions, meta, table headers | `text-ink-3` (6:1+ on bg/surface) | — |
+| Placeholders, disabled text, decorative separators | `text-ink-4` (3:1+) | never for body text |
 
 <div style={{ display: "grid", gap: 16, gridTemplateColumns: "repeat(auto-fill, minmax(140px, 1fr))", maxWidth: 720, marginTop: 24 }}>
   <Swatch name="Brand solid" varName="--ui-brand-solid" />

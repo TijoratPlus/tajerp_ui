@@ -325,7 +325,7 @@ export const ChipInput = React.forwardRef<HTMLInputElement, ChipInputProps>(
                 if (text.trim() && !listVisible) submitText();
               }}
               className={cn(
-                "min-w-24 flex-1 bg-transparent px-1 py-0.5 text-ui-control text-ink-1 outline-none placeholder:text-ink-3 disabled:cursor-not-allowed",
+                "min-w-24 flex-1 bg-transparent px-1 py-0.5 text-ui-control text-ink-1 outline-none placeholder:text-ink-4 disabled:cursor-not-allowed",
                 inputClassName,
               )}
               {...props}

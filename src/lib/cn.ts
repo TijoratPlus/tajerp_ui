@@ -17,6 +17,8 @@ const twMerge = extendTailwindMerge({
         "ui-body",
         "ui-control",
         "ui-title",
+        "ui-heading",
+        "ui-display",
       ],
       shadow: ["tj-sm", "tj-md", "tj-lg", "tj-brand", "tj-card"],
       spacing: ["control-sm", "control-md", "control-lg", "cell-x", "cell-y"],

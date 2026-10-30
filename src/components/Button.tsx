@@ -6,12 +6,13 @@ import { Slot } from "../lib/Slot";
 import { Spinner } from "./Spinner";
 
 const buttonVariants = cva(
-  "inline-flex justify-center items-center gap-1.5 disabled:opacity-60 outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-1 focus-visible:ring-offset-ui-surface font-bold whitespace-nowrap motion-safe:active:scale-[0.97] transition-[transform,background,box-shadow,color] duration-150 ease-tj-out cursor-pointer disabled:pointer-events-none select-none [&_svg]:shrink-0",
+  "inline-flex justify-center items-center gap-1.5 disabled:opacity-60 outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-1 focus-visible:ring-offset-ui-surface font-semibold whitespace-nowrap motion-safe:active:scale-[0.97] transition-[transform,background,box-shadow,color] duration-150 ease-tj-out cursor-pointer disabled:pointer-events-none select-none [&_svg]:shrink-0",
   {
     variants: {
       variant: {
+        // Only the primary (solid) action is bold; the rest stay semibold.
         solid:
-          "bg-brand-solid text-on-brand shadow-tj-brand hover:bg-brand-solid-hover disabled:bg-brand-disabled disabled:shadow-none !rounded-lg",
+          "font-bold bg-brand-solid text-on-brand shadow-tj-brand hover:bg-brand-solid-hover disabled:bg-brand-disabled disabled:shadow-none !rounded-lg",
         outline:
           "border-[1.5px] border-brand/40 bg-transparent text-brand-ink hover:bg-mist !rounded-lg",
         ghost:

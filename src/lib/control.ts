@@ -25,9 +25,9 @@ export const controlSize: Record<ControlSize, string> = {
 export const focusRing =
   "outline-none focus-visible:ring-2 focus-visible:ring-focus";
 
-/** Field chrome: surface, hairline border, radius. */
+/** Field chrome: surface, strong hairline border (stays visible on the wash background), radius. */
 export const controlFrame =
-  "bg-ui-surface-2 border border-hairline !rounded-lg text-ink-1 transition-colors duration-150";
+  "bg-ui-surface-2 border border-hairline-strong !rounded-lg text-ink-1 transition-colors duration-150";
 
 /** Focus treatment for a field that is itself focusable (input, select). */
 export const controlFocus =

@@ -234,8 +234,8 @@ export type {
   PaginationProps,
 } from "./components/Pagination";
 
-export { Tabs } from "./components/Tabs";
-export type { TabsProps, TabItem } from "./components/Tabs";
+export { Tabs, tabsMessages } from "./components/Tabs";
+export type { TabsProps, TabItem, TabsLabels } from "./components/Tabs";
 
 export { Toaster, toast } from "./components/Toast";
 export type {
@@ -378,11 +378,37 @@ export type {
 export { ChatBubble, chatBubbleMessages } from "./components/ChatBubble";
 export type {
   ChatBubbleProps,
+  ChatBubbleMedia,
   ChatBubbleMessages,
+  ChatGroupPosition,
   ChatRole,
   ChatMessageStatus,
   ChatChannel,
 } from "./components/ChatBubble";
+export {
+  ChatThread,
+  chatThreadMessages,
+  layoutChatThread,
+  CHAT_GROUP_WINDOW_MS,
+} from "./components/ChatThread";
+export type {
+  ChatThreadLabels,
+  ChatThreadProps,
+  ChatThreadRow,
+} from "./components/ChatThread";
+export { ChatComposer, chatComposerMessages } from "./components/ChatComposer";
+export type {
+  ChatComposerLabels,
+  ChatComposerProps,
+} from "./components/ChatComposer";
+export {
+  ConversationListItem,
+  conversationListItemMessages,
+} from "./components/ConversationListItem";
+export type {
+  ConversationListItemLabels,
+  ConversationListItemProps,
+} from "./components/ConversationListItem";
 export {
   AIAssistantPanel,
   aiAssistantPanelMessages,

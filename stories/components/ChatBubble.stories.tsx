@@ -8,7 +8,7 @@ const meta: Meta<typeof ChatBubble> = {
     docs: {
       description: {
         component:
-          "One message in a TijoratAI or customer conversation. User messages align right, assistant left, system notices centre. Shows the channel (Telegram, WhatsApp, SMS, app — text label + generic icon), the delivery status with a retry on error, and accepts any node as content, e.g. an ApprovalCard.",
+          "One message in a TijoratAI or customer conversation. User (outgoing) messages align right, assistant/customer messages left, system notices centre. Shows the channel (Telegram, WhatsApp, Instagram, Messenger, SMS, app — icon + text label), the delivery status (sending → sent ✓ → delivered ✓✓ → read ✓✓ in green, or error with retry), an optional `media` attachment (image, video, voice, file), and accepts any node as content, e.g. an ApprovalCard. Inside a `ChatThread`, pass the `grouped` position so runs of messages share one meta line. `tone=\"neutral\"` gives outgoing bubbles a soft mist fill instead of brand green.",
       },
     },
   },
@@ -86,5 +86,89 @@ export const Tajik: Story = {
         </ChatBubble>
       </div>
     </TajUIProvider>
+  ),
+};
+
+const client = (
+  <Avatar className="size-8">
+    <AvatarFallback className="text-ui-caption">МК</AvatarFallback>
+  </Avatar>
+);
+
+/** Instagram DM thread: a run of client messages, then the manager's reply (neutral tone). */
+export const InstagramGrouped: Story = {
+  name: "Instagram (grouped, neutral tone)",
+  render: () => (
+    <>
+      <ChatBubble role="assistant" author="Мадина" avatar={client} channel="instagram" time="11:02" grouped="first">
+        Салом! Ин курта ҳаст?
+      </ChatBubble>
+      <ChatBubble role="assistant" author="Мадина" avatar={client} channel="instagram" time="11:02" grouped="middle">
+        Размер M, ранги кабуд
+      </ChatBubble>
+      <ChatBubble role="assistant" author="Мадина" avatar={client} channel="instagram" time="11:03" grouped="last" status="received">
+        Нархаш чанд?
+      </ChatBubble>
+      <ChatBubble role="user" author="Магазин «Нур»" tone="neutral" channel="instagram" time="11:05" grouped="first">
+        Здравствуйте! Да, есть.
+      </ChatBubble>
+      <ChatBubble role="user" author="Магазин «Нур»" tone="neutral" channel="instagram" time="11:05" grouped="last" status="delivered">
+        Цена 320,00 с, доставка по Душанбе бесплатно.
+      </ChatBubble>
+    </>
+  ),
+};
+
+export const Messenger: Story = {
+  render: () => (
+    <>
+      <ChatBubble role="assistant" author="Бахтиёр" channel="messenger" time="16:20">
+        Доставка в Худжанд есть?
+      </ChatBubble>
+      <ChatBubble role="user" author="Вы" channel="messenger" time="16:22" status="read">
+        Да, 2–3 дня, 25,00 с.
+      </ChatBubble>
+    </>
+  ),
+};
+
+export const Statuses: Story = {
+  render: () => (
+    <>
+      <ChatBubble role="user" time="12:00" status="sending">Отправляется</ChatBubble>
+      <ChatBubble role="user" time="12:00" status="sent">Отправлено — одна галочка</ChatBubble>
+      <ChatBubble role="user" time="12:01" status="delivered">Доставлено — две серые галочки</ChatBubble>
+      <ChatBubble role="user" time="12:02" status="read">Прочитано — две зелёные галочки</ChatBubble>
+      <ChatBubble role="user" time="12:03" status="error" onRetry={() => {}}>Не отправлено</ChatBubble>
+    </>
+  ),
+};
+
+const photo =
+  "data:image/svg+xml;utf8," +
+  encodeURIComponent(
+    '<svg xmlns="http://www.w3.org/2000/svg" width="480" height="320"><rect width="480" height="320" fill="#d1f4e2"/><circle cx="240" cy="150" r="70" fill="#1d9f6e"/><text x="240" y="290" font-family="Inter, sans-serif" font-size="22" text-anchor="middle" fill="#0d4430">курта-синяя.jpg</text></svg>',
+  );
+
+export const Media: Story = {
+  render: () => (
+    <>
+      <ChatBubble
+        role="assistant"
+        author="Мадина"
+        channel="whatsapp"
+        time="09:40"
+        media={{ kind: "image", src: photo, name: "курта-синяя.jpg", onOpen: () => {} }}
+      >
+        Вот такой цвет нужен
+      </ChatBubble>
+      <ChatBubble
+        role="user"
+        channel="whatsapp"
+        time="09:42"
+        status="read"
+        media={{ kind: "file", src: "#", name: "Счёт №1042.pdf" }}
+      />
+    </>
   ),
 };

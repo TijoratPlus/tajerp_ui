@@ -111,3 +111,46 @@ Nothing breaks at compile time, but check these:
 8. **POS `DataTable` adapter.** It can drop its own sort state in favour of
    `sort` / `onSortChange` / `manualSorting`. It can also use `column.footer`
    for totals and `dataTableToCSV` for exports.
+
+## Upgrading to 0.5.0 (readability, calm surfaces, chat components)
+
+0.5.0 changes design tokens for **every** consumer (crm_frontend, the
+tajerp_base Desk pages, tajerp_ai, tajerp_poultry). Nothing breaks at compile
+time; what changes is how screens look. Check these:
+
+1. **Bigger type.** The UI scale grew: `micro` 11, `caption` 12.5, `helper`
+   13, `label` 14, `body` 15 (was 13.5), `control` 15, `title` 17. New:
+   `text-ui-heading` (20) and `text-ui-display` (24). The body line height is
+   1.5. Look at fixed-width cells, truncated labels and fixed-height rows that
+   assumed 13.5px text; replace `text-[20px]`-style one-offs with the new
+   heading roles.
+2. **Density.** `comfortable` (32/36/40px controls) is the default, as before.
+   `compact` grew to 30/34/38 (was 28/32/36). Apps that pass
+   `density="compact"` keep a dense layout, 2px taller; drop the prop to get
+   the comfortable default. POS keeps `touch`.
+3. **Contrast.** `ink-3` is darker (6:1+, was ~5:1) and `ink-4` is darker
+   (3:1+, was ~2:1); placeholders now use `ink-4`. Hairlines are slightly
+   stronger and form fields use the new `--ui-hairline-strong` /
+   `border-hairline-strong`. Code that used `text-ink-4` for real text should
+   move to `text-ink-3`.
+4. **Flat cards.** `--ui-card-shadow` is `none`: `<Card>` has a hairline edge
+   and no shadow. Pass `elevation="sm|md"` where a raised card is wanted.
+5. **Button weight.** Buttons are semibold; only `variant="solid"` stays bold.
+6. **Tabs.** Triggers are taller (`min-h-control-md`). New
+   `overflow="menu"` moves tabs that do not fit into a «Ещё» menu.
+7. **Sidebar.** New `tone="light"` (calm surface rail, neutral active row,
+   `data-rail="light"`). The default stays `tone="dark"`, so existing apps are
+   unchanged. The active row now reads `bg-rail-active text-rail-active-ink`
+   (same colours as before on the dark rail).
+8. **Chat.** `ChatBubble` gains `instagram` / `messenger` channels,
+   `delivered` / `received` statuses, `media`, `grouped` and
+   `tone="neutral"`; its default max width is `min(75%, 640px)` (was 85%).
+   New `ChatThread`, `ChatComposer` and `ConversationListItem` replace
+   hand-rolled conversation UIs.
+9. **Frappe Desk pages** (tajerp_base). The compiled stylesheet changed: bump
+   the `tajerp_ui.css?v=` query in `hooks.py` so browsers drop the cached copy,
+   then check home, create_transaction, role_manager, timetable and
+   pricing_rule_builder at 1280 and 1440px.
+10. **Local development** against an unreleased checkout: depend on
+    `"tajerp_ui": "file:../tajerp_ui"` and allow the path in Vite
+    (`server.fs.allow`). Pin `"tajerp_ui": "0.5.0"` before merging.
