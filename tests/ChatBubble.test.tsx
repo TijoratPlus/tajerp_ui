@@ -115,6 +115,28 @@ describe("ChatBubble channels, statuses and media", () => {
     await expectNoA11yViolations();
   });
 
+  it("links a file only through a web, blob or media data URL", () => {
+    renderWithUI(
+      <>
+        <ChatBubble role="assistant" media={{ kind: "file", src: "https://cdn.example/a.pdf", name: "a.pdf" }} />
+        <ChatBubble role="assistant" media={{ kind: "file", src: "blob:https://crm.example/1", name: "b.pdf" }} />
+        <ChatBubble role="assistant" media={{ kind: "file", src: "data:application/pdf;base64,JVBE", name: "c.pdf" }} />
+        <ChatBubble role="assistant" media={{ kind: "file", src: "javascript:alert(1)", name: "d.pdf" }} />
+        <ChatBubble role="assistant" media={{ kind: "file", src: " java\tscript:alert(1)", name: "e.pdf" }} />
+        <ChatBubble role="assistant" media={{ kind: "file", src: "data:text/html,<script>alert(1)</script>", name: "f.pdf" }} />
+        <ChatBubble role="assistant" media={{ kind: "file", src: "data:image/svg+xml,<svg onload=alert(1)>", name: "g.svg" }} />
+        <ChatBubble role="assistant" media={{ kind: "file", src: "vbscript:msgbox", name: "h.pdf" }} />
+      </>,
+    );
+    expect(screen.getByRole("link", { name: "a.pdf" })).toHaveAttribute("href", "https://cdn.example/a.pdf");
+    expect(screen.getByRole("link", { name: "b.pdf" })).toHaveAttribute("href", "blob:https://crm.example/1");
+    expect(screen.getByRole("link", { name: "c.pdf" })).toHaveAttribute("href", "data:application/pdf;base64,JVBE");
+    for (const name of ["d.pdf", "e.pdf", "f.pdf", "g.svg", "h.pdf"]) {
+      expect(screen.queryByRole("link", { name })).toBeNull();
+      expect(screen.getByText(name).closest("[data-kind=file]")).not.toHaveAttribute("href");
+    }
+  });
+
   it("shows the meta line only at the end of a group and keeps it for errors", () => {
     renderWithUI(
       <>

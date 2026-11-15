@@ -178,6 +178,22 @@ const BUBBLE_RADIUS: Record<"in" | "out", Record<ChatGroupPosition, string>> = {
   },
 };
 
+/** Schemes a file link may use; `data:` only for media and PDF, never HTML or SVG. */
+const LINK_SCHEME = /^([a-z][a-z0-9+.-]*):/i;
+const DATA_MEDIA = /^data:(?:image\/(?:png|jpe?g|gif|webp|avif|bmp)|audio\/[\w.+-]+|video\/[\w.+-]+|application\/pdf)[;,]/i;
+
+/** `src` when it is safe as a link target, otherwise null. A URL without a scheme is relative. */
+function linkHref(src: string): string | null {
+  // Browsers drop tabs, newlines and leading blanks when reading a scheme (`java\tscript:`).
+  // eslint-disable-next-line no-control-regex
+  const bare = src.replace(/[\u0000-\u0020]/g, "");
+  const scheme = LINK_SCHEME.exec(bare)?.[1]?.toLowerCase();
+  if (!scheme) return src;
+  if (scheme === "http" || scheme === "https" || scheme === "blob") return src;
+  if (scheme === "data" && DATA_MEDIA.test(bare)) return src;
+  return null;
+}
+
 function MediaBlock({
   media,
   t,
@@ -251,6 +267,7 @@ function MediaBlock({
       <span className="min-w-0 truncate font-medium">{fileName}</span>
     </>
   );
+  const href = linkHref(media.src);
   return media.onOpen ? (
     <button
       type="button"
@@ -261,11 +278,15 @@ function MediaBlock({
     >
       {fileBody}
     </button>
+  ) : href === null ? (
+    <span data-slot="chat-bubble-media" data-kind="file" className={fileClass}>
+      {fileBody}
+    </span>
   ) : (
     <a
       data-slot="chat-bubble-media"
       data-kind="file"
-      href={media.src}
+      href={href}
       target="_blank"
       rel="noreferrer noopener"
       download={media.name}

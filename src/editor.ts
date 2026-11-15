@@ -15,6 +15,7 @@ export type {
   RichTextEditorLabels,
   RichTextEditorProps,
   RichTextToolbarItem,
+  SanitizeHtmlOptions,
 } from "./components/RichTextEditor";
 
 // Re-exported so consumers type their extensions and `onEditorReady`
