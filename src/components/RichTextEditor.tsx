@@ -37,6 +37,7 @@ import { defineMessages } from "../i18n/messages";
 import { cn } from "../lib/cn";
 import { controlFocusWithin, focusRing } from "../lib/control";
 import { floatingPanelClass } from "../lib/overlay";
+import { sanitizeHtml } from "../lib/sanitizeHtml";
 import { Avatar, AvatarFallback, AvatarImage } from "./Avatar";
 import { Button } from "./Button";
 import {
@@ -261,49 +262,13 @@ export interface RichTextEditorProps
   labels?: Partial<RichTextEditorLabels>;
 }
 
-// ─── Sanitising read-only HTML ─────────────────────────────────────
-
-const DROP_TAGS = "script,style,iframe,object,embed,link,meta,base,form,frame,frameset,noscript,template";
-const URL_ATTRS = ["href", "src", "xlink:href", "action", "formaction", "srcset"];
-
-/**
- * Strip scripts, event handlers and `javascript:` URLs from HTML stored by
- * an editor before it is rendered. A defence-in-depth helper for trusted
- * sources (your own instance), not a full HTML sanitiser for hostile input.
- */
-export function sanitizeHtml(html: string): string {
-  if (!html) return "";
-  if (typeof DOMParser === "undefined") {
-    return html
-      .replace(/<(script|style|iframe|object|embed|noscript|template)[\s\S]*?<\/\1\s*>/gi, "")
-      .replace(/<(script|style|iframe|object|embed|link|meta|base)\b[^>]*>/gi, "")
-      .replace(/\son[a-z]+\s*=\s*("[^"]*"|'[^']*'|[^\s>]+)/gi, "")
-      .replace(/(href|src)\s*=\s*(["']?)\s*(javascript|vbscript|data:text\/html)[^"'\s>]*\2/gi, "$1=\"#\"");
-  }
-  const doc = new DOMParser().parseFromString(`<body>${html}</body>`, "text/html");
-  doc.body.querySelectorAll(DROP_TAGS).forEach((el) => el.remove());
-  doc.body.querySelectorAll("*").forEach((el) => {
-    for (const attr of Array.from(el.attributes)) {
-      const name = attr.name.toLowerCase();
-      // eslint-disable-next-line no-control-regex
-      const v = attr.value.replace(/[\s\u0000-\u001f]/g, "").toLowerCase();
-      if (name.startsWith("on")) el.removeAttribute(attr.name);
-      else if (
-        URL_ATTRS.includes(name) &&
-        (v.startsWith("javascript:") || v.startsWith("vbscript:") || v.startsWith("data:text/html"))
-      ) {
-        el.removeAttribute(attr.name);
-      }
-    }
-    if (el.tagName === "A" && el.getAttribute("target") === "_blank") {
-      el.setAttribute("rel", "noopener noreferrer nofollow");
-    }
-  });
-  return doc.body.innerHTML;
-}
+// ─── Read-only HTML ────────────────────────────────────────────────
 
 /** Typography shared by the editor and RichTextContent (styles/editor.css). */
 const proseClass = "tj-prose";
+
+export { sanitizeHtml };
+export type { SanitizeHtmlOptions } from "../lib/sanitizeHtml";
 
 export interface RichTextContentProps extends React.HTMLAttributes<HTMLDivElement> {
   /** HTML from a RichTextEditor (comments, notes, e-mail bodies). */
